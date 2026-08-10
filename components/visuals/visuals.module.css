@@ -1,0 +1,654 @@
+.visual {
+  --visual-bg: var(--surface-raised, #0d1013);
+  --visual-surface: var(--surface-secondary, #12161b);
+  --visual-line: color-mix(in srgb, var(--text-primary, #f1f2ed) 15%, transparent);
+  --visual-line-strong: color-mix(in srgb, var(--text-primary, #f1f2ed) 30%, transparent);
+  --visual-text: var(--text-primary, #f1f2ed);
+  --visual-muted: var(--text-secondary, #8e99a5);
+  --visual-cyan: var(--signal-primary, #6ee7f5);
+  --visual-lime: var(--signal-secondary, #c5f467);
+  --visual-warn: #ffb96a;
+
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  overflow: hidden;
+  color: var(--visual-text);
+  background: var(--visual-bg);
+  border: 1px solid var(--visual-line);
+  border-radius: 10px;
+  font-family: var(--font-mono, "Geist Mono", ui-monospace, monospace);
+  isolation: isolate;
+}
+
+.visual text {
+  fill: currentColor;
+  font-size: 10px;
+  letter-spacing: 0.07em;
+}
+
+.eyebrow,
+.panelLabel,
+.statusText,
+.metricRail,
+.liveStatus,
+.syncStatus {
+  font-size: 8.5px !important;
+  font-weight: 600;
+  letter-spacing: 0.14em !important;
+}
+
+.eyebrow,
+.panelLabel {
+  fill: var(--visual-text) !important;
+}
+
+.statusText,
+.metricRail,
+.stageMeta,
+.axisLabel,
+.legend {
+  fill: var(--visual-muted) !important;
+}
+
+.stageMeta,
+.axisLabel {
+  font-size: 7px !important;
+  letter-spacing: 0.08em !important;
+}
+
+.microGrid,
+.mapGrid {
+  fill: none;
+  stroke: var(--visual-line);
+  stroke-width: 0.7;
+  vector-effect: non-scaling-stroke;
+}
+
+.microGrid {
+  opacity: 0.55;
+}
+
+.metricRail {
+  fill: var(--visual-muted);
+}
+
+.connector,
+.workflowLine,
+.routeBase {
+  fill: none;
+  stroke: var(--visual-line-strong);
+  stroke-width: 1.15;
+  vector-effect: non-scaling-stroke;
+}
+
+.flowLine,
+.flowLineSlow,
+.traceSignal,
+.streamFlow,
+.routeSignal,
+.workflowSignal,
+.sparkSignal {
+  fill: none;
+  stroke: var(--visual-cyan);
+  stroke-dasharray: 2 10;
+  stroke-linecap: round;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  animation: signal-flow 1.65s linear infinite paused;
+}
+
+.flowLineSlow,
+.workflowSignal {
+  animation-duration: 2.4s;
+}
+
+.isActive:not(.isReduced) :is(
+    .flowLine,
+    .flowLineSlow,
+    .traceSignal,
+    .streamFlow,
+    .routeSignal,
+    .workflowSignal,
+    .sparkSignal,
+    .evidenceSweep,
+    .transaction,
+    .flaggedTransaction,
+    .alertNode,
+    .consensusCore,
+    .rankFill,
+    .issuePin,
+    .workflowState,
+    .distributionLine,
+    .trendLine
+  ) {
+  animation-play-state: running;
+}
+
+/* Conclave */
+.conclave {
+  --visual-cyan: var(--signal-primary, #73e6f2);
+}
+
+.stage rect,
+.outputStage rect,
+.evidencePanel > rect,
+.workflowPanel > rect,
+.locationTag rect {
+  fill: color-mix(in srgb, var(--visual-surface) 90%, transparent);
+  stroke: var(--visual-line-strong);
+  stroke-width: 1;
+}
+
+.stage > text:not(.stageMeta),
+.outputStage > text,
+.agent text:not(.stageMeta),
+.pipelineStage text:not(.stageMeta) {
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.agent rect {
+  fill: color-mix(in srgb, var(--visual-surface) 88%, transparent);
+  stroke: color-mix(in srgb, var(--visual-cyan) 32%, transparent);
+  stroke-width: 1;
+}
+
+.agent circle,
+.pipelineStage circle {
+  fill: var(--visual-cyan);
+  opacity: 0.8;
+}
+
+.agent:nth-child(2) circle,
+.agent:nth-child(4) circle {
+  fill: var(--visual-lime);
+}
+
+.agent:nth-child(1) {
+  opacity: 0.76;
+}
+
+.agent:nth-child(2) {
+  opacity: 0.9;
+}
+
+.agent:nth-child(3) {
+  opacity: 0.82;
+}
+
+.agent:nth-child(4) {
+  opacity: 0.7;
+}
+
+.consensusCore {
+  fill: var(--visual-lime);
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--visual-lime) 70%, transparent));
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: soft-pulse 1.9s ease-in-out infinite paused;
+}
+
+.outputStage path {
+  fill: none;
+  stroke: var(--visual-cyan);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.outputStage circle {
+  fill: var(--visual-lime);
+}
+
+/* TracePilot */
+.tracepilot {
+  --visual-cyan: #79d9ff;
+}
+
+.liveStatus circle,
+.syncStatus path {
+  fill: none;
+  stroke: var(--visual-lime);
+}
+
+.liveStatus circle {
+  fill: var(--visual-lime);
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--visual-lime) 70%, transparent));
+}
+
+.liveStatus text,
+.syncStatus text {
+  fill: var(--visual-muted);
+}
+
+.serviceGraph path {
+  fill: none;
+  stroke: var(--visual-line-strong);
+  stroke-width: 1.1;
+}
+
+.serviceGraph circle {
+  fill: var(--visual-surface);
+  stroke: var(--visual-cyan);
+  stroke-width: 1.2;
+}
+
+.serviceGraph text {
+  fill: var(--visual-cyan);
+  font-size: 7.5px;
+}
+
+.serviceGraph .alertNode {
+  fill: color-mix(in srgb, var(--visual-warn) 18%, var(--visual-surface));
+  stroke: var(--visual-warn);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: alert-pulse 1.8s ease-out infinite paused;
+}
+
+.evidencePanel > rect {
+  stroke: color-mix(in srgb, var(--visual-cyan) 25%, transparent);
+}
+
+.evidenceRow circle {
+  fill: var(--visual-cyan);
+}
+
+.evidenceRow text {
+  fill: var(--visual-muted);
+  font-size: 7.5px;
+}
+
+.evidenceRow rect {
+  fill: var(--visual-line);
+}
+
+.evidenceSweep {
+  fill: none;
+  stroke: var(--visual-cyan);
+  stroke-dasharray: 22 120;
+  stroke-linecap: round;
+  stroke-width: 2.4;
+  animation: evidence-sweep 2.2s ease-in-out infinite paused;
+}
+
+.rankingPanel > g > rect:first-of-type {
+  fill: var(--visual-line);
+}
+
+.rankingPanel text {
+  font-size: 8px;
+}
+
+.rankFill,
+.rankFillMuted {
+  fill: var(--visual-cyan);
+  transform-box: fill-box;
+  transform-origin: left center;
+}
+
+.rankFill {
+  animation: rank-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) both paused;
+}
+
+.rankFillMuted {
+  opacity: 0.35;
+}
+
+.evidenceCitation {
+  fill: var(--visual-lime) !important;
+  font-size: 7.5px !important;
+}
+
+/* Fraud */
+.fraud {
+  --visual-cyan: #65e8e1;
+}
+
+.streamLane > path:first-child {
+  fill: none;
+  stroke: var(--visual-line-strong);
+  stroke-width: 1.1;
+}
+
+.pipelineStage rect {
+  fill: color-mix(in srgb, var(--visual-surface) 93%, transparent);
+  stroke: color-mix(in srgb, var(--visual-cyan) 28%, var(--visual-line));
+  stroke-width: 1;
+}
+
+.transaction,
+.flaggedTransaction {
+  fill: var(--visual-cyan);
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--visual-cyan) 60%, transparent));
+  animation: transaction-flow 3.1s linear infinite paused;
+}
+
+.flaggedTransaction {
+  fill: var(--visual-warn);
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--visual-warn) 75%, transparent));
+  animation-duration: 4s;
+}
+
+.flagStem {
+  fill: none;
+  stroke: var(--visual-warn);
+  stroke-dasharray: 2 4;
+  stroke-width: 1;
+}
+
+.flagBadge rect {
+  fill: color-mix(in srgb, var(--visual-warn) 12%, var(--visual-surface));
+  stroke: color-mix(in srgb, var(--visual-warn) 70%, transparent);
+}
+
+.flagBadge text {
+  fill: var(--visual-warn);
+  font-size: 7.5px;
+  font-weight: 650;
+}
+
+.metricValue {
+  fill: var(--visual-text) !important;
+  font-family: var(--font-sans, "Geist", ui-sans-serif, sans-serif);
+  font-size: 18px !important;
+  font-weight: 560;
+  letter-spacing: -0.035em !important;
+}
+
+/* CivicLens */
+.civiclens {
+  --visual-cyan: #75d9ff;
+}
+
+.mapGrid {
+  opacity: 0.38;
+}
+
+.mapGrid path:nth-last-child(-n + 2) {
+  stroke: color-mix(in srgb, var(--visual-cyan) 35%, transparent);
+  stroke-width: 1.1;
+}
+
+.syncStatus path {
+  stroke-width: 1;
+}
+
+.routeBase {
+  stroke-width: 2;
+}
+
+.routeSignal {
+  stroke: var(--visual-lime);
+  stroke-width: 2;
+}
+
+.issuePin > circle:first-child {
+  fill: color-mix(in srgb, var(--visual-cyan) 12%, var(--visual-surface));
+  stroke: var(--visual-cyan);
+  stroke-width: 1.3;
+}
+
+.issuePin > circle:nth-child(2) {
+  fill: var(--visual-cyan);
+}
+
+.issuePin path {
+  stroke: var(--visual-cyan);
+}
+
+.issuePin {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: map-pin-pulse 2.4s ease-in-out infinite paused;
+}
+
+.mapNode circle:first-child,
+.mapNodeMuted circle {
+  fill: var(--visual-surface);
+  stroke: var(--visual-cyan);
+  stroke-width: 1.1;
+}
+
+.mapNode circle:nth-child(2) {
+  fill: var(--visual-lime);
+}
+
+.mapNodeMuted {
+  opacity: 0.48;
+}
+
+.locationTag text:not(.stageMeta) {
+  font-size: 7px;
+}
+
+.workflowLine {
+  stroke-width: 1;
+}
+
+.workflowState circle {
+  fill: var(--visual-surface);
+  stroke: var(--visual-cyan);
+  stroke-width: 1.2;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: state-pulse 3.2s ease-in-out infinite paused;
+}
+
+.workflowState:nth-of-type(3) circle {
+  animation-delay: 0.5s;
+}
+
+.workflowState:nth-of-type(4) circle {
+  animation-delay: 1s;
+}
+
+.workflowState:nth-of-type(5) circle {
+  animation-delay: 1.5s;
+}
+
+.workflowState text:not(.stageMeta) {
+  font-size: 8px;
+}
+
+/* IPO analytics */
+.ipo {
+  --visual-cyan: #72dfe9;
+}
+
+.scatterPlot > path:first-of-type,
+.distributionAxis {
+  fill: none;
+  stroke: var(--visual-line-strong);
+  stroke-width: 1;
+}
+
+.axisTick {
+  fill: none;
+  opacity: 0.7;
+  stroke: var(--visual-line);
+  stroke-width: 0.7;
+}
+
+.clusterOne {
+  fill: var(--visual-cyan);
+}
+
+.clusterTwo {
+  fill: var(--visual-lime);
+}
+
+.scatterPlot circle {
+  opacity: 0.78;
+  stroke: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.trendLine,
+.distributionLine {
+  fill: none;
+  stroke: var(--visual-text);
+  stroke-linecap: round;
+  stroke-width: 1.2;
+  stroke-dasharray: 320;
+  stroke-dashoffset: 320;
+  animation: draw-line 1.7s cubic-bezier(0.22, 1, 0.36, 1) forwards paused;
+}
+
+.distributionFill {
+  fill: color-mix(in srgb, var(--visual-cyan) 10%, transparent);
+}
+
+.distributionLine {
+  stroke: var(--visual-cyan);
+}
+
+.medianMarker {
+  fill: none;
+  stroke: var(--visual-lime);
+  stroke-dasharray: 2 4;
+  stroke-width: 1;
+}
+
+.modelMetric > path:first-of-type {
+  fill: none;
+  stroke: var(--visual-line-strong);
+  stroke-width: 1;
+}
+
+.sparkSignal {
+  stroke: var(--visual-lime);
+  stroke-dasharray: 18 130;
+}
+
+.legend {
+  font-size: 7px;
+}
+
+@keyframes signal-flow {
+  to {
+    stroke-dashoffset: -48;
+  }
+}
+
+@keyframes soft-pulse {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(0.88);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes alert-pulse {
+  0%,
+  100% {
+    opacity: 0.75;
+    transform: scale(0.92);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes evidence-sweep {
+  0% {
+    stroke-dashoffset: 120;
+  }
+  65%,
+  100% {
+    stroke-dashoffset: -120;
+  }
+}
+
+@keyframes rank-in {
+  from {
+    transform: scaleX(0.05);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes transaction-flow {
+  from {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  8%,
+  88% {
+    opacity: 0.9;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(558px);
+  }
+}
+
+@keyframes map-pin-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  50% {
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--visual-cyan) 55%, transparent));
+  }
+}
+
+@keyframes state-pulse {
+  0%,
+  18%,
+  100% {
+    fill: var(--visual-surface);
+  }
+  9% {
+    fill: var(--visual-cyan);
+  }
+}
+
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.isReduced :is(
+    .flowLine,
+    .flowLineSlow,
+    .traceSignal,
+    .streamFlow,
+    .routeSignal,
+    .workflowSignal,
+    .sparkSignal,
+    .evidenceSweep,
+    .transaction,
+    .flaggedTransaction,
+    .alertNode,
+    .consensusCore,
+    .rankFill,
+    .issuePin,
+    .workflowState,
+    .distributionLine,
+    .trendLine
+  ) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visual * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .visual text {
+    letter-spacing: 0.045em;
+  }
+}
