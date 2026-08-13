@@ -28,10 +28,11 @@ export function VisualSvg({
       className={clsx(
         styles.visual,
         kindClassName,
-        active && styles.isActive,
         reducedMotion && styles.isReduced,
         className,
       )}
+      data-motion-state="idle"
+      data-motion-visual={active && !reducedMotion ? "true" : undefined}
       role={decorative ? undefined : "img"}
     >
       <svg

@@ -11,10 +11,9 @@ export function ProjectVisual({
   return (
     <div className="project-visual-root">
       <ProjectArchitectureVisual
-        active={false}
+        active
         decorative={!labelled}
         kind={kind}
-        reducedMotion
       />
     </div>
   );

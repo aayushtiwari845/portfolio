@@ -52,6 +52,8 @@ function CommandPaletteLauncher({ onRequest }: { onRequest: () => void }) {
       type="button"
     >
       <Search aria-hidden="true" size={14} />
+      <span className="command-label">Command</span>
+      <kbd>⌘K</kbd>
     </button>
   );
 }
@@ -169,6 +171,7 @@ export function SiteHeader({
 
   return (
     <div className="site-header-wrap">
+      <div aria-hidden="true" className="scroll-progress" />
       <header className="site-header" data-menu-open={menuOpen} data-scrolled={scrolled}>
         <Link className="wordmark" href="/">
           <span className="wordmark-mark">{wordmarkInitials}</span>

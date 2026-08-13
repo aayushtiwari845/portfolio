@@ -592,7 +592,7 @@
   stroke-dashoffset: 180;
 }
 
-.isActive:not(.isReduced) :is(
+.visual[data-motion-state="active"]:not(.isReduced) :is(
     .signalPath,
     .signalPathSlow,
     .branchSignal,

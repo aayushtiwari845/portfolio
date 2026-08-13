@@ -5,28 +5,46 @@ import { Reveal } from "@/components/motion/reveal";
 import { CopyEmail } from "@/components/ui/copy-email";
 import { ExternalLink } from "@/components/ui/external-link";
 import { ProjectVisual } from "@/components/work/project-visual";
-import { portfolio, projects } from "@/data/portfolio";
+import {
+  homepageProjectEvidence,
+  homepageProjectSlugs,
+  portfolio,
+  projects,
+  type ProjectSlug,
+} from "@/data/portfolio";
+
+function getHomepageProject(slug: ProjectSlug) {
+  const project = projects.find((candidate) => candidate.slug === slug);
+
+  if (!project) {
+    throw new Error(`Missing homepage project: ${slug}`);
+  }
+
+  return project;
+}
+
+const homepageProjects = homepageProjectSlugs.map(getHomepageProject);
 
 const capabilityAnchors = [
   {
     key: "systems",
     index: "01",
     title: "Systems",
-    description: "Backends, APIs, and operational workflows designed to stay understandable under real constraints.",
+    description: "Typed APIs, authentication, failure handling, and operational workflows with explicit boundaries.",
     technologies: ["FastAPI", "Spring Boot", "Node.js", "PostgreSQL", "Redis"],
   },
   {
     key: "data",
     index: "02",
     title: "Data",
-    description: "Streaming and analytical pipelines shaped around workload, lineage, and reliable movement of evidence.",
+    description: "Batch and streaming pipelines designed around workload, lineage, replay, and measurable behavior.",
     technologies: ["Kafka", "Spark", "PySpark", "Pandas", "Warehousing"],
   },
   {
     key: "intelligence",
     index: "03",
     title: "Intelligence",
-    description: "Applied ML and LLM behavior that can be evaluated, traced, and integrated into useful products.",
+    description: "ML and LLM workflows evaluated against baselines before they are trusted inside a product.",
     technologies: ["PyTorch", "TensorFlow", "MLflow", "Spark MLlib", "LLM systems"],
   },
 ] as const;
@@ -48,14 +66,17 @@ export function HeroSection({ visual }: { visual: React.ReactNode }) {
           <p className="eyebrow hero-identity">
             {portfolio.identity.displayName} <span aria-hidden="true">·</span> Software Engineer
           </p>
-          <h1 className="hero-title" id="hero-title">{portfolio.identity.headline}</h1>
+          <h1 aria-label={portfolio.identity.headline} className="hero-title" id="hero-title">
+            <span className="hero-title-line"><span>I build backend and data systems</span></span>{" "}
+            <span className="hero-title-line"><span>that keep AI behavior inspectable.</span></span>
+          </h1>
           <p className="hero-description">{portfolio.identity.introduction}</p>
           <p className="hero-disciplines">Backend platforms <span>/</span> Data infrastructure <span>/</span> Applied AI</p>
           <div className="hero-actions">
-            <Link className="primary-cta" href="#experience">
-              View experience <ArrowRight aria-hidden="true" size={16} />
+            <Link className="primary-cta" href="#work">
+              View selected work <ArrowRight aria-hidden="true" size={16} />
             </Link>
-            <Link className="secondary-cta" href="#work">Selected work</Link>
+            <Link className="secondary-cta" href="#experience">Experience</Link>
             <Link className="text-link" href="/resume">Résumé</Link>
           </div>
           <div className="hero-socials" aria-label="Professional profiles">
@@ -86,11 +107,11 @@ export function ExperienceSection() {
       <div className="page-shell">
         <Reveal className="section-heading">
           <div>
-            <p className="section-kicker">01 / Experience</p>
-            <h2 className="section-title" id="experience-heading">Built inside real operating constraints.</h2>
+            <p className="section-kicker">02 / Experience</p>
+            <h2 className="section-title" id="experience-heading">Experience across software, data, and AI products.</h2>
           </div>
           <p className="section-intro">
-            Three roles across production software, backend product systems, and analytical infrastructure.
+            Recent work spans a high-volume screening platform, an AI-product backend, and analytics infrastructure.
           </p>
         </Reveal>
 
@@ -106,10 +127,15 @@ export function ExperienceSection() {
               <div className="experience-body">
                 <p className="experience-summary">{experience.summary}</p>
                 <ul className="experience-proofs">
-                  {experience.highlights.slice(0, index === 0 ? 3 : 2).map((highlight) => (
+                  {experience.highlights.slice(0, 2).map((highlight) => (
                     <li className="experience-proof" key={highlight}>{highlight}</li>
                   ))}
                 </ul>
+                <div className="experience-stack" aria-label={`${experience.company} technologies`} role="list">
+                  {experience.stack.slice(0, 5).map((technology) => (
+                    <span className="tech-chip" key={technology} role="listitem">{technology}</span>
+                  ))}
+                </div>
                 {experience.note ? <p className="experience-note">{experience.note}</p> : null}
               </div>
             </Reveal>
@@ -121,25 +147,26 @@ export function ExperienceSection() {
 }
 
 export function WorkSection() {
-  const featuredProjects = projects.slice(0, 3);
-  const supportingProjects = projects.slice(3);
+  const featuredProjects = homepageProjects.slice(0, 3);
+  const supportingProjects = homepageProjects.slice(3);
 
   return (
     <section className="section" id="work" aria-labelledby="work-heading">
       <div className="page-shell">
         <Reveal className="section-heading">
           <div>
-            <p className="section-kicker">02 / Selected work</p>
-            <h2 className="section-title" id="work-heading">Systems built around real constraints.</h2>
+            <p className="section-kicker">01 / Selected work</p>
+            <h2 className="section-title" id="work-heading">Systems with the evidence left in.</h2>
           </div>
           <p className="section-intro">
-            Three featured systems with deeper technical narratives, followed by two focused supporting projects.
+            Design choices, evaluation results, and limitations stay visible instead of being reduced to demo claims.
           </p>
         </Reveal>
 
         <div className="featured-projects">
           {featuredProjects.map((project, index) => {
             const collaborative = project.slug === "real-time-fraud-detection";
+            const evidence = homepageProjectEvidence[project.slug];
             return (
               <Reveal
                 as="div"
@@ -149,7 +176,7 @@ export function WorkSection() {
               >
                 <article>
                   <div className="project-feature-head">
-                    <span className="project-index">PROJECT / {project.index}</span>
+                    <span className="project-index">FEATURED / {String(index + 1).padStart(2, "0")}</span>
                     <span className="project-domain">{collaborative ? "Collaborative project" : project.domain}</span>
                   </div>
                   <div className="project-feature-grid">
@@ -168,12 +195,23 @@ export function WorkSection() {
                         ))}
                       </div>
                       <div className="project-card-footer">
-                        <span className="project-evidence">
-                          {project.metrics[0]?.value} <span>{project.metrics[0]?.label}</span>
-                        </span>
-                        <Link className="project-arrow" href={`/projects/${project.slug}`}>
-                          Read case study <ArrowUpRight aria-hidden="true" size={16} />
-                        </Link>
+                        <div className="project-evidence">
+                          <span className="project-evidence-label">{evidence.label}</span>
+                          <strong className="project-evidence-copy">{evidence.statement}</strong>
+                        </div>
+                        <div className="project-card-actions">
+                          <Link className="project-arrow" href={`/projects/${project.slug}`}>
+                            Case study <ArrowUpRight aria-hidden="true" size={16} />
+                          </Link>
+                          <ExternalLink className="project-arrow project-source-link" href={project.repository}>
+                            Source
+                          </ExternalLink>
+                          {"demoUrl" in project && project.demoUrl ? (
+                            <ExternalLink className="project-arrow project-demo-link" href={project.demoUrl}>
+                              Live demo
+                            </ExternalLink>
+                          ) : null}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -196,12 +234,23 @@ export function WorkSection() {
                     <span className="project-index">PROJECT / {project.index}</span>
                     <h3><Link href={`/projects/${project.slug}`}>{project.title}</Link></h3>
                     <p>{project.summary}</p>
+                    <span className="supporting-project-status">{project.status}</span>
                   </div>
                   <div className="supporting-project-meta">
                     <span>{project.domain}</span>
-                    <Link className="project-arrow" href={`/projects/${project.slug}`}>
-                      Case study <ArrowUpRight aria-hidden="true" size={15} />
-                    </Link>
+                    <div className="supporting-project-actions">
+                      <Link className="project-arrow" href={`/projects/${project.slug}`}>
+                        Case study <ArrowUpRight aria-hidden="true" size={15} />
+                      </Link>
+                      <ExternalLink className="project-arrow project-source-link" href={project.repository}>
+                        Source
+                      </ExternalLink>
+                      {"demoUrl" in project && project.demoUrl ? (
+                        <ExternalLink className="project-arrow project-demo-link" href={project.demoUrl}>
+                          Live demo
+                        </ExternalLink>
+                      ) : null}
+                    </div>
                   </div>
                 </article>
               </Reveal>
@@ -220,10 +269,10 @@ export function CapabilitiesSection() {
         <Reveal className="section-heading">
           <div>
             <p className="section-kicker">03 / Capabilities</p>
-            <h2 className="section-title" id="capabilities-heading">Backend, data, and intelligence—designed together.</h2>
+            <h2 className="section-title" id="capabilities-heading">Systems, data, and models—with clear boundaries.</h2>
           </div>
           <p className="section-intro">
-            The useful work happens at the boundaries: services carry data, data becomes evidence, and models behave inside products.
+            I work across the seams: APIs expose workflows, data preserves evidence, and models are tested against explicit baselines.
           </p>
         </Reveal>
 
@@ -263,15 +312,15 @@ export function AboutSection() {
         <Reveal className="section-heading section-heading--compact">
           <div>
             <p className="section-kicker">04 / About</p>
-            <h2 className="section-title" id="about-heading">Engineering that remains understandable after the demo.</h2>
+            <h2 className="section-title" id="about-heading">The model is only one part of the system.</h2>
           </div>
         </Reveal>
         <div className="about-grid">
           <Reveal>
-            <p className="about-statement">
-              I care about explicit behavior, observable workflows, and evidence behind decisions—especially where APIs, data, and models meet.
+            <p className="about-statement">{portfolio.about}</p>
+            <p className="about-copy">
+              My work spans backend services, data infrastructure, and applied AI—not as isolated demos, but as systems that can be tested, reviewed, and understood.
             </p>
-            <p className="about-copy">{portfolio.about}</p>
           </Reveal>
           <Reveal className="education-card" delay={0.06}>
             <p className="technical-label">Education / In progress</p>
@@ -280,7 +329,6 @@ export function AboutSection() {
             <p>{portfolio.education.location}</p>
             <div className="education-meta">
               <div><span className="technical-label">Period</span><strong>{portfolio.education.period}</strong></div>
-              <div><span className="technical-label">CGPA</span><strong>{portfolio.education.cgpa}</strong></div>
             </div>
           </Reveal>
         </div>

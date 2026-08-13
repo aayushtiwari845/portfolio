@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ArrowLeft, ArrowUpRight, Code2, ExternalLink as ExternalLinkIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -178,11 +179,34 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         <section className="section">
           <div className="page-shell case-content-grid">
             <div className="case-section-label"><p className="section-kicker">04 / Validation</p></div>
-            <Reveal as="div">
-              <ul className="validation-list">
-                {project.validation.map((item) => <li key={item}>{item}</li>)}
-              </ul>
-            </Reveal>
+            <div>
+              <Reveal as="div">
+                <ul className="validation-list">
+                  {project.validation.map((item) => <li key={item}>{item}</li>)}
+                </ul>
+              </Reveal>
+              {project.artifact ? (
+                <Reveal as="div" className="project-artifact" delay={0.05}>
+                  <div className="project-artifact-frame">
+                    <Image
+                      alt={project.artifact.alt}
+                      height={900}
+                      loading="lazy"
+                      sizes="(max-width: 860px) calc(100vw - 32px), 880px"
+                      src={project.artifact.src}
+                      width={1600}
+                    />
+                  </div>
+                  <div className="project-artifact-caption">
+                    <span className="technical-label">Repository artifact</span>
+                    <p>{project.artifact.caption}</p>
+                    <ExternalLink className="project-arrow" href={project.artifact.sourceUrl}>
+                      Inspect source <ArrowUpRight aria-hidden="true" size={15} />
+                    </ExternalLink>
+                  </div>
+                </Reveal>
+              ) : null}
+            </div>
           </div>
         </section>
 

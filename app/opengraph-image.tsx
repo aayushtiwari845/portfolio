@@ -109,7 +109,7 @@ export default function OpenGraphImage() {
                 maxWidth: 760,
               }}
             >
-              I build intelligent systems that hold up under real workloads.
+              I build backend and data systems that keep AI behavior inspectable.
             </div>
           </div>
 

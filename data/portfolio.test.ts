@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { portfolio, projects } from "@/data/portfolio";
+import {
+  homepageProjectEvidence,
+  homepageProjectSlugs,
+  portfolio,
+  projects,
+} from "@/data/portfolio";
 import {
   getNextProject,
   getProject,
@@ -49,6 +54,32 @@ describe("portfolio data", () => {
       if ("demoUrl" in project && project.demoUrl) {
         expectValidUrl(project.demoUrl as string, ["https:"]);
       }
+
+      if ("artifact" in project && project.artifact) {
+        expectValidUrl(project.artifact.sourceUrl, ["https:"]);
+      }
+    }
+  });
+
+  it("keeps project artifacts local, descriptive, and source-linked", () => {
+    const projectsWithArtifacts = projects.filter(
+      (project) => "artifact" in project && project.artifact,
+    );
+
+    expect(projectsWithArtifacts.map(({ slug }) => slug)).toEqual([
+      "conclave",
+      "real-time-fraud-detection",
+      "indian-ipo-analytics",
+    ]);
+
+    for (const project of projectsWithArtifacts) {
+      if (!("artifact" in project) || !project.artifact) continue;
+
+      expect(project.artifact.src).toMatch(/^\/project-artifacts\/.+\.png$/);
+      expect(project.artifact.alt.length).toBeGreaterThan(30);
+      expect(project.artifact.caption.length).toBeGreaterThan(70);
+      expectValidUrl(project.artifact.sourceUrl, ["https:"]);
+      expect(project.artifact.sourceUrl).toBe(project.repository);
     }
   });
 
@@ -113,9 +144,50 @@ describe("portfolio data", () => {
     expect("heroMetrics" in portfolio).toBe(false);
     expect(portfolio.identity.introduction).not.toMatch(/\d/);
     expect(portfolio.navigation.slice(0, 2).map(({ label }) => label)).toEqual([
-      "Experience",
       "Work",
+      "Experience",
     ]);
+  });
+
+  it("uses a homepage-only project order without changing canonical routes", () => {
+    expect(homepageProjectSlugs).toEqual([
+      "tracepilot",
+      "conclave",
+      "real-time-fraud-detection",
+      "civiclens",
+      "indian-ipo-analytics",
+    ]);
+    expect(new Set(homepageProjectSlugs)).toEqual(new Set(expectedSlugs));
+    expect(projects.map(({ slug }) => slug)).toEqual(expectedSlugs);
+    expect(getNextProject("conclave")?.slug).toBe("tracepilot");
+  });
+
+  it("gives every homepage project a contextual finding instead of its first metric", () => {
+    expect(Object.keys(homepageProjectEvidence).sort()).toEqual(
+      [...expectedSlugs].sort(),
+    );
+
+    for (const project of projects) {
+      const evidence = homepageProjectEvidence[project.slug];
+
+      expect(evidence.label.length).toBeGreaterThan(3);
+      expect(evidence.statement.length).toBeGreaterThan(60);
+
+      const firstMetric = project.metrics[0]?.value;
+      if (firstMetric) {
+        expect(evidence.statement).not.toContain(firstMetric);
+      }
+    }
+
+    expect(homepageProjectEvidence.tracepilot.statement).toContain(
+      "remained ineligible for promotion",
+    );
+    expect(homepageProjectEvidence.conclave.statement).toContain(
+      "not statistically significant",
+    );
+    expect(
+      homepageProjectEvidence["real-time-fraud-detection"].statement,
+    ).toContain("more false positives");
   });
 
   it("keeps experience newest-first", () => {

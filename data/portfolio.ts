@@ -25,6 +25,18 @@ export interface ProjectDecision {
   readonly tradeoff?: string;
 }
 
+export interface HomepageProjectEvidence {
+  readonly label: string;
+  readonly statement: string;
+}
+
+export interface ProjectArtifact {
+  readonly src: string;
+  readonly alt: string;
+  readonly caption: string;
+  readonly sourceUrl: string;
+}
+
 export interface ArchitectureStep {
   readonly id: string;
   readonly label: string;
@@ -40,6 +52,7 @@ export interface Project {
   readonly summary: string;
   readonly repository: string;
   readonly demoUrl?: string;
+  readonly artifact?: ProjectArtifact;
   readonly ownershipNote?: string;
   readonly status: string;
   readonly role: string;
@@ -150,10 +163,10 @@ export const portfolio = {
     location: "Mumbai, India",
     timezone: "Asia/Kolkata",
     email: "aayushkumar345@gmail.com",
-    descriptor: "Software Engineering / AI Systems / Data",
-    headline: "I build intelligent systems that hold up under real workloads.",
+    descriptor: "Backend Systems / Data Infrastructure / Applied AI",
+    headline: "I build backend and data systems that keep AI behavior inspectable.",
     introduction:
-      "Software engineer building backend platforms, streaming data systems, and applied AI products with explicit operational boundaries.",
+      "Based in Mumbai, I build backend platforms, streaming pipelines, and applied AI systems with explicit operational boundaries.",
   },
   links: {
     email: "mailto:aayushkumar345@gmail.com",
@@ -162,8 +175,8 @@ export const portfolio = {
     website: "https://aayushktiwari.tech",
   },
   navigation: [
-    { label: "Experience", href: "/#experience" },
     { label: "Work", href: "/#work" },
+    { label: "Experience", href: "/#experience" },
     { label: "Capabilities", href: "/#capabilities" },
     { label: "About", href: "/#about" },
     { label: "Contact", href: "/#contact" },
@@ -198,7 +211,7 @@ export const portfolio = {
       ],
       stack: ["Python", "FastAPI", "React", "TypeScript", "Pytest"],
       note:
-        "Public portfolio copy is intentionally limited to résumé-level information and does not imply Barclays endorsement.",
+        "Public copy is limited to résumé-level scope and does not imply Barclays endorsement.",
     },
     {
       id: "makeflow-backend-developer",
@@ -216,7 +229,7 @@ export const portfolio = {
       ],
       stack: ["Node.js", "JavaScript", "REST APIs"],
       note:
-        "The work is described as product routing and workflow engineering, not as a clinical capability.",
+        "Scope: backend routing and product workflow engineering, not clinical decision-making.",
     },
     {
       id: "segmentriq-data-analytics",
@@ -340,6 +353,13 @@ export const portfolio = {
       summary:
         "A research-oriented Indian mutual-fund ranking system that combines public data, role-specialised agents, deterministic consensus behavior, and evaluation tooling.",
       repository: "https://github.com/aayushtiwari845/Consensus-AI",
+      artifact: {
+        src: "/project-artifacts/conclave-dashboard.png",
+        alt: "CONCLAVE Streamlit dashboard showing the mutual-fund decision system interface.",
+        caption:
+          "The repository's Streamlit interface exposes fund evidence, agent sessions, comparisons, and investor-profile reranking across six tabs.",
+        sourceUrl: "https://github.com/aayushtiwari845/Consensus-AI",
+      },
       status: "Research prototype",
       role:
         "Repository owner and primary implementer of the research pipeline, evaluation tooling, and dashboard.",
@@ -618,6 +638,14 @@ export const portfolio = {
       summary:
         "A collaborative Kafka and Spark Structured Streaming pipeline benchmarked for high-throughput fraud scoring with a compact feature set.",
       repository: "https://github.com/aditya-ravi11/realtime-fraud-detection-qiea",
+      artifact: {
+        src: "/project-artifacts/fraud-streaming-latency.png",
+        alt: "Streaming latency chart from the collaborative real-time fraud-detection benchmark.",
+        caption:
+          "Latency output from the repository's simulated local streaming replay; it is experimental evidence, not a production payment-system benchmark.",
+        sourceUrl:
+          "https://github.com/aditya-ravi11/realtime-fraud-detection-qiea",
+      },
       ownershipNote:
         "Academic collaboration with Aditya Ravi and Atharva Indulkar; the public repository is owned by Aditya Ravi and does not imply sole ownership by Aayush.",
       status: "Academic prototype with a simulated streaming benchmark",
@@ -866,6 +894,13 @@ export const portfolio = {
       summary:
         "An interactive analysis of Indian IPOs from 2019–2024 spanning enriched returns, regression, clustering, distribution analysis, and sector-level exploration.",
       repository: "https://github.com/aayushtiwari845/IPO-Analytics",
+      artifact: {
+        src: "/project-artifacts/ipo-analysis-overview.png",
+        alt: "Indian IPO Analytics overview combining exploratory plots from the project dataset.",
+        caption:
+          "Generated exploratory analysis from the repository's curated 63-record, 2019–2024 IPO dataset; the findings are descriptive rather than prospective forecasts.",
+        sourceUrl: "https://github.com/aayushtiwari845/IPO-Analytics",
+      },
       status: "Reproducible exploratory analysis",
       role:
         "Sole public repository contributor; built the notebook analysis, generated figures, and local Dash application.",
@@ -1005,11 +1040,51 @@ export const portfolio = {
     locale: "en_IN",
   },
   about:
-    "I work at the intersection of software engineering, data infrastructure, and applied AI. I'm particularly interested in systems where models, APIs, streaming data, and production constraints have to work together rather than exist as isolated demos.",
+    "I gravitate toward systems where a model is only one component: evidence has to be collected, decisions replayed, and failure boundaries made explicit. That is why my projects pair AI experiments with baselines, tests, and visible limitations.",
   contact: {
-    heading: "Have a difficult system to build?",
-    copy: "I'm always interested in thoughtful engineering conversations, ambitious software, and interesting problems.",
+    heading: "Building a backend, data, or applied-AI system?",
+    copy: "If the hard part is making it trustworthy, operable, or understandable, I would be glad to compare notes.",
   },
 } as const satisfies Portfolio;
 
 export const projects = portfolio.projects;
+
+/**
+ * Homepage-only editorial order. Canonical project order remains `projects`,
+ * which continues to drive static routes and cyclic next-project navigation.
+ */
+export const homepageProjectSlugs = [
+  "tracepilot",
+  "conclave",
+  "real-time-fraud-detection",
+  "civiclens",
+  "indian-ipo-analytics",
+] as const satisfies readonly ProjectSlug[];
+
+export const homepageProjectEvidence = {
+  tracepilot: {
+    label: "Model gate",
+    statement:
+      "The deterministic baseline beat the learned ranker, so the model remained ineligible for promotion.",
+  },
+  conclave: {
+    label: "Evaluation finding",
+    statement:
+      "The persisted study found a directional, but not statistically significant, advantage over a simple baseline.",
+  },
+  "real-time-fraud-detection": {
+    label: "Measured trade-off",
+    statement:
+      "The three-feature model retained most AUC-ROC, but produced materially more false positives than the full-feature baseline.",
+  },
+  civiclens: {
+    label: "Deployment boundary",
+    statement:
+      "The deployed static dashboard explores exported IPFS archives; it is not a municipal case-management platform.",
+  },
+  "indian-ipo-analytics": {
+    label: "Analysis boundary",
+    statement:
+      "The regression result is scoped to a small curated 2019–2024 dataset and is not a prospective forecast.",
+  },
+} as const satisfies Record<ProjectSlug, HomepageProjectEvidence>;

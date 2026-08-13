@@ -37,10 +37,11 @@ export function HeroTopologyFallback({
       aria-label={decorative ? undefined : "A connected topology joining systems, data and intelligence."}
       className={clsx(
         styles.fallback,
-        active && !reducedMotion && styles.isActive,
         reducedMotion && styles.isReduced,
         className,
       )}
+      data-motion-state="idle"
+      data-motion-visual={active && !reducedMotion ? "true" : undefined}
       role={decorative ? undefined : "img"}
     >
       <svg aria-hidden="true" focusable="false" preserveAspectRatio="xMidYMid meet" viewBox="0 0 700 560" xmlns="http://www.w3.org/2000/svg">

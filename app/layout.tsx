@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { MotionActivator } from "@/components/motion/motion-activator";
 import { portfolio } from "@/data/portfolio";
 
 import "./globals.css";
@@ -58,6 +59,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
   return (
     <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
       <body>
+        <MotionActivator />
         <a className="skip-link" href="#main-content">Skip to content</a>
         <SiteHeader
           displayName={portfolio.identity.displayName}

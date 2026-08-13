@@ -15,12 +15,12 @@
 }
 
 .fallback {
-  --hero-line: color-mix(in srgb, var(--text-primary, #f1f2ed) 16%, transparent);
-  --hero-line-strong: color-mix(in srgb, var(--text-primary, #f1f2ed) 31%, transparent);
-  --hero-text: var(--text-primary, #f1f2ed);
-  --hero-muted: var(--text-secondary, #89959f);
-  --hero-cyan: var(--signal-primary, #71dfeb);
-  --hero-lime: var(--signal-secondary, #c5f467);
+  --hero-line: color-mix(in srgb, var(--text, #f2f1ed) 16%, transparent);
+  --hero-line-strong: color-mix(in srgb, var(--text, #f2f1ed) 31%, transparent);
+  --hero-text: var(--text, #f2f1ed);
+  --hero-muted: var(--text-dim, #929aa2);
+  --hero-cyan: var(--cyan, #79d5df);
+  --hero-lime: var(--acid, #bfdc6a);
 
   width: 100%;
   height: 100%;
@@ -135,7 +135,7 @@
 }
 
 .telemetryLabel rect {
-  fill: color-mix(in srgb, var(--surface-raised, #0d1013) 82%, transparent);
+  fill: color-mix(in srgb, var(--surface-raised, #191d21) 86%, transparent);
   stroke: var(--hero-line-strong);
   stroke-width: 1;
 }
@@ -149,8 +149,8 @@
   font-size: 7.5px;
 }
 
-.isActive:not(.isReduced) .signalEdges,
-.isActive:not(.isReduced) .hubNode .nodeHalo {
+.fallback[data-motion-state="active"]:not(.isReduced) .signalEdges,
+.fallback[data-motion-state="active"]:not(.isReduced) .hubNode .nodeHalo {
   animation-play-state: running;
 }
 
@@ -206,15 +206,28 @@
 
 @media (max-width: 520px) {
   .systemGraphic {
-    min-height: 250px;
+    min-height: 112px;
   }
 
   .fallback svg {
-    transform: scale(1.2);
+    transform: scale(1.12);
   }
 
   .telemetryLabel,
   .coordinateLabel {
     display: none;
+  }
+}
+
+@media (min-width: 521px) and (max-width: 620px) {
+  .systemGraphic {
+    min-height: 112px;
+  }
+}
+
+@media (max-width: 620px), (pointer: coarse) {
+  .fallback[data-motion-state="active"]:not(.isReduced) .signalEdges,
+  .fallback[data-motion-state="active"]:not(.isReduced) .hubNode .nodeHalo {
+    animation-play-state: paused;
   }
 }
