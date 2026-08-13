@@ -21,7 +21,7 @@ const personJsonLd = {
     name: portfolio.identity.location,
   },
   sameAs: [portfolio.links.github, portfolio.links.linkedin],
-  alumniOf: {
+  affiliation: {
     "@type": "CollegeOrUniversity",
     name: portfolio.education.institution,
   },
@@ -47,9 +47,9 @@ export default function Home() {
       <main className="site-main" id="main-content">
         <HeroSection visual={<HeroSystemGraphic />} />
         <div className="section-rule" aria-hidden="true" />
-        <WorkSection />
-        <div className="section-rule" aria-hidden="true" />
         <ExperienceSection />
+        <div className="section-rule" aria-hidden="true" />
+        <WorkSection />
         <div className="section-rule" aria-hidden="true" />
         <CapabilitiesSection />
         <div className="section-rule" aria-hidden="true" />

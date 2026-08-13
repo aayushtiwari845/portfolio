@@ -18,6 +18,13 @@ export interface ProjectMetric {
   readonly detail?: string;
 }
 
+export interface ProjectDecision {
+  readonly title: string;
+  readonly choice: string;
+  readonly rationale: string;
+  readonly tradeoff?: string;
+}
+
 export interface ArchitectureStep {
   readonly id: string;
   readonly label: string;
@@ -32,7 +39,15 @@ export interface Project {
   readonly subtitle: string;
   readonly summary: string;
   readonly repository: string;
+  readonly demoUrl?: string;
   readonly ownershipNote?: string;
+  readonly status: string;
+  readonly role: string;
+  readonly problem: string;
+  readonly constraints: readonly string[];
+  readonly decisions: readonly ProjectDecision[];
+  readonly validation: readonly string[];
+  readonly limitations: readonly string[];
   readonly domain: string;
   readonly stack: readonly string[];
   readonly metrics: readonly ProjectMetric[];
@@ -97,7 +112,6 @@ export interface Portfolio {
     readonly label: string;
     readonly href: string;
   }[];
-  readonly heroMetrics: readonly ProjectMetric[];
   readonly education: {
     readonly institution: string;
     readonly degree: string;
@@ -139,7 +153,7 @@ export const portfolio = {
     descriptor: "Software Engineering / AI Systems / Data",
     headline: "I build intelligent systems that hold up under real workloads.",
     introduction:
-      "AI and Data Science engineer building software across backend systems, real-time data infrastructure, and applied AI — from 80M+ record screening workflows to streaming fraud detection and multi-agent decision systems.",
+      "Software engineer building backend platforms, streaming data systems, and applied AI products with explicit operational boundaries.",
   },
   links: {
     email: "mailto:aayushkumar345@gmail.com",
@@ -148,34 +162,12 @@ export const portfolio = {
     website: "https://aayushktiwari.tech",
   },
   navigation: [
-    { label: "Work", href: "/#work" },
     { label: "Experience", href: "/#experience" },
+    { label: "Work", href: "/#work" },
     { label: "Capabilities", href: "/#capabilities" },
     { label: "About", href: "/#about" },
     { label: "Contact", href: "/#contact" },
     { label: "Résumé", href: "/resume" },
-  ],
-  heroMetrics: [
-    {
-      value: "80M+",
-      label: "records",
-      detail: "Screening workflows designed to process files with more than 80 million records.",
-    },
-    {
-      value: "3,285/s",
-      label: "streaming transactions",
-      detail: "Verified throughput from the real-time fraud detection project.",
-    },
-    {
-      value: "26.53 ms",
-      label: "median batch latency",
-      detail: "Verified streaming-batch latency from the fraud detection project.",
-    },
-    {
-      value: "9.71",
-      label: "B.Tech CGPA",
-      detail: "Artificial Intelligence & Data Science at K.J. Somaiya School of Engineering.",
-    },
   ],
   education: {
     institution: "K.J. Somaiya School of Engineering",
@@ -241,6 +233,7 @@ export const portfolio = {
         "Reduced ad-hoc reporting turnaround by approximately 35% and improved refresh time by approximately 25% through query and model optimization.",
       ],
       stack: ["SQL", "ETL", "Data Warehousing", "Power BI", "DAX"],
+      note: undefined,
     },
   ],
   capabilities: {
@@ -347,6 +340,55 @@ export const portfolio = {
       summary:
         "A research-oriented Indian mutual-fund ranking system that combines public data, role-specialised agents, deterministic consensus behavior, and evaluation tooling.",
       repository: "https://github.com/aayushtiwari845/Consensus-AI",
+      status: "Research prototype",
+      role:
+        "Repository owner and primary implementer of the research pipeline, evaluation tooling, and dashboard.",
+      problem:
+        "Compare role-specialised consensus with simpler mutual-fund ranking baselines without presenting a research interface as financial advice.",
+      constraints: [
+        "The current 86-fund snapshot contains surviving Indian open-ended equity funds and is subject to survivorship bias.",
+        "Available NAV history begins in 2013, so the persisted multi-vintage study covers a predominantly bullish market regime.",
+        "Live ingestion depends on AMFI, MFAPI, RBI/manual inputs, and yfinance availability.",
+        "LLM calls are optional and non-deterministic; heuristic and mock fallbacks are required for reproducible offline runs.",
+      ],
+      decisions: [
+        {
+          title: "Separate evidence from model judgement",
+          choice:
+            "Engineer return, risk, cost, and consistency objectives before asking four role-specialised agents to rank candidates.",
+          rationale:
+            "Every agent receives the same bounded fund evidence while its role changes the priority applied to that evidence.",
+          tradeoff:
+            "The role prompts are deliberately prescriptive, so the agents are closer to specialised rerankers than unconstrained analysts.",
+        },
+        {
+          title: "Keep a deterministic decision path",
+          choice:
+            "Aggregate proposals with explicit consensus and fallback logic instead of delegating the final result to one free-form response.",
+          rationale:
+            "Offline runs remain reproducible when a provider is unavailable and negotiation decisions can be replayed.",
+          tradeoff:
+            "Fallback-heavy runs cannot be treated as evidence of LLM reasoning quality.",
+        },
+        {
+          title: "Evaluate against simple baselines",
+          choice:
+            "Backtest consensus alongside mean-of-objectives, five-year CAGR, random, and bottom-five controls.",
+          rationale:
+            "A complex agent workflow should be compared with inexpensive ranking rules before claiming an advantage.",
+        },
+      ],
+      validation: [
+        "The repository includes automated tests, backtesting scripts, evaluation baselines, and persisted research reports.",
+        "The multi-vintage analysis covers 36 paired vintage/category cells; its reported consensus-versus-simple-baseline effect is directional but not significant at the two-sided 0.05 level.",
+        "The Streamlit application exposes six tabs for inspecting funds, sessions, comparisons, and investor-profile reranking.",
+      ],
+      limitations: [
+        "The repository explicitly excludes real-money execution, financial advice, hosted deployment, and guaranteed live-data availability.",
+        "Historical TER data is unavailable in the snapshot, category-specific benchmark history is incomplete, and external CRISIL/Value Research validation is not persisted.",
+        "The LLM study uses a single local model and mostly single-round negotiation; trained adapter inference was not evaluated end to end.",
+        "The dashboard does not yet surface the multi-vintage backtest summary.",
+      ],
       domain: "Applied AI / Multi-Agent Systems",
       stack: [
         "Python",
@@ -442,6 +484,56 @@ export const portfolio = {
       summary:
         "An incident-response platform that correlates metrics, logs, traces, topology, and change evidence into auditable root-cause rankings and evidence-cited diagnoses.",
       repository: "https://github.com/aayushtiwari845/TracePilot",
+      status: "Feature-complete local system and hosted-demo template",
+      role:
+        "Sole public repository contributor; designed and implemented the application, evaluation gates, safety boundaries, and deployment template.",
+      problem:
+        "Turn fragmented incident telemetry into reviewable root-cause candidates without allowing a diagnostic model or public demo to become an unrestricted remediation control plane.",
+      constraints: [
+        "Telemetry collection uses fixed, bounded, read-only queries and persists immutable checksummed bundles before analysis.",
+        "The learned models are trained on generated laboratory incidents, not real production incidents.",
+        "Experiments and the single recovery action run only through separately trusted local workers with closed, typed interfaces.",
+        "The hosted profile is a deployment template; it has not been deployed to a cloud provider or measured under production load.",
+      ],
+      decisions: [
+        {
+          title: "Replay immutable evidence",
+          choice:
+            "Store checksum-addressed telemetry bundles in MinIO and perform RCA against replayed artifacts rather than querying live systems during analysis.",
+          rationale:
+            "An investigation can be reproduced and its evidence remains tied to the incident window that produced it.",
+          tradeoff:
+            "Collection failures and missing signals stay visible; the system does not silently backfill them from a later live state.",
+        },
+        {
+          title: "Gate learned models against a deterministic baseline",
+          choice:
+            "Retain the root-cause ranker as an unpromoted candidate when its held-out result underperforms the graph baseline.",
+          rationale:
+            "A passing absolute score is insufficient when a simpler deterministic method performs better.",
+        },
+        {
+          title: "Close the action surface",
+          choice:
+            "Expose seven read-only investigations and one typed, human-approved local recovery action instead of arbitrary shell, Kubernetes, or provider commands.",
+          rationale:
+            "Diagnosis and recovery remain separate reviewable capabilities with a bounded blast radius.",
+          tradeoff:
+            "The safety boundary intentionally limits automation and is not a general remediation framework.",
+        },
+      ],
+      validation: [
+        "The repository records passing lint, strict type checking, backend/frontend tests, production builds, deterministic OpenAPI export, and eight Compose-backed integration tests.",
+        "A generated 180-incident laboratory dataset evaluates the ranker at Top-1 0.854 and the deterministic baseline at Top-1 1.0; the ranker correctly remains ineligible for promotion.",
+        "The production profile validation, deterministic security scan, PostgreSQL backup/restore test, and local Kind readiness checks are documented as passing.",
+        "The bounded localhost liveness smoke test completed 40/40 requests with p50 52.628 ms and p95 97.919 ms; it is not a capacity benchmark.",
+      ],
+      limitations: [
+        "No real incident corpus, telemetry shift study, privacy review, fairness assessment, threshold tuning, or production SLO evidence exists.",
+        "The checked-in models cover five synthetic fault classes and must not be used for operational decision-making.",
+        "The hosted template still requires provider-managed secrets, TLS, ingress controls, durable object storage, and digest-specific vulnerability scanning.",
+        "The Kubernetes and Chaos Mesh environment is a local Kind laboratory, not a production deployment target.",
+      ],
       domain: "Observability / Distributed Systems",
       stack: [
         "Python",
@@ -527,7 +619,54 @@ export const portfolio = {
         "A collaborative Kafka and Spark Structured Streaming pipeline benchmarked for high-throughput fraud scoring with a compact feature set.",
       repository: "https://github.com/aditya-ravi11/realtime-fraud-detection-qiea",
       ownershipNote:
-        "This is a collaborative/shared repository; the portfolio does not imply sole ownership.",
+        "Academic collaboration with Aditya Ravi and Atharva Indulkar; the public repository is owned by Aditya Ravi and does not imply sole ownership by Aayush.",
+      status: "Academic prototype with a simulated streaming benchmark",
+      role:
+        "Named project co-author; individual implementation ownership is not documented in the public repository.",
+      problem:
+        "Study whether an aggressively reduced fraud feature set can preserve ranking quality while lowering inference cost under severe class imbalance.",
+      constraints: [
+        "The experiment uses the public ULB/Kaggle European cardholder dataset: 284,807 historical transactions and 492 fraud cases.",
+        "Spark runs in local[*] mode and Kafka traffic is simulated by replaying held-out transactions in 100-record micro-batches.",
+        "SMOTE is applied only to the training split; the held-out test set contains 42,722 transactions and 74 fraud cases.",
+        "Reported throughput and latency describe one local experimental setup, not production payment infrastructure.",
+      ],
+      decisions: [
+        {
+          title: "Optimize a compact feature subset",
+          choice:
+            "Use a Quantum-Inspired Evolutionary Algorithm with a Random Forest proxy and a parsimony penalty to select three of 30 features.",
+          rationale:
+            "The experiment directly tests the quality-versus-inference-cost tradeoff rather than assuming every available feature is required.",
+          tradeoff:
+            "The three-feature Random Forest produces far more false positives than the 30-feature baseline: 466 versus 27 on the held-out test set.",
+        },
+        {
+          title: "Compare search and model combinations",
+          choice:
+            "Benchmark all-features, PCA, mutual information, RFE, and QIEA across Logistic Regression, Random Forest, and Gradient Boosted Trees.",
+          rationale:
+            "Fifteen combinations expose whether an apparent gain belongs to feature selection, classifier choice, or both.",
+        },
+        {
+          title: "Keep streaming results separate from model latency",
+          choice:
+            "Report per-transaction classifier latency alongside end-to-end simulated micro-batch throughput and latency.",
+          rationale:
+            "These measurements describe different boundaries and should not be conflated.",
+        },
+      ],
+      validation: [
+        "A stratified 70/15/15 split and training-only SMOTE were used; the repository reports all 15 feature-selection/classifier results on the held-out test split.",
+        "QIEA + Random Forest achieved AUC-ROC 0.956 versus 0.964 for all-features + Random Forest, retaining 99.2% of that AUC-ROC value with three features.",
+        "The simulated streaming replay processed 42,700 held-out transactions in about 13 seconds: 3,285 transactions/s, 26.53 ms median batch latency, and 49.10 ms p95.",
+      ],
+      limitations: [
+        "This is a notebook-scale local experiment, not a deployed fraud-detection service or a live Kafka/Spark cluster benchmark.",
+        "AUC-ROC retention masks a material precision tradeoff: QIEA + Random Forest precision is 11.2% versus 69.7% for all-features + Random Forest at the evaluated thresholds.",
+        "The dataset contains anonymised historical European card transactions from a 48-hour period, so external validity and concept drift are untested.",
+        "The repository names three authors but does not document each person's individual contribution.",
+      ],
       domain: "Streaming Data / Machine Learning",
       stack: [
         "Apache Kafka",
@@ -610,78 +749,114 @@ export const portfolio = {
       ],
       visualKind: "fraud",
       seoDescription:
-        "Explore a collaborative Kafka and Spark fraud-detection pipeline processing 3,285 transactions per second with 26.53 ms median batch latency.",
+        "Explore a collaborative academic Kafka and Spark fraud-detection pipeline evaluated in a local simulated streaming benchmark.",
     },
     {
       slug: "civiclens",
       index: "04",
       title: "CivicLens",
-      subtitle: "Civic Issue Reporting Platform",
+      subtitle: "Civic issue archive and public dashboard",
       summary:
-        "A resilient civic-reporting workflow for GPS and media-assisted submissions, offline queues, geospatial routing, SLA tracking, and authenticated resolution states.",
+        "A Supabase-to-Storacha archival utility with a static public dashboard for filtering and inspecting civic issue records.",
       repository: "https://github.com/aayushtiwari845/Civic-Issues-Dashboard",
-      domain: "Civic Technology / Geospatial Systems",
+      demoUrl: "https://civic-issues-dashboard.vercel.app",
+      status: "Deployed static prototype",
+      role:
+        "Sole public repository contributor; implemented the archival utility and static dashboard.",
+      problem:
+        "Export civic issue rows from Supabase to content-addressed Storacha storage and make an archived dataset inspectable without requiring the source database.",
+      constraints: [
+        "The public dashboard is a static HTML, CSS, and JavaScript interface backed by archived/sample JSON, not the issue-submission application.",
+        "The Node.js archival utility requires Supabase and Storacha credentials and an interactive Storacha email-authentication flow.",
+        "Filtering and status statistics are client-side operations over the fetched archive.",
+      ],
+      decisions: [
+        {
+          title: "Separate archival from presentation",
+          choice:
+            "Use a Node.js utility to fetch and transform Supabase rows, then upload a JSON archive that a static dashboard can read.",
+          rationale:
+            "The published dashboard can remain simple and read-only while the credentialed export process runs separately.",
+          tradeoff:
+            "The repository does not implement report creation, assignment, SLA enforcement, or authenticated resolution workflows.",
+        },
+        {
+          title: "Use content-addressed storage",
+          choice:
+            "Persist exported issue collections to Storacha and expose their CID/IPFS URL as the archive reference.",
+          rationale:
+            "An export can be referenced independently of the mutable source database.",
+        },
+        {
+          title: "Keep exploration in the browser",
+          choice:
+            "Calculate status counts and apply search, status, priority, and category filters in the static page.",
+          rationale:
+            "The deployed view needs no application server for basic archive exploration.",
+        },
+      ],
+      validation: [
+        "The repository includes a connection script that exercises Storacha initialization, Supabase statistics, and an archive upload when valid credentials are supplied.",
+        "The deployed Vercel homepage returns HTTP 200 and presents the static dashboard.",
+        "The checked-in dashboard can fall back across multiple public IPFS gateways before using bundled data.",
+      ],
+      limitations: [
+        "No automated unit, integration, accessibility, or end-to-end test suite is present; test.js is a live credentialed smoke script.",
+        "Archive freshness depends on rerunning the credentialed exporter; the static dashboard does not continuously synchronize with Supabase.",
+        "The static page bundles issue data, so repository contents must be reviewed for privacy before publishing new archives.",
+        "Storacha availability, public gateway behavior, and source-database permissions remain external dependencies.",
+      ],
+      domain: "Civic Technology / Data Archival",
       stack: [
-        "FastAPI",
-        "React",
+        "JavaScript",
+        "Node.js",
+        "Supabase",
         "PostgreSQL",
-        "PostGIS",
-        "Redis",
-        "OAuth2/JWT",
+        "Storacha",
+        "IPFS",
+        "HTML/CSS",
       ],
-      metrics: [
-        {
-          value: "4",
-          label: "tracked workflow states",
-          detail: "Reported, routed, assigned, and resolved.",
-        },
-        {
-          value: "Offline",
-          label: "queue support",
-          detail: "Background synchronization supports intermittent connectivity.",
-        },
-      ],
+      metrics: [],
       overview: [
-        "CivicLens supports GPS and media-assisted issue reporting through REST APIs, with offline queues and background synchronization designed for intermittent connectivity.",
-        "PostGIS routing, SLA tracking, authenticated status workflows, and Redis-backed processing move reports from submission toward resolution. The public repository also contains Supabase and Storacha archival work, which is treated as associated work rather than conflated with the core application stack.",
+        "The repository contains a credentialed Node.js exporter that fetches filtered civic issue rows from Supabase, serializes the data with archive metadata, and uploads it to Storacha content-addressed storage.",
+        "A separately deployed static dashboard reads an IPFS archive with gateway fallbacks, computes summary counts, and lets visitors search and filter the archived issue records. The evidence supports this archive-and-explore workflow, not a full municipal case-management platform.",
       ],
       highlights: [
-        "Captures GPS and media-assisted civic issue reports.",
-        "Queues submissions offline and synchronizes them in the background when connectivity returns.",
-        "Uses PostGIS for geospatial routing and PostgreSQL for application data.",
-        "Tracks SLAs and authenticated state transitions from report to resolution.",
-        "Uses Redis-backed processing for asynchronous workflow needs.",
-        "Keeps associated Supabase/Storacha archival work distinct from the core stack.",
+        "Fetches Supabase issue rows with status, date, user, category, department, limit, and offset filters.",
+        "Transforms geography and timestamp fields into a portable JSON archive with schema and source metadata.",
+        "Uploads archives to Storacha and records their content identifier and IPFS URL.",
+        "Provides a deployed static view with summary statistics and client-side issue filtering.",
+        "Falls back across public IPFS gateways and then bundled data when an archive cannot be loaded.",
       ],
       architecture: [
         {
-          id: "civiclens-report",
-          label: "Reported",
-          detail: "GPS and media-assisted issue submission",
+          id: "civiclens-source",
+          label: "Supabase issue rows",
+          detail: "Credentialed, filterable PostgreSQL source data",
           kind: "source",
         },
         {
-          id: "civiclens-route",
-          label: "Routed",
-          detail: "PostGIS-assisted geospatial routing",
+          id: "civiclens-export",
+          label: "Archive exporter",
+          detail: "Transforms issues and adds schema/source metadata",
           kind: "process",
         },
         {
-          id: "civiclens-assigned",
-          label: "Assigned",
-          detail: "Authenticated workflow and SLA tracking",
-          kind: "decision",
+          id: "civiclens-storage",
+          label: "Storacha / IPFS",
+          detail: "Content-addressed JSON archive",
+          kind: "process",
         },
         {
-          id: "civiclens-resolved",
-          label: "Resolved",
-          detail: "Final tracked issue state",
+          id: "civiclens-dashboard",
+          label: "Static dashboard",
+          detail: "Gateway fetch, statistics, search, and filters",
           kind: "output",
         },
       ],
       visualKind: "civiclens",
       seoDescription:
-        "Explore CivicLens, Aayush Tiwari's resilient civic issue platform for offline reporting, PostGIS routing, SLA tracking, and authenticated resolution workflows.",
+        "Explore CivicLens, Aayush Tiwari's deployed civic issue archive connecting Supabase data, Storacha/IPFS storage, and a searchable static dashboard.",
     },
     {
       slug: "indian-ipo-analytics",
@@ -691,6 +866,53 @@ export const portfolio = {
       summary:
         "An interactive analysis of Indian IPOs from 2019–2024 spanning enriched returns, regression, clustering, distribution analysis, and sector-level exploration.",
       repository: "https://github.com/aayushtiwari845/IPO-Analytics",
+      status: "Reproducible exploratory analysis",
+      role:
+        "Sole public repository contributor; built the notebook analysis, generated figures, and local Dash application.",
+      problem:
+        "Turn a small curated Indian IPO dataset into an inspectable analysis of listing performance, demand, issue size, sector, and post-listing returns without presenting the results as a trading model.",
+      constraints: [
+        "The dataset contains 63 IPOs across 27 sectors from April 2019 through November 2024.",
+        "Grey Market Premium is both an input and a close market expectation of listing performance, so very high listing-gain regression scores require cautious interpretation.",
+        "Post-listing return enrichment uses cached/fallback values as well as yfinance; complete coverage does not mean every value was fetched live from one source.",
+        "The Dash application is documented for local use at localhost and no maintained public deployment is listed.",
+      ],
+      decisions: [
+        {
+          title: "Keep the workflow inspectable",
+          choice:
+            "Ship the notebook, generated figures, cached return data, and an interactive Dash application in the same repository.",
+          rationale:
+            "Readers can review both the analysis steps and the presentation layer rather than seeing only headline results.",
+        },
+        {
+          title: "Use several analytical lenses",
+          choice:
+            "Combine exploratory plots, regression, sampling, K-Means clustering, distribution fitting, and time summaries.",
+          rationale:
+            "The dataset supports descriptive questions beyond a single prediction score.",
+          tradeoff:
+            "Many reported findings come from the same small curated sample and are not independent validation studies.",
+        },
+        {
+          title: "Qualify model results as dataset findings",
+          choice:
+            "Report held-out and five-fold regression results while keeping the portfolio language scoped to the 2019–2024 dataset.",
+          rationale:
+            "The model has not been evaluated prospectively or against a later market period.",
+        },
+      ],
+      validation: [
+        "The repository includes the executed notebook, eight generated figure files, and a local Plotly Dash application.",
+        "The documented regression run reports train R² 0.9922, test R² 0.9834, test MAE 4.15%, and five-fold CV R² 0.9808 ± 0.0117.",
+        "The clustering study selects k=2 with silhouette score 0.4740, while distribution checks reject a Normal fit at the 5% level for this sample.",
+      ],
+      limitations: [
+        "The sample is small, curated, and limited to one country and market period; the findings are not a prospective return forecast.",
+        "The repository does not document a leakage audit, temporal validation split, uncertainty intervals for predictions, or transaction-cost analysis.",
+        "GMP alone explains 99.0% of listing-gain variance in the documented run, which limits what the regression demonstrates about less direct features.",
+        "No automated test suite or hosted dashboard is present in the public repository.",
+      ],
       domain: "Data Analytics / Applied Statistics",
       stack: [
         "Python",

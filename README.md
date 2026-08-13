@@ -1,6 +1,6 @@
 # Aayush Tiwari — Portfolio
 
-A production-oriented portfolio for [Aayush Tiwari](https://aayushktiwari.tech), a software and AI engineer working across backend systems, real-time data infrastructure, ML platforms, and applied AI.
+A production-oriented portfolio for [Aayush Tiwari](https://aayushktiwari.tech), a software and AI engineer working across backend systems, real-time data infrastructure, ML platforms, and applied AI. He is currently pursuing a B.Tech in Artificial Intelligence & Data Science at K.J. Somaiya School of Engineering, with an expected completion date of July 2027.
 
 The experience uses a “living systems / telemetry” visual language to turn architecture, system behavior, and verified engineering metrics into the primary storytelling layer. It is built as a static-first Next.js application and does not require a CMS, database, API server, or runtime environment variables.
 
@@ -8,15 +8,14 @@ The experience uses a “living systems / telemetry” visual language to turn a
 
 - Next.js App Router, React, and strict TypeScript
 - Tailwind CSS v4 with a custom design-token layer
-- Motion for focused interface and scroll interactions
-- React Three Fiber / Three.js for the progressively enhanced hero topology
+- Native CSS motion and lightweight SVG system graphics
 - Radix primitives and `cmdk` for accessible interactive controls
 - Vitest and Testing Library for focused automated coverage
 - ESLint flat config and GitHub Actions for delivery checks
 
 ## Architecture
 
-Server Components render the core portfolio and project case studies. Client Components are reserved for behavior that needs browser state, such as navigation, the command palette, motion, copy-to-clipboard, and the optional WebGL scene.
+Server Components render the core portfolio, project diagrams, and case studies. Client Components are reserved for behavior that needs browser state, such as navigation, the command palette, copy-to-clipboard, and the local clock.
 
 All verified portfolio content lives in [`data/portfolio.ts`](data/portfolio.ts). The home page, `/resume`, project routes, metadata, sitemap, and generated social images consume that source instead of duplicating content in JSX.
 
@@ -72,15 +71,21 @@ Social and contact destinations are also data-driven. Change them in `portfolio.
 
 The `/resume` route is a web-readable résumé generated from the same portfolio data. A PDF download should only be enabled when a current PDF has been supplied: place it under `public/resume/`, then point the configured résumé link to that file. Do not add an empty or placeholder download.
 
+Keep these evidence boundaries intact when editing public copy or structured data:
+
+- CivicLens is a credentialed Supabase-to-Storacha/IPFS archival utility plus a deployed static archive dashboard. It is not a municipal issue-submission or case-management platform.
+- The real-time fraud pipeline is an academic collaboration with Aditya Ravi and Atharva Indulkar. Its throughput and latency come from a simulated local streaming benchmark, not a deployed payment system; the public repository is owned by Aditya Ravi.
+- Aayush’s B.Tech is in progress through July 2027. Use a current educational affiliation in structured data, not `alumniOf`.
+
 ## Performance and progressive enhancement
 
 - Core content is server-rendered and remains readable before client enhancement runs.
-- The hero WebGL scene is loaded separately from critical text and uses a lightweight CSS/SVG topology as its fallback.
-- Reduced-motion, touch, mobile, hidden-tab, and off-screen states reduce or pause continuous visual work.
+- The hero uses a lightweight SVG topology on capable screens and keeps the mobile first view focused on the thesis and actions.
+- Reduced-motion and touch states remove continuous or pointer-dependent visual work.
 - Decorative graphics are code-native, avoiding heavyweight stock images and large texture downloads.
-- Animation favors transforms and opacity to protect layout stability and interaction latency.
+- Static project graphics and CSS-native motion avoid shipping a general-purpose animation runtime.
 
-If WebGL is unavailable, delayed, or disabled, the hero thesis, calls to action, metrics, and fallback system graphic remain complete.
+The hero thesis, calls to action, and current professional context remain complete even when decorative graphics or JavaScript do not run.
 
 ## Accessibility
 
@@ -102,15 +107,17 @@ Project page metadata should use each entry’s `seoDescription`, while structur
 
 ## Vercel deployment
 
-No deployment is performed automatically by this repository. To publish it:
+The canonical production site is currently served by Vercel at `https://aayushktiwari.tech`; `https://www.aayushktiwari.tech` redirects to the apex hostname. The repository’s GitHub Actions workflow performs quality checks only. Production deployment is managed through the Vercel project or its Git integration, not a deployment workflow committed here.
 
-1. Push the repository to GitHub and import it as a new project in Vercel.
+To link or recreate the Vercel project:
+
+1. Import `aayushtiwari845/portfolio` from GitHub into Vercel.
 2. Keep the repository root as the project root and let Vercel detect Next.js.
 3. Use `pnpm install --frozen-lockfile` for installation and `pnpm build` for the build; keep the default Next.js output settings.
 4. Do not add environment variables for the core site—none are required.
-5. After the first successful production build, add `aayushktiwari.tech` in the Vercel project’s domain settings.
-6. Apply the DNS records Vercel shows for the domain, then make the preferred hostname primary and redirect the alternate `www`/apex hostname to it.
-7. Re-run the production checks and verify canonical URLs, social previews, `robots.txt`, and `sitemap.xml` on the final domain.
+5. Keep `aayushktiwari.tech` as the primary production domain and redirect `www` to it. If the project is recreated, use the DNS records Vercel reports for that project rather than copying hard-coded values.
+6. Keep `portfolio.metadata.siteUrl` and `portfolio.links.website` aligned with the primary hostname.
+7. Re-run the production checks and verify canonical URLs, social previews, `robots.txt`, and `sitemap.xml` on the production domain.
 
 ## License
 

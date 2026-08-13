@@ -20,6 +20,7 @@ export default async function ProjectOpenGraphImage({
   const title = project?.title ?? "Selected System";
   const subtitle = project?.subtitle ?? "Engineering case study";
   const domain = project?.domain ?? "Software / AI systems / Data";
+  const status = project?.status ?? "Engineering case study";
   const siteLabel = portfolio.metadata.siteUrl.replace(/^https?:\/\//, "");
 
   return new ImageResponse(
@@ -109,7 +110,7 @@ export default async function ProjectOpenGraphImage({
           }}
         >
           <span>{siteLabel}</span>
-          <span>Architecture / Metrics / Engineering</span>
+          <span>{status}</span>
         </div>
 
         <div

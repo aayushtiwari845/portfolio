@@ -1,21 +1,84 @@
 "use client";
 
-import * as Dialog from "@radix-ui/react-dialog";
-import { ArrowUpRight, FileText, Menu, X } from "lucide-react";
+import { Menu, Search } from "lucide-react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { portfolio } from "@/data/portfolio";
-import { CommandPalette } from "./command-palette";
+export interface NavigationItem {
+  readonly label: string;
+  readonly href: string;
+}
 
-const sectionLinks = portfolio.navigation.filter((item) => item.href.startsWith("/#"));
+export interface SiteHeaderProps {
+  readonly displayName: string;
+  readonly navigation: readonly NavigationItem[];
+  readonly githubHref: string;
+  readonly linkedinHref: string;
+}
 
-export function SiteHeader() {
+const DeferredCommandPalette = dynamic(
+  () => import("./command-palette").then((module) => module.CommandPalette),
+  {
+    loading: () => (
+      <button
+        aria-busy="true"
+        aria-label="Loading command palette"
+        className="command-trigger"
+        disabled
+        type="button"
+      >
+        <Search aria-hidden="true" size={14} />
+      </button>
+    ),
+    ssr: false,
+  },
+);
+
+const DeferredMobileMenu = dynamic(
+  () => import("./mobile-menu").then((module) => module.MobileMenu),
+  { ssr: false },
+);
+
+function CommandPaletteLauncher({ onRequest }: { onRequest: () => void }) {
+  return (
+    <button
+      aria-keyshortcuts="Control+K Meta+K"
+      aria-label="Open command palette"
+      className="command-trigger"
+      onClick={onRequest}
+      title="Open command palette (Ctrl or Command + K)"
+      type="button"
+    >
+      <Search aria-hidden="true" size={14} />
+    </button>
+  );
+}
+
+export function SiteHeader({
+  displayName,
+  githubHref,
+  linkedinHref,
+  navigation,
+}: SiteHeaderProps) {
   const pathname = usePathname();
+  const sectionLinks = useMemo(
+    () => navigation.filter((item) => item.href.startsWith("/#")),
+    [navigation],
+  );
+  const wordmarkInitials = displayName
+    .split(/\s+/)
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
   const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("work");
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileMenuRequested, setMobileMenuRequested] = useState(false);
+  const [commandRequested, setCommandRequested] = useState(false);
+  const mobileMenuTriggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const update = () => setScrolled(window.scrollY > 24);
@@ -29,35 +92,98 @@ export function SiteHeader() {
     const sections = sectionLinks
       .map((item) => document.getElementById(item.href.split("#")[1]))
       .filter((section): section is HTMLElement => Boolean(section));
+
+    if (sections.length === 0) return;
+
+    if (typeof IntersectionObserver === "undefined") {
+      let frame = 0;
+      const updateFromScroll = () => {
+        window.cancelAnimationFrame(frame);
+        frame = window.requestAnimationFrame(() => {
+          const activationLine = Math.min(window.innerHeight * 0.32, 240);
+          const current = sections
+            .filter((section) => section.getBoundingClientRect().top <= activationLine)
+            .at(-1);
+          setActiveSection(current?.id ?? null);
+        });
+      };
+
+      updateFromScroll();
+      window.addEventListener("scroll", updateFromScroll, { passive: true });
+      window.addEventListener("resize", updateFromScroll);
+      return () => {
+        window.cancelAnimationFrame(frame);
+        window.removeEventListener("scroll", updateFromScroll);
+        window.removeEventListener("resize", updateFromScroll);
+      };
+    }
+
+    const visibleSections = new Map<string, IntersectionObserverEntry>();
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible?.target.id) setActiveSection(visible.target.id);
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            visibleSections.set(entry.target.id, entry);
+          } else {
+            visibleSections.delete(entry.target.id);
+          }
+        });
+
+        const visible = [...visibleSections.values()].sort(
+          (a, b) =>
+            Math.abs(a.boundingClientRect.top) -
+              Math.abs(b.boundingClientRect.top) ||
+            b.intersectionRatio - a.intersectionRatio,
+        )[0];
+        setActiveSection(visible?.target.id ?? null);
       },
-      { rootMargin: "-30% 0px -58%", threshold: [0, 0.15, 0.35] },
+      { rootMargin: "-108px 0px -58%", threshold: [0, 0.15, 0.35] },
     );
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
-  }, [pathname]);
+  }, [pathname, sectionLinks]);
+
+  useEffect(() => {
+    if (commandRequested) return;
+
+    const requestCommandPalette = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setCommandRequested(true);
+      }
+    };
+
+    document.addEventListener("keydown", requestCommandPalette);
+    return () => document.removeEventListener("keydown", requestCommandPalette);
+  }, [commandRequested]);
+
+  const currentFor = (href: string) => {
+    if (href.startsWith("/#")) {
+      return pathname === "/" && activeSection === href.split("#")[1]
+        ? ("location" as const)
+        : undefined;
+    }
+
+    return pathname === href ? ("page" as const) : undefined;
+  };
 
   return (
     <div className="site-header-wrap">
       <header className="site-header" data-menu-open={menuOpen} data-scrolled={scrolled}>
         <Link className="wordmark" href="/">
-          <span className="wordmark-mark">AT</span>
-          <span className="wordmark-label">Aayush Tiwari</span>
+          <span className="wordmark-mark">{wordmarkInitials}</span>
+          <span className="wordmark-label">{displayName}</span>
           <span className="sr-only">— home</span>
         </Link>
 
         <nav className="desktop-nav" aria-label="Primary navigation">
           {sectionLinks.map((item) => {
-            const section = item.href.split("#")[1];
+            const current = currentFor(item.href);
             return (
               <Link
+                aria-current={current}
                 className="nav-link"
-                data-active={pathname === "/" && activeSection === section}
+                data-active={current === "location"}
                 href={item.href}
                 key={item.href}
               >
@@ -68,50 +194,46 @@ export function SiteHeader() {
         </nav>
 
         <div className="header-actions">
-          <CommandPalette />
-          <Link className="icon-button" href="/resume" aria-label="View résumé">
-            <FileText aria-hidden="true" size={15} />
+          {commandRequested ? (
+            <DeferredCommandPalette defaultOpen />
+          ) : (
+            <CommandPaletteLauncher onRequest={() => setCommandRequested(true)} />
+          )}
+          <Link
+            aria-current={pathname === "/resume" ? "page" : undefined}
+            className="resume-nav-link"
+            href="/resume"
+          >
+            Résumé
           </Link>
 
-          <Dialog.Root open={menuOpen} onOpenChange={setMenuOpen}>
-            <Dialog.Trigger asChild>
-              <button className="menu-trigger" type="button" aria-label="Open navigation menu">
-                <Menu aria-hidden="true" size={18} />
-              </button>
-            </Dialog.Trigger>
-            <Dialog.Portal>
-              <Dialog.Overlay className="dialog-overlay" />
-              <Dialog.Content className="mobile-dialog" aria-describedby="mobile-menu-description">
-                <div className="mobile-dialog-header">
-                  <Dialog.Title className="technical-label">Navigation / Index</Dialog.Title>
-                  <Dialog.Close asChild>
-                    <button className="icon-button" type="button" aria-label="Close navigation menu">
-                      <X aria-hidden="true" size={18} />
-                    </button>
-                  </Dialog.Close>
-                </div>
-                <Dialog.Description className="sr-only" id="mobile-menu-description">
-                  Navigate to a portfolio section or the web résumé.
-                </Dialog.Description>
-                <nav className="mobile-nav" aria-label="Mobile navigation">
-                  {portfolio.navigation.map((item, index) => (
-                    <Dialog.Close asChild key={item.href}>
-                      <Link href={item.href}>
-                        <span>{item.label}</span>
-                        <span className="technical-label">{String(index + 1).padStart(2, "0")}</span>
-                      </Link>
-                    </Dialog.Close>
-                  ))}
-                  <a href={portfolio.links.github} target="_blank" rel="noreferrer">
-                    <span>GitHub</span><ArrowUpRight aria-hidden="true" size={16} />
-                  </a>
-                  <a href={portfolio.links.linkedin} target="_blank" rel="noreferrer">
-                    <span>LinkedIn</span><ArrowUpRight aria-hidden="true" size={16} />
-                  </a>
-                </nav>
-              </Dialog.Content>
-            </Dialog.Portal>
-          </Dialog.Root>
+          <button
+            aria-controls={mobileMenuRequested ? "mobile-navigation-dialog" : undefined}
+            aria-expanded={menuOpen}
+            aria-haspopup="dialog"
+            aria-label="Open navigation menu"
+            className="menu-trigger"
+            onClick={() => {
+              setMobileMenuRequested(true);
+              setMenuOpen(true);
+            }}
+            ref={mobileMenuTriggerRef}
+            type="button"
+          >
+            <Menu aria-hidden="true" size={18} />
+          </button>
+          {mobileMenuRequested ? (
+            <DeferredMobileMenu
+              activeSection={activeSection}
+              githubHref={githubHref}
+              linkedinHref={linkedinHref}
+              navigation={navigation}
+              onOpenChange={setMenuOpen}
+              open={menuOpen}
+              pathname={pathname}
+              triggerRef={mobileMenuTriggerRef}
+            />
+          ) : null}
         </div>
       </header>
     </div>

@@ -7,34 +7,14 @@
   isolation: isolate;
 }
 
-.fallbackLayer,
-.sceneLayer {
+.fallbackLayer {
   position: absolute;
   inset: 0;
-}
-
-.fallbackLayer {
   z-index: 1;
   opacity: 1;
-  transition: opacity 500ms ease;
 }
 
-.sceneLayer {
-  z-index: 2;
-  opacity: 0;
-  transition: opacity 500ms ease;
-}
-
-.hasScene .fallbackLayer {
-  opacity: 0;
-}
-
-.hasScene .sceneLayer {
-  opacity: 1;
-}
-
-.fallback,
-.scene {
+.fallback {
   --hero-line: color-mix(in srgb, var(--text-primary, #f1f2ed) 16%, transparent);
   --hero-line-strong: color-mix(in srgb, var(--text-primary, #f1f2ed) 31%, transparent);
   --hero-text: var(--text-primary, #f1f2ed);
@@ -178,52 +158,6 @@
   animation: none;
 }
 
-.scene {
-  position: relative;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.scene canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-  outline: none;
-}
-
-.sceneLabels {
-  position: absolute;
-  inset: 0;
-  color: var(--hero-muted);
-  font-family: var(--font-mono, "Geist Mono", ui-monospace, monospace);
-  font-size: clamp(0.56rem, 0.7vw, 0.68rem);
-  letter-spacing: 0.13em;
-  pointer-events: none;
-}
-
-.sceneLabels span {
-  position: absolute;
-  padding: 0.35rem 0.45rem;
-  background: color-mix(in srgb, var(--surface-raised, #0d1013) 70%, transparent);
-  border: 1px solid var(--hero-line);
-  border-radius: 4px;
-}
-
-.systemsLabel {
-  bottom: 13%;
-  left: 7%;
-}
-
-.dataLabel {
-  top: 9%;
-  left: 45%;
-}
-
-.intelligenceLabel {
-  right: 6%;
-  bottom: 16%;
-}
-
 @keyframes hero-signal {
   to {
     stroke-dashoffset: -70;
@@ -243,11 +177,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fallbackLayer,
-  .sceneLayer {
-    transition: none;
-  }
-
   .fallback * {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;

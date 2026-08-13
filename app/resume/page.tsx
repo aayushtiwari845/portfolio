@@ -12,6 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default function ResumePage() {
+  const featuredProjects = projects.slice(0, 3);
+  const additionalProjects = projects.slice(3);
+
   return (
     <main className="resume-page" id="main-content">
       <div className="page-shell">
@@ -56,16 +59,30 @@ export default function ResumePage() {
         <section className="resume-section" aria-labelledby="resume-projects">
           <h2 id="resume-projects">Selected projects</h2>
           <div>
-            {projects.map((project) => (
+            {featuredProjects.map((project) => (
               <article className="resume-entry" key={project.slug}>
                 <div className="resume-entry-head">
                   <h3><Link href={`/projects/${project.slug}`}>{project.title}</Link></h3>
                   <ExternalLink href={project.repository}>Repository</ExternalLink>
                 </div>
                 <p>{project.summary}</p>
-                <p className="technical-label">{project.stack.join(" / ")}</p>
+                <p className="technical-label">
+                  {project.metrics[0]?.value} {project.metrics[0]?.label} · {project.stack.slice(0, 5).join(" / ")}
+                </p>
               </article>
             ))}
+            <div className="resume-entry">
+              <div className="resume-entry-head">
+                <h3>Additional projects</h3>
+              </div>
+              <p>
+                {additionalProjects.map((project, index) => (
+                  <span key={project.slug}>
+                    {index > 0 ? " · " : ""}<Link href={`/projects/${project.slug}`}>{project.title}</Link>
+                  </span>
+                ))}
+              </p>
+            </div>
           </div>
         </section>
 

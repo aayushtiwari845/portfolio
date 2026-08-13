@@ -31,9 +31,13 @@ type Action = {
   shortcut?: string;
 };
 
-export function CommandPalette() {
+export interface CommandPaletteProps {
+  defaultOpen?: boolean;
+}
+
+export function CommandPalette({ defaultOpen = false }: CommandPaletteProps) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [copied, setCopied] = useState(false);
   const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -100,11 +104,14 @@ export function CommandPalette() {
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <button className="command-trigger" type="button">
+        <button
+          aria-keyshortcuts="Control+K Meta+K"
+          aria-label="Open command palette"
+          className="command-trigger"
+          title="Open command palette (Ctrl or Command + K)"
+          type="button"
+        >
           <Search aria-hidden="true" size={14} />
-          <span>COMMAND</span>
-          <kbd>⌘K</kbd>
-          <span className="sr-only">— open command palette</span>
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>

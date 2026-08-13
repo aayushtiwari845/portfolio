@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 
-import { MotionProvider } from "@/components/layout/motion-provider";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { portfolio } from "@/data/portfolio";
@@ -12,13 +11,13 @@ import "./globals.css";
 const geist = Geist({
   subsets: ["latin"],
   variable: "--font-geist",
-  display: "swap",
+  display: "optional",
 });
 
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
-  display: "swap",
+  display: "optional",
 });
 
 export const metadata: Metadata = {
@@ -60,11 +59,14 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
       <body>
         <a className="skip-link" href="#main-content">Skip to content</a>
-        <MotionProvider>
-          <SiteHeader />
-          {children}
-          <SiteFooter />
-        </MotionProvider>
+        <SiteHeader
+          displayName={portfolio.identity.displayName}
+          githubHref={portfolio.links.github}
+          linkedinHref={portfolio.links.linkedin}
+          navigation={portfolio.navigation}
+        />
+        {children}
+        <SiteFooter />
       </body>
     </html>
   );

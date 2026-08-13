@@ -1,643 +1,659 @@
 .visual {
-  --visual-bg: var(--surface-raised, #0d1013);
-  --visual-surface: var(--surface-secondary, #12161b);
-  --visual-line: color-mix(in srgb, var(--text-primary, #f1f2ed) 15%, transparent);
-  --visual-line-strong: color-mix(in srgb, var(--text-primary, #f1f2ed) 30%, transparent);
-  --visual-text: var(--text-primary, #f1f2ed);
-  --visual-muted: var(--text-secondary, #8e99a5);
-  --visual-cyan: var(--signal-primary, #6ee7f5);
-  --visual-lime: var(--signal-secondary, #c5f467);
-  --visual-warn: #ffb96a;
+  --v-surface: var(--surface, #0d1013);
+  --v-surface-2: var(--surface-2, #12161b);
+  --v-text: var(--text, #f2f0e9);
+  --v-muted: #a9b3bc;
+  --v-line: rgba(181, 202, 219, 0.2);
+  --v-line-strong: rgba(181, 202, 219, 0.38);
+  --v-cyan: var(--cyan, #74e8ff);
+  --v-acid: var(--acid, #c8f45b);
+  --v-warn: #ffb96a;
 
+  container-type: inline-size;
   display: block;
   width: 100%;
-  max-width: 100%;
-  height: auto;
-  overflow: hidden;
-  color: var(--visual-text);
-  background: var(--visual-bg);
-  border: 1px solid var(--visual-line);
-  border-radius: 10px;
+  color: var(--v-text);
   font-family: var(--font-mono, "Geist Mono", ui-monospace, monospace);
   isolation: isolate;
 }
 
-.visual text {
+.desktopCanvas,
+.compactCanvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.compactCanvas {
+  display: none;
+  max-width: 380px;
+  margin-inline: auto;
+}
+
+.desktopCanvas text,
+.compactCanvas text {
   fill: currentColor;
+  font-variant-numeric: tabular-nums;
+}
+
+.desktopCanvas text {
   font-size: 10px;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.065em;
 }
 
-.eyebrow,
-.panelLabel,
-.statusText,
-.metricRail,
-.liveStatus,
-.syncStatus {
-  font-size: 8.5px !important;
-  font-weight: 600;
-  letter-spacing: 0.14em !important;
-}
-
-.eyebrow,
-.panelLabel {
-  fill: var(--visual-text) !important;
-}
-
-.statusText,
-.metricRail,
-.stageMeta,
-.axisLabel,
-.legend {
-  fill: var(--visual-muted) !important;
-}
-
-.stageMeta,
-.axisLabel {
-  font-size: 7px !important;
-  letter-spacing: 0.08em !important;
-}
-
-.microGrid,
-.mapGrid {
+.microGrid {
   fill: none;
-  stroke: var(--visual-line);
+  stroke: var(--v-line);
   stroke-width: 0.7;
   vector-effect: non-scaling-stroke;
 }
 
 .microGrid {
-  opacity: 0.55;
+  opacity: 0.52;
 }
 
-.metricRail {
-  fill: var(--visual-muted);
+.eyebrow,
+.statusText,
+.panelLabel,
+.metricRail,
+.liveStatus,
+.syncStatus {
+  font-size: 9.5px !important;
+  font-weight: 650;
+  letter-spacing: 0.12em !important;
+}
+
+.statusText,
+.metricRail,
+.captionText {
+  fill: var(--v-muted) !important;
+}
+
+.panelLabel,
+.eyebrow {
+  fill: var(--v-text) !important;
+}
+
+.stageLabel {
+  fill: var(--v-text) !important;
+  font-size: 10.5px !important;
+  font-weight: 650;
+  letter-spacing: 0.075em !important;
+}
+
+.stageMeta,
+.axisLabel,
+.stageIndex,
+.captionText {
+  fill: var(--v-muted) !important;
+  font-size: 9px !important;
+  letter-spacing: 0.065em !important;
+}
+
+.captionText {
+  font-size: 8.5px !important;
+  letter-spacing: 0.1em !important;
+}
+
+.stageIndex {
+  fill: var(--v-cyan) !important;
+  font-weight: 700;
 }
 
 .connector,
-.workflowLine,
-.routeBase {
+.compactConnector,
+.pipelineRail {
   fill: none;
-  stroke: var(--visual-line-strong);
+  stroke: var(--v-line-strong);
+  stroke-linecap: round;
+  stroke-linejoin: round;
   stroke-width: 1.15;
   vector-effect: non-scaling-stroke;
 }
 
-.flowLine,
-.flowLineSlow,
+.signalPath,
+.signalPathSlow,
+.branchSignal,
 .traceSignal,
 .streamFlow,
-.routeSignal,
-.workflowSignal,
-.sparkSignal {
+.archiveSignal,
+.sparkSignal,
+.compactSignal {
   fill: none;
-  stroke: var(--visual-cyan);
-  stroke-dasharray: 2 10;
+  stroke: var(--v-cyan);
+  stroke-dasharray: 3 11;
   stroke-linecap: round;
-  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-width: 1.65;
   vector-effect: non-scaling-stroke;
-  animation: signal-flow 1.65s linear infinite paused;
+  animation: signal-flow 2.2s linear infinite paused;
 }
 
-.flowLineSlow,
-.workflowSignal {
-  animation-duration: 2.4s;
+.signalPathSlow,
+.archiveSignal,
+.sparkSignal {
+  animation-duration: 2.8s;
 }
 
-.isActive:not(.isReduced) :is(
-    .flowLine,
-    .flowLineSlow,
-    .traceSignal,
-    .streamFlow,
-    .routeSignal,
-    .workflowSignal,
-    .sparkSignal,
-    .evidenceSweep,
-    .transaction,
-    .flaggedTransaction,
-    .alertNode,
-    .consensusCore,
-    .rankFill,
-    .issuePin,
-    .workflowState,
-    .distributionLine,
-    .trendLine
-  ) {
-  animation-play-state: running;
+.branchSignal {
+  opacity: 0.78;
+  stroke-width: 1.35;
 }
 
-/* Conclave */
-.conclave {
-  --visual-cyan: var(--signal-primary, #73e6f2);
+.compactSignal {
+  stroke-width: 1.8;
 }
 
-.stage rect,
-.outputStage rect,
+.stageBox rect,
+.pipelineStage rect,
+.servicePanel > rect,
 .evidencePanel > rect,
-.workflowPanel > rect,
-.locationTag rect {
-  fill: color-mix(in srgb, var(--visual-surface) 90%, transparent);
-  stroke: var(--visual-line-strong);
+.rankingBox > rect,
+.correlationCell rect,
+.modelResult > rect,
+.fraudMetrics > rect {
+  fill: rgba(18, 22, 27, 0.9);
+  stroke: var(--v-line-strong);
   stroke-width: 1;
 }
 
-.stage > text:not(.stageMeta),
-.outputStage > text,
-.agent text:not(.stageMeta),
-.pipelineStage text:not(.stageMeta) {
-  font-size: 8px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+.decisionBox rect {
+  fill: rgba(200, 244, 91, 0.055);
+  stroke: rgba(200, 244, 91, 0.48);
+  stroke-width: 1;
+}
+
+.outputBox rect {
+  fill: rgba(116, 232, 255, 0.065);
+  stroke: rgba(116, 232, 255, 0.52);
+  stroke-width: 1;
+}
+
+.outputBox > circle,
+.pipelineStage > circle {
+  fill: var(--v-cyan);
+}
+
+.metricValueSmall {
+  fill: var(--v-text) !important;
+  font-family: var(--font-sans, "Geist", ui-sans-serif, sans-serif);
+  font-size: 16px !important;
+  font-weight: 580;
+  letter-spacing: -0.025em !important;
+}
+
+/* CONCLAVE */
+.conclave {
+  --v-cyan: #74e8f5;
+}
+
+.agentBank,
+.transactions,
+.distributionPanel {
+  isolation: isolate;
 }
 
 .agent rect {
-  fill: color-mix(in srgb, var(--visual-surface) 88%, transparent);
-  stroke: color-mix(in srgb, var(--visual-cyan) 32%, transparent);
+  fill: rgba(15, 20, 24, 0.96);
+  stroke: rgba(116, 232, 245, 0.42);
   stroke-width: 1;
 }
 
-.agent circle,
-.pipelineStage circle {
-  fill: var(--visual-cyan);
-  opacity: 0.8;
+.agent circle {
+  fill: var(--v-cyan);
 }
 
-.agent:nth-child(2) circle,
-.agent:nth-child(4) circle {
-  fill: var(--visual-lime);
-}
-
-.agent:nth-child(1) {
-  opacity: 0.76;
-}
-
-.agent:nth-child(2) {
-  opacity: 0.9;
-}
-
-.agent:nth-child(3) {
-  opacity: 0.82;
-}
-
-.agent:nth-child(4) {
-  opacity: 0.7;
+.agent:nth-child(even) circle {
+  fill: var(--v-acid);
 }
 
 .consensusCore {
-  fill: var(--visual-lime);
-  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--visual-lime) 70%, transparent));
+  fill: var(--v-acid);
+  filter: drop-shadow(0 0 5px rgba(200, 244, 91, 0.6));
   transform-box: fill-box;
   transform-origin: center;
-  animation: soft-pulse 1.9s ease-in-out infinite paused;
+  animation: soft-pulse 2.4s ease-in-out infinite paused;
 }
 
-.outputStage path {
-  fill: none;
-  stroke: var(--visual-cyan);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.5;
-}
-
-.outputStage circle {
-  fill: var(--visual-lime);
-}
-
-/* TracePilot */
+/* TRACEPILOT */
 .tracepilot {
-  --visual-cyan: #79d9ff;
+  --v-cyan: #79d9ff;
 }
 
 .liveStatus circle,
-.syncStatus path {
-  fill: none;
-  stroke: var(--visual-lime);
-}
-
-.liveStatus circle {
-  fill: var(--visual-lime);
-  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--visual-lime) 70%, transparent));
+.syncStatus circle {
+  fill: var(--v-acid);
+  filter: drop-shadow(0 0 4px rgba(200, 244, 91, 0.6));
 }
 
 .liveStatus text,
 .syncStatus text {
-  fill: var(--visual-muted);
+  fill: var(--v-muted);
 }
 
-.serviceGraph path {
+.servicePanel > path,
+.compactServiceGraph path {
   fill: none;
-  stroke: var(--visual-line-strong);
+  stroke: var(--v-line-strong);
   stroke-width: 1.1;
 }
 
-.serviceGraph circle {
-  fill: var(--visual-surface);
-  stroke: var(--visual-cyan);
-  stroke-width: 1.2;
+.servicePanel > circle,
+.compactServiceGraph circle {
+  fill: var(--v-surface-2);
+  stroke: var(--v-cyan);
+  stroke-width: 1.15;
 }
 
-.serviceGraph text {
-  fill: var(--visual-cyan);
-  font-size: 7.5px;
-}
-
-.serviceGraph .alertNode {
-  fill: color-mix(in srgb, var(--visual-warn) 18%, var(--visual-surface));
-  stroke: var(--visual-warn);
+.servicePanel .alertNode,
+.compactServiceGraph .alertNode {
+  fill: rgba(255, 185, 106, 0.16);
+  stroke: var(--v-warn);
   transform-box: fill-box;
   transform-origin: center;
-  animation: alert-pulse 1.8s ease-out infinite paused;
+  animation: alert-pulse 2.1s ease-out infinite paused;
 }
 
-.evidencePanel > rect {
-  stroke: color-mix(in srgb, var(--visual-cyan) 25%, transparent);
+.evidenceRow > rect {
+  fill: rgba(255, 255, 255, 0.025);
+  stroke: var(--v-line);
 }
 
-.evidenceRow circle {
-  fill: var(--visual-cyan);
+.evidenceRow circle,
+.compactEvidenceItem circle {
+  fill: var(--v-cyan);
 }
 
 .evidenceRow text {
-  fill: var(--visual-muted);
-  font-size: 7.5px;
-}
-
-.evidenceRow rect {
-  fill: var(--visual-line);
+  fill: var(--v-muted);
+  font-size: 9px;
 }
 
 .evidenceSweep {
   fill: none;
-  stroke: var(--visual-cyan);
-  stroke-dasharray: 22 120;
+  stroke: var(--v-cyan);
+  stroke-dasharray: 12 38;
   stroke-linecap: round;
-  stroke-width: 2.4;
-  animation: evidence-sweep 2.2s ease-in-out infinite paused;
+  stroke-width: 1.6;
+  animation: evidence-sweep 2.4s ease-in-out infinite paused;
 }
 
-.rankingPanel > g > rect:first-of-type {
-  fill: var(--visual-line);
+.rankingBox > rect {
+  fill: rgba(255, 255, 255, 0.025);
+  stroke: var(--v-line-strong);
 }
 
-.rankingPanel text {
-  font-size: 8px;
-}
-
-.rankFill,
-.rankFillMuted {
-  fill: var(--visual-cyan);
-  transform-box: fill-box;
-  transform-origin: left center;
+.rankingBox > rect:not(:first-child) {
+  fill: var(--v-line);
+  stroke: 0;
 }
 
 .rankFill {
-  animation: rank-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) both paused;
-}
-
-.rankFillMuted {
-  opacity: 0.35;
+  fill: var(--v-cyan) !important;
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: rank-in 1.15s cubic-bezier(0.22, 1, 0.36, 1) both paused;
 }
 
 .evidenceCitation {
-  fill: var(--visual-lime) !important;
-  font-size: 7.5px !important;
+  fill: var(--v-acid) !important;
+  font-size: 8.5px !important;
 }
 
-/* Fraud */
+/* FRAUD */
 .fraud {
-  --visual-cyan: #65e8e1;
+  --v-cyan: #65e8e1;
 }
 
-.streamLane > path:first-child {
-  fill: none;
-  stroke: var(--visual-line-strong);
-  stroke-width: 1.1;
-}
-
-.pipelineStage rect {
-  fill: color-mix(in srgb, var(--visual-surface) 93%, transparent);
-  stroke: color-mix(in srgb, var(--visual-cyan) 28%, var(--visual-line));
+.fraudMetrics > path,
+.modelResult > path {
+  stroke: var(--v-line);
   stroke-width: 1;
+}
+
+.pipelineRail {
+  stroke-width: 1.3;
 }
 
 .transaction,
 .flaggedTransaction {
-  fill: var(--visual-cyan);
-  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--visual-cyan) 60%, transparent));
-  animation: transaction-flow 3.1s linear infinite paused;
+  fill: var(--v-cyan);
+  filter: drop-shadow(0 0 3px rgba(101, 232, 225, 0.6));
+  animation: transaction-flow 3.4s linear infinite paused;
 }
 
 .flaggedTransaction {
-  fill: var(--visual-warn);
-  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--visual-warn) 75%, transparent));
-  animation-duration: 4s;
+  fill: var(--v-warn);
+  filter: drop-shadow(0 0 5px rgba(255, 185, 106, 0.75));
+  animation-duration: 4.3s;
 }
 
-.flagStem {
+.fraudOutcome path {
   fill: none;
-  stroke: var(--visual-warn);
-  stroke-dasharray: 2 4;
-  stroke-width: 1;
+  stroke: var(--v-warn);
+  stroke-dasharray: 3 4;
 }
 
-.flagBadge rect {
-  fill: color-mix(in srgb, var(--visual-warn) 12%, var(--visual-surface));
-  stroke: color-mix(in srgb, var(--visual-warn) 70%, transparent);
+.fraudOutcome rect {
+  fill: rgba(255, 185, 106, 0.08);
+  stroke: rgba(255, 185, 106, 0.58);
 }
 
-.flagBadge text {
-  fill: var(--visual-warn);
-  font-size: 7.5px;
+.fraudOutcome text {
+  fill: var(--v-warn);
+  font-size: 8.5px;
   font-weight: 650;
 }
 
-.metricValue {
-  fill: var(--visual-text) !important;
-  font-family: var(--font-sans, "Geist", ui-sans-serif, sans-serif);
-  font-size: 18px !important;
-  font-weight: 560;
-  letter-spacing: -0.035em !important;
-}
-
-/* CivicLens */
+/* CIVICLENS */
 .civiclens {
-  --visual-cyan: #75d9ff;
+  --v-cyan: #75d9ff;
 }
 
-.mapGrid {
-  opacity: 0.38;
-}
-
-.mapGrid path:nth-last-child(-n + 2) {
-  stroke: color-mix(in srgb, var(--visual-cyan) 35%, transparent);
-  stroke-width: 1.1;
-}
-
-.syncStatus path {
+.archiveSource > rect,
+.archiveExporter > rect,
+.archiveStorage > rect,
+.archiveDashboard > rect:first-of-type {
+  fill: rgba(18, 22, 27, 0.92);
+  stroke: var(--v-line-strong);
   stroke-width: 1;
 }
 
-.routeBase {
-  stroke-width: 2;
+.databaseRow rect {
+  fill: rgba(117, 217, 255, 0.035);
+  stroke: var(--v-line);
 }
 
-.routeSignal {
-  stroke: var(--visual-lime);
-  stroke-width: 2;
+.databaseRow circle,
+.archiveExporter > circle,
+.archiveDashboard > circle {
+  fill: var(--v-cyan);
 }
 
-.issuePin > circle:first-child {
-  fill: color-mix(in srgb, var(--visual-cyan) 12%, var(--visual-surface));
-  stroke: var(--visual-cyan);
-  stroke-width: 1.3;
-}
-
-.issuePin > circle:nth-child(2) {
-  fill: var(--visual-cyan);
-}
-
-.issuePin path {
-  stroke: var(--visual-cyan);
-}
-
-.issuePin {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: map-pin-pulse 2.4s ease-in-out infinite paused;
-}
-
-.mapNode circle:first-child,
-.mapNodeMuted circle {
-  fill: var(--visual-surface);
-  stroke: var(--visual-cyan);
-  stroke-width: 1.1;
-}
-
-.mapNode circle:nth-child(2) {
-  fill: var(--visual-lime);
-}
-
-.mapNodeMuted {
-  opacity: 0.48;
-}
-
-.locationTag text:not(.stageMeta) {
-  font-size: 7px;
-}
-
-.workflowLine {
+.databaseRow path,
+.archiveExporter > path:not(.transformMark),
+.archiveDashboard > path {
+  fill: none;
+  stroke: var(--v-line-strong);
+  stroke-linecap: round;
   stroke-width: 1;
 }
 
-.workflowState circle {
-  fill: var(--visual-surface);
-  stroke: var(--visual-cyan);
+.transformMark {
+  fill: none;
+  stroke: var(--v-acid);
+  stroke-linecap: round;
+  stroke-linejoin: round;
   stroke-width: 1.2;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: state-pulse 3.2s ease-in-out infinite paused;
 }
 
-.workflowState:nth-of-type(3) circle {
-  animation-delay: 0.5s;
+.archiveStorage > path:first-of-type {
+  fill: rgba(117, 217, 255, 0.055);
+  stroke: var(--v-cyan);
+  stroke-width: 1.2;
 }
 
-.workflowState:nth-of-type(4) circle {
-  animation-delay: 1s;
+.archiveStorage > path:nth-of-type(2) {
+  fill: none;
+  stroke: rgba(117, 217, 255, 0.64);
+  stroke-width: 1;
 }
 
-.workflowState:nth-of-type(5) circle {
-  animation-delay: 1.5s;
+.cidLabel {
+  fill: var(--v-acid) !important;
+  font-size: 9px !important;
+  font-weight: 650;
 }
 
-.workflowState text:not(.stageMeta) {
-  font-size: 8px;
+.archiveDashboard > rect:nth-of-type(2) {
+  fill: rgba(7, 10, 13, 0.72);
+  stroke: rgba(117, 217, 255, 0.3);
 }
 
-/* IPO analytics */
+.archiveSignal {
+  stroke: var(--v-acid);
+}
+
+/* IPO */
 .ipo {
-  --visual-cyan: #72dfe9;
+  --v-cyan: #72dfe9;
 }
 
 .scatterPlot > path:first-of-type,
-.distributionAxis {
+.distributionAxis,
+.compactAnalyticsPanel > path:first-of-type {
   fill: none;
-  stroke: var(--visual-line-strong);
+  stroke: var(--v-line-strong);
   stroke-width: 1;
 }
 
 .axisTick {
   fill: none;
-  opacity: 0.7;
-  stroke: var(--visual-line);
+  stroke: var(--v-line);
   stroke-width: 0.7;
 }
 
 .clusterOne {
-  fill: var(--visual-cyan);
+  fill: var(--v-cyan);
 }
 
 .clusterTwo {
-  fill: var(--visual-lime);
-}
-
-.scatterPlot circle {
-  opacity: 0.78;
-  stroke: color-mix(in srgb, currentColor 12%, transparent);
+  fill: var(--v-acid);
 }
 
 .trendLine,
 .distributionLine {
   fill: none;
-  stroke: var(--visual-text);
+  stroke: var(--v-text);
   stroke-linecap: round;
-  stroke-width: 1.2;
-  stroke-dasharray: 320;
-  stroke-dashoffset: 320;
-  animation: draw-line 1.7s cubic-bezier(0.22, 1, 0.36, 1) forwards paused;
+  stroke-width: 1.25;
+  stroke-dasharray: 360;
+  stroke-dashoffset: 360;
+  animation: draw-line 1.8s cubic-bezier(0.22, 1, 0.36, 1) forwards paused;
 }
 
 .distributionFill {
-  fill: color-mix(in srgb, var(--visual-cyan) 10%, transparent);
+  fill: rgba(114, 223, 233, 0.1);
 }
 
 .distributionLine {
-  stroke: var(--visual-cyan);
+  stroke: var(--v-cyan);
 }
 
 .medianMarker {
   fill: none;
-  stroke: var(--visual-lime);
-  stroke-dasharray: 2 4;
+  stroke: var(--v-acid);
+  stroke-dasharray: 3 4;
   stroke-width: 1;
 }
 
-.modelMetric > path:first-of-type {
-  fill: none;
-  stroke: var(--visual-line-strong);
+/* Deliberately redrawn compact canvases */
+.compactCanvas text {
+  fill: var(--v-text);
+  font-size: 13px;
+  font-weight: 630;
+  letter-spacing: 0.035em;
+}
+
+.compactEyebrow {
+  fill: var(--v-text) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+}
+
+.compactMeta,
+.compactFooter,
+.compactCaption {
+  fill: var(--v-muted) !important;
+  font-size: 11px !important;
+  font-weight: 560 !important;
+  letter-spacing: 0.04em !important;
+}
+
+.compactFooter {
+  font-size: 10.5px !important;
+  letter-spacing: 0.07em !important;
+}
+
+.compactCaption {
+  fill: var(--v-cyan) !important;
+  font-size: 10.5px !important;
+}
+
+.compactGroupLabel {
+  fill: var(--v-muted) !important;
+  font-size: 10.5px !important;
+  font-weight: 650 !important;
+  letter-spacing: 0.08em !important;
+}
+
+.compactStage rect,
+.compactAgent rect,
+.compactEvidence > rect,
+.compactEvidenceItem rect,
+.compactServiceGraph > rect,
+.compactMetricStrip > rect,
+.compactReport > rect,
+.compactArchiveResult > rect,
+.compactAnalyticsPanel > rect,
+.compactAgentGroup > rect {
+  fill: rgba(18, 22, 27, 0.94);
+  stroke: var(--v-line-strong);
   stroke-width: 1;
 }
 
-.sparkSignal {
-  stroke: var(--visual-lime);
-  stroke-dasharray: 18 130;
+.compactDecision rect {
+  fill: rgba(200, 244, 91, 0.055);
+  stroke: rgba(200, 244, 91, 0.5);
+  stroke-width: 1;
 }
 
-.legend {
-  font-size: 7px;
+.compactOutput rect {
+  fill: rgba(116, 232, 255, 0.07);
+  stroke: rgba(116, 232, 255, 0.55);
+  stroke-width: 1;
 }
 
-@keyframes signal-flow {
-  to {
-    stroke-dashoffset: -48;
-  }
+.compactStage > circle,
+.compactDecision > circle,
+.compactOutput > circle {
+  fill: var(--v-surface-2);
+  stroke: var(--v-cyan);
+  stroke-width: 1.4;
 }
 
-@keyframes soft-pulse {
-  0%,
-  100% {
-    opacity: 0.65;
-    transform: scale(0.88);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.2);
-  }
+.compactOutput > circle {
+  fill: var(--v-cyan);
 }
 
-@keyframes alert-pulse {
-  0%,
-  100% {
-    opacity: 0.75;
-    transform: scale(0.92);
-  }
-  45% {
-    opacity: 1;
-    transform: scale(1.12);
-  }
+.compactAgent text {
+  font-size: 11px;
+  letter-spacing: 0.065em;
 }
 
-@keyframes evidence-sweep {
-  0% {
-    stroke-dashoffset: 120;
-  }
-  65%,
-  100% {
-    stroke-dashoffset: -120;
-  }
+.compactMetricStrip > path {
+  stroke: var(--v-line);
 }
 
-@keyframes rank-in {
-  from {
-    transform: scaleX(0.05);
-  }
-  to {
-    transform: scaleX(1);
-  }
+.compactMetricStrip > text:not(.compactMeta),
+.compactResultValue {
+  fill: var(--v-text) !important;
+  font-family: var(--font-sans, "Geist", ui-sans-serif, sans-serif);
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em !important;
 }
 
-@keyframes transaction-flow {
-  from {
-    opacity: 0;
-    transform: translateX(0);
-  }
-  8%,
-  88% {
-    opacity: 0.9;
-  }
-  to {
-    opacity: 0;
-    transform: translateX(558px);
-  }
+.compactStatRow text {
+  fill: var(--v-acid);
+  font-size: 10.5px;
+  font-weight: 650;
 }
 
-@keyframes map-pin-pulse {
-  0%,
-  100% {
-    filter: drop-shadow(0 0 0 transparent);
-  }
-  50% {
-    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--visual-cyan) 55%, transparent));
-  }
+.compactArchiveResult > rect {
+  fill: rgba(200, 244, 91, 0.045);
+  stroke: rgba(200, 244, 91, 0.4);
 }
 
-@keyframes state-pulse {
-  0%,
-  18%,
-  100% {
-    fill: var(--visual-surface);
-  }
-  9% {
-    fill: var(--visual-cyan);
-  }
+.compactArchiveResult text:first-of-type {
+  fill: var(--v-acid);
+  font-size: 11px;
+  font-weight: 650;
 }
 
-@keyframes draw-line {
-  to {
-    stroke-dashoffset: 0;
-  }
+.compactEvidenceItem text {
+  font-size: 11.5px;
+}
+
+.compactAnalyticsPanel .trendLine {
+  stroke-dasharray: 180;
+  stroke-dashoffset: 180;
+}
+
+.isActive:not(.isReduced) :is(
+    .signalPath,
+    .signalPathSlow,
+    .branchSignal,
+    .traceSignal,
+    .streamFlow,
+    .archiveSignal,
+    .sparkSignal,
+    .compactSignal,
+    .consensusCore,
+    .alertNode,
+    .evidenceSweep,
+    .rankFill,
+    .transaction,
+    .flaggedTransaction,
+    .trendLine,
+    .distributionLine
+  ) {
+  animation-play-state: running;
 }
 
 .isReduced :is(
-    .flowLine,
-    .flowLineSlow,
+    .signalPath,
+    .signalPathSlow,
+    .branchSignal,
     .traceSignal,
     .streamFlow,
-    .routeSignal,
-    .workflowSignal,
+    .archiveSignal,
     .sparkSignal,
+    .compactSignal,
+    .consensusCore,
+    .alertNode,
     .evidenceSweep,
+    .rankFill,
     .transaction,
     .flaggedTransaction,
-    .alertNode,
-    .consensusCore,
-    .rankFill,
-    .issuePin,
-    .workflowState,
-    .distributionLine,
-    .trendLine
+    .trendLine,
+    .distributionLine
   ) {
   animation: none;
+}
+
+@container (max-width: 560px) {
+  .desktopCanvas {
+    display: none;
+  }
+
+  .compactCanvas {
+    display: block;
+  }
+}
+
+@supports not (container-type: inline-size) {
+  @media (max-width: 620px) {
+    .desktopCanvas {
+      display: none;
+    }
+
+    .compactCanvas {
+      display: block;
+    }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -647,8 +663,36 @@
   }
 }
 
-@media (max-width: 560px) {
-  .visual text {
-    letter-spacing: 0.045em;
-  }
+@keyframes signal-flow {
+  to { stroke-dashoffset: -56; }
+}
+
+@keyframes soft-pulse {
+  0%, 100% { opacity: 0.65; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.18); }
+}
+
+@keyframes alert-pulse {
+  0%, 100% { opacity: 0.72; transform: scale(0.92); }
+  45% { opacity: 1; transform: scale(1.12); }
+}
+
+@keyframes evidence-sweep {
+  0% { stroke-dashoffset: 48; }
+  70%, 100% { stroke-dashoffset: -48; }
+}
+
+@keyframes rank-in {
+  from { transform: scaleX(0.08); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes transaction-flow {
+  from { opacity: 0; transform: translateX(0); }
+  8%, 88% { opacity: 0.92; }
+  to { opacity: 0; transform: translateX(548px); }
+}
+
+@keyframes draw-line {
+  to { stroke-dashoffset: 0; }
 }

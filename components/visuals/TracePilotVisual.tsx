@@ -8,110 +8,138 @@ export function TracePilotVisual(props: ProjectVisualProps) {
   return (
     <VisualSvg
       {...props}
-      description="An incident alert is correlated across a service graph, logs, metrics, traces and deployment changes to produce ranked root-cause evidence."
+      compactChildren={<TracePilotCompact />}
+      description="A service alert becomes an incident, gathers logs, metrics, traces and change evidence, ranks likely root causes and produces an evidence-cited diagnosis."
       kindClassName={styles.tracepilot}
     >
       <g className={styles.microGrid}>
-        <path d="M24 70H616M24 290H616" />
-        <path d="M214 42V318M466 42V318" />
+        <path d="M20 52H620M20 310H620" />
+        <path d="M150 38V326M264 38V326M462 38V326" />
       </g>
-
-      <text className={styles.eyebrow} x="28" y="35">
-        INCIDENT / 0241
-      </text>
+      <text className={styles.eyebrow} x="24" y="30">TRACEPILOT / INCIDENT 0241</text>
       <g className={styles.liveStatus}>
-        <circle cx="603" cy="31" r="3" />
-        <text x="594" y="35" textAnchor="end">
-          CORRELATING
-        </text>
+        <circle cx="604" cy="26" r="3" />
+        <text x="594" y="30" textAnchor="end">CORRELATING</text>
       </g>
 
-      <text className={styles.panelLabel} x="29" y="84">
-        SERVICE GRAPH
-      </text>
-      <g className={styles.serviceGraph}>
-        <path d="M68 139L120 111L171 143L142 202L83 207L68 139ZM120 111L142 202M68 139L171 143M83 207L171 143" />
-        <circle cx="68" cy="139" r="8" />
-        <circle cx="120" cy="111" r="7" />
-        <circle className={styles.alertNode} cx="171" cy="143" r="10" />
-        <circle cx="142" cy="202" r="7" />
-        <circle cx="83" cy="207" r="6" />
-        <text x="171" y="169" textAnchor="middle">
-          API-02
-        </text>
+      <g className={styles.servicePanel}>
+        <rect height="196" rx="7" width="116" x="24" y="76" />
+        <text className={styles.panelLabel} x="40" y="98">SERVICE GRAPH</text>
+        <path d="M45 144L78 116L116 142L104 202L61 219L45 144ZM78 116L104 202M45 144L116 142M61 219L116 142" />
+        <circle cx="45" cy="144" r="6" />
+        <circle cx="78" cy="116" r="6" />
+        <circle className={styles.alertNode} cx="116" cy="142" r="8" />
+        <circle cx="104" cy="202" r="6" />
+        <circle cx="61" cy="219" r="5" />
+        <text className={styles.stageMeta} x="40" y="251">ALERT / API-02</text>
       </g>
 
-      <path className={styles.connector} d="M181 143H240" />
-      <path className={styles.traceSignal} d="M181 143H240" />
+      <path className={styles.connector} d="M124 142H162" />
+      <path className={styles.traceSignal} d="M124 142H162" />
+      <g className={styles.decisionBox}>
+        <rect height="70" rx="7" width="88" x="162" y="107" />
+        <text className={styles.stageLabel} x="206" y="135" textAnchor="middle">INCIDENT</text>
+        <text className={styles.stageMeta} x="206" y="154" textAnchor="middle">WINDOW + SCOPE</text>
+      </g>
 
+      <path className={styles.connector} d="M250 142H276" />
+      <path className={styles.traceSignal} d="M250 142H276" />
       <g className={styles.evidencePanel}>
-        <rect height="184" rx="8" width="204" x="240" y="90" />
-        <text className={styles.panelLabel} x="256" y="114">
-          EVIDENCE CORRELATION
-        </text>
+        <rect height="224" rx="7" width="174" x="276" y="66" />
+        <text className={styles.panelLabel} x="292" y="89">EVIDENCE INPUTS</text>
         {evidenceRows.map((label, index) => {
-          const y = 136 + index * 31;
+          const y = 112 + index * 30;
           return (
             <g className={styles.evidenceRow} key={label}>
-              <circle cx="258" cy={y} r="3" />
-              <text x="269" y={y + 3}>
-                {label}
-              </text>
-              <rect height="4" rx="2" width={104 - index * 9} x="325" y={y - 3} />
-              <path
-                className={styles.evidenceSweep}
-                d={`M325 ${y - 1}H${429 - index * 9}`}
-                style={{ animationDelay: `${index * 130}ms` }}
-              />
+              <rect height="22" rx="4" width="104" x="292" y={y - 14} />
+              <circle cx="304" cy={y - 3} r="3" />
+              <text x="316" y={y}>{label}</text>
+              <path className={styles.connector} d={`M396 ${y - 3}H430`} />
+              <path className={styles.evidenceSweep} d={`M396 ${y - 3}H430`} style={{ animationDelay: `${index * 140}ms` }} />
             </g>
           );
         })}
-        <text className={styles.stageMeta} x="256" y="258">
-          WINDOW / -05:00 → +02:00
-        </text>
+        <path className={styles.connector} d="M430 109V199M430 199V220H292" />
+        <g className={styles.correlationCell}>
+          <rect height="42" rx="5" width="142" x="292" y="220" />
+          <text className={styles.stageLabel} x="308" y="239">CORRELATE</text>
+          <text className={styles.stageMeta} x="308" y="253">TIME + TOPOLOGY</text>
+        </g>
       </g>
 
-      <path className={styles.connector} d="M444 182H480" />
-      <path className={styles.traceSignal} d="M444 182H480" />
-
-      <g className={styles.rankingPanel}>
-        <text className={styles.panelLabel} x="480" y="96">
-          RCA RANKING
-        </text>
-        <g>
-          <text x="480" y="131">
-            01 / API-02
-          </text>
-          <rect height="5" rx="2.5" width="116" x="480" y="141" />
-          <rect className={styles.rankFill} height="5" rx="2.5" width="101" x="480" y="141" />
-        </g>
-        <g>
-          <text x="480" y="177">
-            02 / CACHE-01
-          </text>
-          <rect height="5" rx="2.5" width="116" x="480" y="187" />
-          <rect className={styles.rankFillMuted} height="5" rx="2.5" width="58" x="480" y="187" />
-        </g>
-        <g>
-          <text x="480" y="223">
-            03 / DB-03
-          </text>
-          <rect height="5" rx="2.5" width="116" x="480" y="233" />
-          <rect className={styles.rankFillMuted} height="5" rx="2.5" width="31" x="480" y="233" />
-        </g>
-        <text className={styles.evidenceCitation} x="480" y="267">
-          07 CITED SIGNALS
-        </text>
+      <path className={styles.connector} d="M450 241H462V134H474M545 170V214" />
+      <path className={styles.traceSignal} d="M450 241H462V134H474M545 170V214" />
+      <g className={styles.rankingBox}>
+        <rect height="72" rx="7" width="142" x="474" y="98" />
+        <text className={styles.panelLabel} x="490" y="119">RCA RANKING</text>
+        <text className={styles.stageLabel} x="490" y="142">01 / API-02</text>
+        <rect height="5" rx="2.5" width="108" x="490" y="151" />
+        <rect className={styles.rankFill} height="5" rx="2.5" width="92" x="490" y="151" />
+      </g>
+      <g className={styles.outputBox}>
+        <rect height="76" rx="7" width="142" x="474" y="214" />
+        <text className={styles.stageLabel} x="490" y="239">DIAGNOSIS</text>
+        <text className={styles.stageMeta} x="490" y="258">EVIDENCE-CITED</text>
+        <text className={styles.evidenceCitation} x="490" y="276">07 SIGNALS LINKED</text>
       </g>
 
       <g className={styles.metricRail}>
-        <text x="28" y="326">
-          TELEMETRY / OTel
-        </text>
-        <text x="612" y="326" textAnchor="end">
-          DIAGNOSIS / EVIDENCE-BOUND
-        </text>
+        <text x="24" y="332">TELEMETRY / OTel</text>
+        <text x="320" y="332" textAnchor="middle">LOGS · METRICS · TRACES · CHANGES</text>
+        <text x="616" y="332" textAnchor="end">OUTPUT / AUDITABLE</text>
       </g>
     </VisualSvg>
+  );
+}
+
+function TracePilotCompact() {
+  return (
+    <>
+      <text className={styles.compactEyebrow} x="20" y="26">TRACEPILOT / INCIDENT PATH</text>
+      <g className={styles.compactServiceGraph}>
+        <rect height="54" rx="7" width="300" x="20" y="40" />
+        <text x="38" y="63">SERVICE GRAPH</text>
+        <text className={styles.compactMeta} x="38" y="80">ALERT / API-02</text>
+        <path d="M246 67L272 52L300 68L274 82Z" />
+        <circle className={styles.alertNode} cx="300" cy="68" r="6" />
+      </g>
+      <path className={styles.compactConnector} d="M170 94V108" />
+      <g className={styles.compactDecision}>
+        <rect height="42" rx="6" width="300" x="20" y="108" />
+        <text x="38" y="134">INCIDENT</text>
+        <text className={styles.compactMeta} x="302" y="134" textAnchor="end">WINDOW + SCOPE</text>
+      </g>
+
+      <g className={styles.compactEvidence}>
+        <rect height="142" rx="7" width="300" x="20" y="166" />
+        <text className={styles.compactGroupLabel} x="38" y="188">CORRELATE EVIDENCE</text>
+        {evidenceRows.map((label, index) => {
+          const x = index % 2 === 0 ? 38 : 176;
+          const y = index < 2 ? 204 : 244;
+          return (
+            <g className={styles.compactEvidenceItem} key={label}>
+              <rect height="30" rx="5" width="126" x={x} y={y} />
+              <circle cx={x + 14} cy={y + 15} r="3" />
+              <text x={x + 27} y={y + 20}>{label}</text>
+            </g>
+          );
+        })}
+        <path className={styles.compactConnector} d="M101 234V285H239V274M170 285V308" />
+      </g>
+      <path className={styles.compactSignal} d="M170 94V108M170 150V166M101 234V285H239V274M170 285V322" />
+
+      <g className={styles.compactDecision}>
+        <rect height="46" rx="6" width="300" x="20" y="322" />
+        <text x="38" y="350">RCA RANKING</text>
+        <text className={styles.compactMeta} x="302" y="350" textAnchor="end">01 / API-02</text>
+      </g>
+      <path className={styles.compactConnector} d="M170 368V382" />
+      <g className={styles.compactOutput}>
+        <rect height="56" rx="6" width="300" x="20" y="382" />
+        <text x="38" y="408">EVIDENCE-CITED DIAGNOSIS</text>
+        <text className={styles.compactMeta} x="38" y="425">07 LINKED SIGNALS / AUDITABLE</text>
+      </g>
+      <text className={styles.compactFooter} x="170" y="468" textAnchor="middle">OTel · TIME WINDOW · SERVICE TOPOLOGY</text>
+    </>
   );
 }

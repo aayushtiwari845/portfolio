@@ -45,6 +45,10 @@ describe("portfolio data", () => {
 
     for (const project of projects) {
       expectValidUrl(project.repository, ["https:"]);
+
+      if ("demoUrl" in project && project.demoUrl) {
+        expectValidUrl(project.demoUrl as string, ["https:"]);
+      }
     }
   });
 
@@ -86,10 +90,55 @@ describe("portfolio data", () => {
 
     for (const project of projects) {
       expect(project.stack.length).toBeGreaterThan(0);
-      expect(project.metrics.length).toBeGreaterThan(0);
       expect(project.overview.length).toBeGreaterThan(0);
       expect(project.highlights.length).toBeGreaterThanOrEqual(3);
       expect(project.architecture.length).toBeGreaterThanOrEqual(4);
+      expect(project.status.length).toBeGreaterThan(0);
+      expect(project.role.length).toBeGreaterThan(0);
+      expect(project.problem.length).toBeGreaterThan(0);
+      expect(project.constraints.length).toBeGreaterThanOrEqual(3);
+      expect(project.decisions.length).toBeGreaterThanOrEqual(2);
+      expect(project.validation.length).toBeGreaterThanOrEqual(2);
+      expect(project.limitations.length).toBeGreaterThanOrEqual(2);
+
+      for (const decision of project.decisions) {
+        expect(decision.title.length).toBeGreaterThan(0);
+        expect(decision.choice.length).toBeGreaterThan(0);
+        expect(decision.rationale.length).toBeGreaterThan(0);
+      }
     }
+  });
+
+  it("keeps top-level identity free of decontextualized proof metrics", () => {
+    expect("heroMetrics" in portfolio).toBe(false);
+    expect(portfolio.identity.introduction).not.toMatch(/\d/);
+    expect(portfolio.navigation.slice(0, 2).map(({ label }) => label)).toEqual([
+      "Experience",
+      "Work",
+    ]);
+  });
+
+  it("keeps experience newest-first", () => {
+    const starts = portfolio.experiences.map(({ startDate }) => startDate);
+
+    expect(starts).toEqual([...starts].sort().reverse());
+  });
+
+  it("labels collaborative work and experimental evidence honestly", () => {
+    const fraud = projects.find(
+      ({ slug }) => slug === "real-time-fraud-detection",
+    );
+    const civic = projects.find(({ slug }) => slug === "civiclens");
+
+    expect(
+      fraud && "ownershipNote" in fraud ? fraud.ownershipNote : undefined,
+    ).toContain("Aditya Ravi and Atharva Indulkar");
+    expect(fraud?.status).toContain("simulated streaming benchmark");
+    expect(fraud?.limitations.join(" ")).toContain("not a deployed");
+    expect(civic && "demoUrl" in civic ? civic.demoUrl : undefined).toBe(
+      "https://civic-issues-dashboard.vercel.app",
+    );
+    expect(civic?.stack).not.toContain("FastAPI");
+    expect(civic?.metrics).toEqual([]);
   });
 });

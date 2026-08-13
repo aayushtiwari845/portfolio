@@ -34,6 +34,9 @@ describe("CommandPalette", () => {
     render(<CommandPalette />);
     const trigger = screen.getByRole("button", { name: /open command palette/i });
 
+    expect(trigger).toHaveAccessibleName("Open command palette");
+    expect(trigger).toHaveAttribute("aria-keyshortcuts", "Control+K Meta+K");
+
     await user.click(trigger);
     await user.keyboard("{Escape}");
 
