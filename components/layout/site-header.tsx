@@ -6,6 +6,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { ThemeToggle } from "@/components/theme/theme-toggle";
+
 export interface NavigationItem {
   readonly label: string;
   readonly href: string;
@@ -197,6 +199,7 @@ export function SiteHeader({
         </nav>
 
         <div className="header-actions">
+          <ThemeToggle className="theme-toggle--header" />
           {commandRequested ? (
             <DeferredCommandPalette defaultOpen />
           ) : (

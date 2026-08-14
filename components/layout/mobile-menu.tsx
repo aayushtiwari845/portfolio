@@ -5,6 +5,8 @@ import { ArrowUpRight, X } from "lucide-react";
 import Link from "next/link";
 import { useRef, type RefObject } from "react";
 
+import { ThemeToggle } from "@/components/theme/theme-toggle";
+
 import type { NavigationItem } from "./site-header";
 
 export interface MobileMenuProps {
@@ -97,15 +99,18 @@ export function MobileMenu({
             <Dialog.Title className="technical-label">
               Navigation / Index
             </Dialog.Title>
-            <Dialog.Close asChild>
-              <button
-                aria-label="Close navigation menu"
-                className="icon-button"
-                type="button"
-              >
-                <X aria-hidden="true" size={18} />
-              </button>
-            </Dialog.Close>
+            <div className="mobile-dialog-actions">
+              <ThemeToggle className="theme-toggle--mobile" />
+              <Dialog.Close asChild>
+                <button
+                  aria-label="Close navigation menu"
+                  className="icon-button"
+                  type="button"
+                >
+                  <X aria-hidden="true" size={18} />
+                </button>
+              </Dialog.Close>
+            </div>
           </div>
           <Dialog.Description className="sr-only" id="mobile-menu-description">
             Navigate to a portfolio section or the web résumé.

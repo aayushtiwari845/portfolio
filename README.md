@@ -15,7 +15,7 @@ The experience uses a “living systems / telemetry” visual language to turn a
 
 ## Architecture
 
-Server Components render the core portfolio, project diagrams, and case studies. Client Components are reserved for behavior that needs browser state, such as navigation, the command palette, copy-to-clipboard, and the local clock.
+Server Components render the core portfolio, project diagrams, and case studies. Client Components are reserved for behavior that needs browser state, such as navigation, the command palette, the saved color theme, copy-to-clipboard, and the local clock.
 
 All verified portfolio content lives in [`data/portfolio.ts`](data/portfolio.ts). The home page, `/resume`, project routes, metadata, sitemap, and generated social images consume that source instead of duplicating content in JSX.
 
@@ -43,6 +43,12 @@ pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000). Production metadata never uses the local URL; its canonical origin comes from `portfolio.metadata.siteUrl`.
+
+## Color themes
+
+The interface includes independently designed dark and light systems. Dark remains the first-visit default; an explicit choice is stored locally under `portfolio-theme` and applied by a small synchronous head script before the page paints, preventing a dark-to-light flash. Theme switching does not require a provider, server state, environment variable, or external dependency.
+
+When adjusting the palette, update the semantic tokens and the project-visual tokens together. Validate home, project, résumé, dialog, mobile-navigation, reduced-motion, and print states in both themes rather than treating the light theme as a global inversion.
 
 ## Quality commands
 
@@ -89,7 +95,7 @@ The hero thesis, calls to action, and current professional context remain comple
 
 ## Accessibility
 
-The interface is designed around semantic landmarks, a logical heading order, a skip link, visible keyboard focus, keyboard-operable navigation and command palette behavior, descriptive link labels, sufficient contrast, and non-color-only status communication. Motion honors `prefers-reduced-motion`; touch targets and project flows adapt for small screens without requiring hover.
+The interface is designed around semantic landmarks, a logical heading order, a skip link, visible keyboard focus, keyboard-operable navigation, theme, and command-palette controls, descriptive link labels, sufficient contrast in both color themes, and non-color-only status communication. Motion honors `prefers-reduced-motion`; touch targets and project flows adapt for small screens without requiring hover.
 
 Before release, manually verify keyboard navigation, command palette focus handling, responsive navigation, external links, copy-email feedback, reduced-motion behavior, and horizontal overflow at the target viewport sizes.
 

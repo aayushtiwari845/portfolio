@@ -5,6 +5,8 @@ import type { ReactNode } from "react";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { MotionActivator } from "@/components/motion/motion-activator";
+import { ThemeScript } from "@/components/theme/theme-script";
+import { DEFAULT_THEME, THEME_COLORS } from "@/components/theme/theme";
 import { portfolio } from "@/data/portfolio";
 
 import "./globals.css";
@@ -50,15 +52,23 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#050606",
-  colorScheme: "dark",
+  themeColor: THEME_COLORS.dark,
+  colorScheme: "dark light",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
+    <html
+      className={`${geist.variable} ${geistMono.variable}`}
+      data-theme={DEFAULT_THEME}
+      lang="en"
+      suppressHydrationWarning
+    >
+      <head>
+        <ThemeScript />
+      </head>
       <body>
         <MotionActivator />
         <a className="skip-link" href="#main-content">Skip to content</a>

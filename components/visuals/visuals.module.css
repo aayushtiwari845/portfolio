@@ -592,6 +592,128 @@
   stroke-dashoffset: 180;
 }
 
+/* Warm-paper diagram treatment. Project identities stay distinct, but their
+ * signal colors are deepened so thin SVG strokes and micro-copy remain crisp. */
+:global(html[data-theme="light"]) .visual {
+  --v-surface: var(--surface);
+  --v-surface-2: var(--surface-2);
+  --v-text: var(--text);
+  --v-muted: #58635f;
+  --v-line: rgba(23, 52, 49, 0.2);
+  --v-line-strong: rgba(23, 52, 49, 0.54);
+  --v-cyan: var(--cyan);
+  --v-acid: var(--acid);
+  --v-warn: #9b4d1d;
+}
+
+:global(html[data-theme="light"]) .visual.conclave {
+  --v-cyan: #087580;
+}
+
+:global(html[data-theme="light"]) .visual.tracepilot {
+  --v-cyan: #176f91;
+}
+
+:global(html[data-theme="light"]) .visual.fraud {
+  --v-cyan: #08766e;
+}
+
+:global(html[data-theme="light"]) .visual.civiclens {
+  --v-cyan: #1a6f8f;
+}
+
+:global(html[data-theme="light"]) .visual.ipo {
+  --v-cyan: #14737a;
+}
+
+:global(html[data-theme="light"]) .visual :is(
+    .stageBox rect,
+    .pipelineStage rect,
+    .servicePanel > rect,
+    .evidencePanel > rect,
+    .rankingBox > rect,
+    .correlationCell rect,
+    .modelResult > rect,
+    .fraudMetrics > rect,
+    .archiveSource > rect,
+    .archiveExporter > rect,
+    .archiveStorage > rect,
+    .archiveDashboard > rect:first-of-type,
+    .compactStage rect,
+    .compactAgent rect,
+    .compactEvidence > rect,
+    .compactEvidenceItem rect,
+    .compactServiceGraph > rect,
+    .compactMetricStrip > rect,
+    .compactReport > rect,
+    .compactArchiveResult > rect,
+    .compactAnalyticsPanel > rect,
+    .compactAgentGroup > rect
+  ) {
+  fill: rgba(255, 253, 248, 0.92);
+  stroke: var(--v-line-strong);
+}
+
+:global(html[data-theme="light"]) .visual :is(.decisionBox rect, .compactDecision rect) {
+  fill: rgba(92, 115, 24, 0.08);
+  stroke: rgba(92, 115, 24, 0.5);
+}
+
+:global(html[data-theme="light"]) .visual :is(.outputBox rect, .compactOutput rect) {
+  fill: rgba(8, 116, 129, 0.075);
+  stroke: rgba(8, 116, 129, 0.5);
+}
+
+:global(html[data-theme="light"]) .visual .agent rect {
+  fill: rgba(255, 253, 248, 0.96);
+  stroke: rgba(8, 117, 128, 0.4);
+}
+
+:global(html[data-theme="light"]) .visual :is(.evidenceRow > rect, .rankingBox > rect) {
+  fill: rgba(255, 253, 248, 0.68);
+}
+
+:global(html[data-theme="light"]) .visual :is(.servicePanel .alertNode, .compactServiceGraph .alertNode) {
+  fill: rgba(155, 77, 29, 0.11);
+}
+
+:global(html[data-theme="light"]) .visual .fraudOutcome rect {
+  fill: rgba(155, 77, 29, 0.08);
+  stroke: rgba(155, 77, 29, 0.58);
+}
+
+:global(html[data-theme="light"]) .visual .databaseRow rect {
+  fill: rgba(26, 111, 143, 0.055);
+}
+
+:global(html[data-theme="light"]) .visual .archiveStorage > path:first-of-type {
+  fill: rgba(26, 111, 143, 0.075);
+}
+
+:global(html[data-theme="light"]) .visual .archiveDashboard > rect:nth-of-type(2) {
+  fill: rgba(238, 235, 227, 0.86);
+  stroke: rgba(26, 111, 143, 0.32);
+}
+
+:global(html[data-theme="light"]) .visual .distributionFill {
+  fill: rgba(20, 115, 122, 0.11);
+}
+
+:global(html[data-theme="light"]) .visual .compactArchiveResult > rect {
+  fill: rgba(92, 115, 24, 0.07);
+  stroke: rgba(92, 115, 24, 0.42);
+}
+
+:global(html[data-theme="light"]) .visual :is(
+    .consensusCore,
+    .liveStatus circle,
+    .syncStatus circle,
+    .transaction,
+    .flaggedTransaction
+  ) {
+  filter: drop-shadow(0 1px 2px rgba(29, 39, 36, 0.2));
+}
+
 .visual[data-motion-state="active"]:not(.isReduced) :is(
     .signalPath,
     .signalPathSlow,

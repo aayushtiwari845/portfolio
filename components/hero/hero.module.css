@@ -149,6 +149,28 @@
   font-size: 7.5px;
 }
 
+:global(html[data-theme="light"]) .fallback {
+  --hero-line: color-mix(in srgb, var(--text) 14%, transparent);
+  --hero-line-strong: color-mix(in srgb, var(--text) 29%, transparent);
+}
+
+:global(html[data-theme="light"]) .fallback .coordinateGrid {
+  opacity: 0.5;
+}
+
+:global(html[data-theme="light"]) .fallback .orbitLines {
+  opacity: 0.46;
+}
+
+:global(html[data-theme="light"]) .fallback .nodeCore,
+:global(html[data-theme="light"]) .fallback .telemetryLabel circle {
+  filter: drop-shadow(0 1px 2px color-mix(in srgb, var(--text) 18%, transparent));
+}
+
+:global(html[data-theme="light"]) .fallback .telemetryLabel rect {
+  fill: color-mix(in srgb, var(--surface-raised) 92%, transparent);
+}
+
 .fallback[data-motion-state="active"]:not(.isReduced) .signalEdges,
 .fallback[data-motion-state="active"]:not(.isReduced) .hubNode .nodeHalo {
   animation-play-state: running;
