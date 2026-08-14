@@ -8,6 +8,7 @@ import { MotionActivator } from "@/components/motion/motion-activator";
 import { portfolio } from "@/data/portfolio";
 
 import "./globals.css";
+import "./motion-effects.css";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -49,7 +50,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#070809",
+  themeColor: "#050606",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,

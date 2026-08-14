@@ -144,8 +144,8 @@ describe("portfolio data", () => {
     expect("heroMetrics" in portfolio).toBe(false);
     expect(portfolio.identity.introduction).not.toMatch(/\d/);
     expect(portfolio.navigation.slice(0, 2).map(({ label }) => label)).toEqual([
-      "Work",
       "Experience",
+      "Work",
     ]);
   });
 

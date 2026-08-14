@@ -107,11 +107,11 @@ export function ExperienceSection() {
       <div className="page-shell">
         <Reveal className="section-heading">
           <div>
-            <p className="section-kicker">02 / Experience</p>
-            <h2 className="section-title" id="experience-heading">Experience across software, data, and AI products.</h2>
+            <p className="section-kicker">01 / Experience</p>
+            <h2 className="section-title" id="experience-heading">Built inside real operating constraints.</h2>
           </div>
           <p className="section-intro">
-            Recent work spans a high-volume screening platform, an AI-product backend, and analytics infrastructure.
+            Three roles across production software, backend product systems, and analytical infrastructure.
           </p>
         </Reveal>
 
@@ -127,15 +127,10 @@ export function ExperienceSection() {
               <div className="experience-body">
                 <p className="experience-summary">{experience.summary}</p>
                 <ul className="experience-proofs">
-                  {experience.highlights.slice(0, 2).map((highlight) => (
+                  {experience.highlights.slice(0, index === 0 ? 3 : 2).map((highlight) => (
                     <li className="experience-proof" key={highlight}>{highlight}</li>
                   ))}
                 </ul>
-                <div className="experience-stack" aria-label={`${experience.company} technologies`} role="list">
-                  {experience.stack.slice(0, 5).map((technology) => (
-                    <span className="tech-chip" key={technology} role="listitem">{technology}</span>
-                  ))}
-                </div>
                 {experience.note ? <p className="experience-note">{experience.note}</p> : null}
               </div>
             </Reveal>
@@ -155,7 +150,7 @@ export function WorkSection() {
       <div className="page-shell">
         <Reveal className="section-heading">
           <div>
-            <p className="section-kicker">01 / Selected work</p>
+            <p className="section-kicker">02 / Selected work</p>
             <h2 className="section-title" id="work-heading">Systems with the evidence left in.</h2>
           </div>
           <p className="section-intro">

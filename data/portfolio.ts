@@ -175,8 +175,8 @@ export const portfolio = {
     website: "https://aayushktiwari.tech",
   },
   navigation: [
-    { label: "Work", href: "/#work" },
     { label: "Experience", href: "/#experience" },
+    { label: "Work", href: "/#work" },
     { label: "Capabilities", href: "/#capabilities" },
     { label: "About", href: "/#about" },
     { label: "Contact", href: "/#contact" },
