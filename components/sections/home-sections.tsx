@@ -1,6 +1,7 @@
-import { ArrowRight, ArrowUpRight, Code2, ContactRound, Mail } from "lucide-react";
+import type { ReactNode } from "react";
 import Link from "next/link";
 
+import { SectionLink } from "@/components/layout/section-link";
 import { Reveal } from "@/components/motion/reveal";
 import { CopyEmail } from "@/components/ui/copy-email";
 import { ExternalLink } from "@/components/ui/external-link";
@@ -24,30 +25,55 @@ function getHomepageProject(slug: ProjectSlug) {
 }
 
 const homepageProjects = homepageProjectSlugs.map(getHomepageProject);
+const featuredProjects = homepageProjects.slice(0, 3);
+const referencedProjects = homepageProjects.slice(3);
 
-const capabilityAnchors = [
+const capabilityDomains = [
   {
     key: "systems",
-    index: "01",
     title: "Systems",
-    description: "Typed APIs, authentication, failure handling, and operational workflows with explicit boundaries.",
+    description:
+      "Typed APIs, authentication, failure handling, and operational workflows with explicit boundaries.",
     technologies: ["FastAPI", "Spring Boot", "Node.js", "PostgreSQL", "Redis"],
   },
   {
     key: "data",
-    index: "02",
     title: "Data",
-    description: "Batch and streaming pipelines designed around workload, lineage, replay, and measurable behavior.",
+    description:
+      "Batch and streaming pipelines designed around workload, lineage, replay, and measurable behavior.",
     technologies: ["Kafka", "Spark", "PySpark", "Pandas", "Warehousing"],
   },
   {
     key: "intelligence",
-    index: "03",
     title: "Intelligence",
-    description: "ML and LLM workflows evaluated against baselines before they are trusted inside a product.",
+    description:
+      "ML and LLM workflows evaluated against baselines before they are trusted inside a product.",
     technologies: ["PyTorch", "TensorFlow", "MLflow", "Spark MLlib", "LLM systems"],
   },
 ] as const;
+
+/**
+ * Resolve a non-goal reference id to the section it points at. Project slugs
+ * take their §2.n position from the homepage running order, so the numbering a
+ * reader sees in §2 is the numbering a cross-reference names.
+ */
+function resolveReference(id: string) {
+  const projectIndex = homepageProjectSlugs.indexOf(id as ProjectSlug);
+
+  if (projectIndex >= 0) {
+    const project = homepageProjects[projectIndex];
+    return {
+      label: `§2.${projectIndex + 1}`,
+      title: project.title,
+      href: `/projects/${project.slug}`,
+    };
+  }
+
+  const section = documentSections.find((entry) => entry.id === id);
+  return section
+    ? { label: `§${section.number}`, title: section.label, href: `#${section.id}` }
+    : null;
+}
 
 const domainNames = {
   systems: "Systems",
@@ -56,303 +82,420 @@ const domainNames = {
   product: "Product",
 } as const;
 
-export function HeroSection({ visual }: { visual: React.ReactNode }) {
-  const latestExperience = portfolio.experiences[0];
+/** The document's numbered outline. It is also the primary navigation. */
+export const documentSections = [
+  { id: "experience", number: "1", label: "Experience", note: `${portfolio.experiences.length} roles` },
+  { id: "work", number: "2", label: "Selected work", note: `${projects.length} systems` },
+  { id: "non-goals", number: "3", label: "Non-goals", note: `${portfolio.nonGoals.length} boundaries` },
+  { id: "capabilities", number: "4", label: "Capabilities", note: `${capabilityDomains.length} domains` },
+  { id: "background", number: "5", label: "Background", note: "Education" },
+  { id: "contact", number: "6", label: "Contact", note: "Direct" },
+] as const;
+
+function DocSection({
+  id,
+  number,
+  rail,
+  title,
+  lede,
+  children,
+}: {
+  id: string;
+  number: string;
+  rail: string;
+  title: string;
+  lede?: string;
+  children: ReactNode;
+}) {
+  return (
+    <section aria-labelledby={`${id}-heading`} className="doc-section" id={id}>
+      <div className="doc-rail">
+        <span className="doc-num">§{number}</span>
+        <span className="doc-rail-label">{rail}</span>
+      </div>
+      <div className="doc-body">
+        <Reveal>
+          <h2 className="doc-title" id={`${id}-heading`}>{title}</h2>
+          {lede ? <p className="doc-lede">{lede}</p> : null}
+        </Reveal>
+        {children}
+      </div>
+    </section>
+  );
+}
+
+export function TitleBlock() {
+  const current = portfolio.experiences[0];
+  const { education, identity } = portfolio;
 
   return (
-    <section className="hero" aria-labelledby="hero-title">
-      <div className="page-shell hero-inner">
-        <div className="hero-copy">
-          <p className="eyebrow hero-identity">
-            {portfolio.identity.displayName} <span aria-hidden="true">·</span> Software Engineer
-          </p>
-          <h1 aria-label={portfolio.identity.headline} className="hero-title" id="hero-title">
-            <span className="hero-title-line"><span>I build backend and data systems</span></span>{" "}
-            <span className="hero-title-line"><span>that keep AI behavior inspectable.</span></span>
-          </h1>
-          <p className="hero-description">{portfolio.identity.introduction}</p>
-          <p className="hero-disciplines">Backend platforms <span>/</span> Data infrastructure <span>/</span> Applied AI</p>
-          <div className="hero-actions">
-            <Link className="primary-cta" href="#work">
-              View selected work <ArrowRight aria-hidden="true" size={16} />
-            </Link>
-            <Link className="secondary-cta" href="#experience">Experience</Link>
-            <Link className="text-link" href="/resume">Résumé</Link>
-          </div>
-          <div className="hero-socials" aria-label="Professional profiles">
-            <ExternalLink href={portfolio.links.github}><Code2 aria-hidden="true" size={14} /> GitHub</ExternalLink>
-            <ExternalLink href={portfolio.links.linkedin}><ContactRound aria-hidden="true" size={14} /> LinkedIn</ExternalLink>
-          </div>
+    <section aria-labelledby="doc-title" className="titleblock">
+        <p className="titleblock-doctype">
+          <span>Engineering portfolio</span>
+          <span className="figure-value">Updated {portfolio.metadata.lastUpdated}</span>
+        </p>
+
+        <div className="titleblock-grid">
+          <Reveal>
+            <h1 className="titleblock-title" id="doc-title">{identity.headline}</h1>
+            <p className="titleblock-abstract">{identity.introduction}</p>
+            <div className="titleblock-actions">
+              <Link className="link" href="#work">Read the selected work</Link>
+              <Link className="secondary-cta" href="/resume">Résumé</Link>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.06}>
+            <dl className="titleblock-meta">
+              <div className="meta-row meta-row--status">
+                <dt>Status</dt>
+                <dd>{identity.availability}</dd>
+              </div>
+              <div className="meta-row">
+                <dt>Author</dt>
+                <dd>{identity.fullName}</dd>
+              </div>
+              <div className="meta-row">
+                <dt>Discipline</dt>
+                <dd>{identity.descriptor}</dd>
+              </div>
+              <div className="meta-row">
+                <dt>Location</dt>
+                <dd>{identity.location} <span className="figure-value">· {identity.timezone}</span></dd>
+              </div>
+              <div className="meta-row">
+                <dt>Education</dt>
+                <dd>
+                  {education.degree}, {education.field} — {education.institution}
+                  <br />
+                  <span className="figure-value">{education.period} · CGPA {education.cgpa}</span>
+                </dd>
+              </div>
+              <div className="meta-row">
+                <dt>Most recent</dt>
+                <dd>
+                  {current.role}, {current.company}
+                  <br />
+                  <span className="figure-value">{current.period}</span>
+                </dd>
+              </div>
+            </dl>
+          </Reveal>
         </div>
 
-        <div className="hero-visual" aria-label="A restrained map of connected software, data, and intelligence systems" role="img">
-          {visual}
-        </div>
-
-        <aside className="hero-context" aria-label="Most recent experience">
-          <span className="technical-label">Most recently</span>
-          <div>
-            <strong>{latestExperience.role}</strong>
-            <span>{latestExperience.company} · {latestExperience.period}</span>
-          </div>
-        </aside>
-      </div>
+        <Reveal delay={0.1}>
+          <nav aria-label="Document contents" className="contents">
+            {documentSections.map((section) => (
+              <SectionLink className="contents-row" href={`#${section.id}`} key={section.id}>
+                <span className="contents-num">§{section.number}</span>
+                <span className="contents-label">{section.label}</span>
+                <span className="contents-note">{section.note}</span>
+              </SectionLink>
+            ))}
+          </nav>
+        </Reveal>
     </section>
   );
 }
 
 export function ExperienceSection() {
   return (
-    <section className="section section--experience" id="experience" aria-labelledby="experience-heading">
-      <div className="page-shell">
-        <Reveal className="section-heading">
-          <div>
-            <p className="section-kicker">01 / Experience</p>
-            <h2 className="section-title" id="experience-heading">Built inside real operating constraints.</h2>
-          </div>
-          <p className="section-intro">
-            Three roles across production software, backend product systems, and analytical infrastructure.
-          </p>
-        </Reveal>
-
-        <div className="experience-list">
-          {portfolio.experiences.map((experience, index) => (
-            <Reveal as="div" className="experience-item" delay={index * 0.04} key={experience.id}>
-              <div className="experience-index" aria-hidden="true">0{index + 1}</div>
-              <div className="experience-identity">
-                <p className="experience-date">{experience.period}</p>
-                <h3 className="experience-company">{experience.company}</h3>
-                <p className="experience-role">{experience.role}</p>
-              </div>
-              <div className="experience-body">
-                <p className="experience-summary">{experience.summary}</p>
-                <ul className="experience-proofs">
-                  {experience.highlights.slice(0, index === 0 ? 3 : 2).map((highlight) => (
-                    <li className="experience-proof" key={highlight}>{highlight}</li>
-                  ))}
-                </ul>
-                {experience.note ? <p className="experience-note">{experience.note}</p> : null}
-              </div>
-            </Reveal>
-          ))}
-        </div>
+    <DocSection
+      id="experience"
+      lede="Three roles across production software, backend product systems, and analytical infrastructure. Scope notes state what each engagement did and did not cover."
+      number="1"
+      rail="Experience"
+      title="Built inside real operating constraints."
+    >
+      <div className="doc-block">
+        {portfolio.experiences.map((experience, index) => (
+          <Reveal as="div" className="entry" delay={index * 0.04} key={experience.id}>
+            <div>
+              <p className="entry-when figure-value">{experience.period}</p>
+              <h3 className="entry-org">{experience.company}</h3>
+              <p className="entry-role">{experience.role}</p>
+            </div>
+            <div>
+              <p className="entry-summary">{experience.summary}</p>
+              <ol className="entry-points">
+                {experience.highlights.slice(0, index === 0 ? 3 : 2).map((highlight) => (
+                  <li key={highlight}>{highlight}</li>
+                ))}
+              </ol>
+              <ul className="entry-stack">
+                {experience.stack.map((technology) => <li key={technology}>{technology}</li>)}
+              </ul>
+              {experience.note ? <p className="note">{experience.note}</p> : null}
+            </div>
+          </Reveal>
+        ))}
       </div>
-    </section>
+    </DocSection>
   );
 }
 
 export function WorkSection() {
-  const featuredProjects = homepageProjects.slice(0, 3);
-  const supportingProjects = homepageProjects.slice(3);
-
   return (
-    <section className="section" id="work" aria-labelledby="work-heading">
-      <div className="page-shell">
-        <Reveal className="section-heading">
-          <div>
-            <p className="section-kicker">02 / Selected work</p>
-            <h2 className="section-title" id="work-heading">Systems with the evidence left in.</h2>
-          </div>
-          <p className="section-intro">
-            Design choices, evaluation results, and limitations stay visible instead of being reduced to demo claims.
-          </p>
-        </Reveal>
+    <DocSection
+      id="work"
+      lede="Each system is written up as its own document: the brief, the architecture, the decisions with their costs, what was measured, and where the result stops being true."
+      number="2"
+      rail="Selected work"
+      title="Systems with the evidence left in."
+    >
+      <div className="doc-block">
+        {featuredProjects.map((project, index) => {
+          const evidence = homepageProjectEvidence[project.slug];
+          // The decision that carries an explicit cost: the design doc's
+          // "Alternatives Considered", stood next to the result it produced.
+          // Not every decision records a trade-off, so normalise the shape.
+          const alternative = project.decisions
+            .map((decision) => ({
+              title: decision.title,
+              choice: decision.choice,
+              cost: "tradeoff" in decision ? decision.tradeoff : undefined,
+            }))
+            .find((decision) => Boolean(decision.cost));
+          const collaborative = project.slug === "real-time-fraud-detection";
+          const reference = `2.${index + 1}`;
 
-        <div className="featured-projects">
-          {featuredProjects.map((project, index) => {
-            const collaborative = project.slug === "real-time-fraud-detection";
-            const evidence = homepageProjectEvidence[project.slug];
-            return (
-              <Reveal
-                as="div"
-                className={`project-feature project-feature--${project.visualKind}`}
-                delay={index * 0.04}
-                key={project.slug}
-              >
-                <article>
-                  <div className="project-feature-head">
-                    <span className="project-index">FEATURED / {String(index + 1).padStart(2, "0")}</span>
-                    <span className="project-domain">{collaborative ? "Collaborative project" : project.domain}</span>
-                  </div>
-                  <div className="project-feature-grid">
-                    <div className="project-visual-shell">
+          return (
+            <Reveal as="div" className="work-entry" delay={index * 0.03} key={project.slug}>
+              <article>
+                <div className="work-head">
+                  <span className="figure-value">§{reference}</span>
+                  <span>{collaborative ? "Collaborative project" : project.domain}</span>
+                </div>
+
+                <div className={`work-grid${index % 2 === 1 ? " work-grid--flip" : ""}`}>
+                  <figure className="figure work-figure">
+                    <div className="figure-frame">
                       <ProjectVisual kind={project.visualKind} />
                     </div>
-                    <div className="project-card-copy">
-                      <p className="project-subtitle">{project.subtitle}</p>
-                      <h3 className="project-title">
-                        <Link href={`/projects/${project.slug}`}>{project.title}</Link>
-                      </h3>
-                      <p className="project-summary">{project.summary}</p>
-                      <div className="project-meta" aria-label={`${project.title} technologies`} role="list">
-                        {project.stack.slice(0, 4).map((technology) => (
-                          <span className="tech-chip" key={technology} role="listitem">{technology}</span>
-                        ))}
-                      </div>
-                      <div className="project-card-footer">
-                        <div className="project-evidence">
-                          <span className="project-evidence-label">{evidence.label}</span>
-                          <strong className="project-evidence-copy">{evidence.statement}</strong>
-                        </div>
-                        <div className="project-card-actions">
-                          <Link className="project-arrow" href={`/projects/${project.slug}`}>
-                            Case study <ArrowUpRight aria-hidden="true" size={16} />
-                          </Link>
-                          <ExternalLink className="project-arrow project-source-link" href={project.repository}>
-                            Source
-                          </ExternalLink>
-                          {"demoUrl" in project && project.demoUrl ? (
-                            <ExternalLink className="project-arrow project-demo-link" href={project.demoUrl}>
-                              Live demo
-                            </ExternalLink>
-                          ) : null}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </article>
-              </Reveal>
-            );
-          })}
-        </div>
+                    <figcaption className="figure-caption">
+                      <b>Figure {reference}</b>
+                      {project.figureCaption}
+                    </figcaption>
+                  </figure>
 
-        <div className="supporting-work">
-          <div className="supporting-work-label">
-            <span className="technical-label">More work</span>
-            <p>Additional systems with focused scopes and complete project pages.</p>
-          </div>
-          <div className="supporting-work-list">
-            {supportingProjects.map((project, index) => (
-              <Reveal as="div" delay={index * 0.04} key={project.slug}>
-                <article className="supporting-project">
                   <div>
-                    <span className="project-index">PROJECT / {project.index}</span>
-                    <h3><Link href={`/projects/${project.slug}`}>{project.title}</Link></h3>
-                    <p>{project.summary}</p>
-                    <span className="supporting-project-status">{project.status}</span>
-                  </div>
-                  <div className="supporting-project-meta">
-                    <span>{project.domain}</span>
-                    <div className="supporting-project-actions">
-                      <Link className="project-arrow" href={`/projects/${project.slug}`}>
-                        Case study <ArrowUpRight aria-hidden="true" size={15} />
-                      </Link>
-                      <ExternalLink className="project-arrow project-source-link" href={project.repository}>
-                        Source
-                      </ExternalLink>
+                    <h3 className="work-title">
+                      <Link href={`/projects/${project.slug}`}>{project.title}</Link>
+                    </h3>
+                    <p className="work-sub">{project.subtitle}</p>
+                    <p className="work-summary">{project.summary}</p>
+
+                    <div className="work-finding">
+                      <p className="work-finding-label">{evidence.label}</p>
+                      <p className="work-finding-text">{evidence.statement}</p>
+                    </div>
+
+                    {alternative ? (
+                      <dl className="alternative">
+                        <div className="alternative-row">
+                          <dt>Alternative considered</dt>
+                          <dd>{alternative.title}</dd>
+                        </div>
+                        <div className="alternative-row">
+                          <dt>Chosen</dt>
+                          <dd>{alternative.choice}</dd>
+                        </div>
+                        <div className="alternative-row alternative-row--cost">
+                          <dt>Cost</dt>
+                          <dd>{alternative.cost}</dd>
+                        </div>
+                      </dl>
+                    ) : null}
+
+                    <ul className="work-stack">
+                      {project.stack.slice(0, 5).map((technology) => (
+                        <li key={technology}>{technology}</li>
+                      ))}
+                    </ul>
+
+                    <div className="work-links">
+                      <Link href={`/projects/${project.slug}`}>Read the case study</Link>
+                      <ExternalLink href={project.repository}>Source</ExternalLink>
                       {"demoUrl" in project && project.demoUrl ? (
-                        <ExternalLink className="project-arrow project-demo-link" href={project.demoUrl}>
-                          Live demo
-                        </ExternalLink>
+                        <ExternalLink href={project.demoUrl}>Live demo</ExternalLink>
                       ) : null}
                     </div>
                   </div>
-                </article>
-              </Reveal>
-            ))}
-          </div>
+                </div>
+              </article>
+            </Reveal>
+          );
+        })}
+      </div>
+
+      <div className="doc-block">
+        <p className="technical-label">Also documented</p>
+        <div className="reflist">
+          {referencedProjects.map((project, index) => (
+            <Reveal as="div" delay={index * 0.03} key={project.slug}>
+              <article className="reflist-row">
+                <span className="reflist-num figure-value">§2.{featuredProjects.length + index + 1}</span>
+                <h3 className="reflist-title">
+                  <Link href={`/projects/${project.slug}`}>{project.title}</Link>
+                </h3>
+                <p className="reflist-desc">{project.summary}</p>
+                <div className="reflist-links">
+                  <Link href={`/projects/${project.slug}`}>Case study</Link>
+                  <ExternalLink href={project.repository}>Source</ExternalLink>
+                  {"demoUrl" in project && project.demoUrl ? (
+                    <ExternalLink href={project.demoUrl}>Demo</ExternalLink>
+                  ) : null}
+                </div>
+              </article>
+            </Reveal>
+          ))}
         </div>
       </div>
-    </section>
+    </DocSection>
+  );
+}
+
+export function NonGoalsSection() {
+  return (
+    <DocSection
+      id="non-goals"
+      lede="A design doc says what it is not for. These boundaries hold everywhere on this site, including in the structured data search engines read."
+      number="3"
+      rail="Non-goals"
+      title="What this work does not claim."
+    >
+      <div className="doc-block nongoals">
+        {portfolio.nonGoals.map((nonGoal, index) => {
+          const references = nonGoal.refs
+            .map(resolveReference)
+            .filter((reference): reference is NonNullable<typeof reference> => reference !== null);
+
+          return (
+            <Reveal as="div" className="nongoal" delay={index * 0.03} key={nonGoal.title}>
+              <p className="nongoal-refs">
+                {references.map((reference) => (
+                  <SectionLink href={reference.href} key={reference.href}>
+                    {reference.label}
+                    <span className="sr-only"> — {reference.title}</span>
+                  </SectionLink>
+                ))}
+              </p>
+              <p><strong>Not {nonGoal.title.toLowerCase()}.</strong> {nonGoal.detail}</p>
+            </Reveal>
+          );
+        })}
+      </div>
+    </DocSection>
   );
 }
 
 export function CapabilitiesSection() {
   return (
-    <section className="section" id="capabilities" aria-labelledby="capabilities-heading">
-      <div className="page-shell">
-        <Reveal className="section-heading">
-          <div>
-            <p className="section-kicker">03 / Capabilities</p>
-            <h2 className="section-title" id="capabilities-heading">Systems, data, and models—with clear boundaries.</h2>
-          </div>
-          <p className="section-intro">
-            I work across the seams: APIs expose workflows, data preserves evidence, and models are tested against explicit baselines.
-          </p>
-        </Reveal>
-
-        <Reveal className="capability-map">
-          <div className="capability-anchors">
-            {capabilityAnchors.map((anchor) => (
-              <article className="capability-column" data-domain={anchor.key} key={anchor.title}>
-                <span className="capability-index">{anchor.index}</span>
-                <h3 className="capability-title">{anchor.title}</h3>
-                <p className="capability-description">{anchor.description}</p>
-                <div className="capability-tech">
-                  {anchor.technologies.map((technology) => <span key={technology}>{technology}</span>)}
-                </div>
-              </article>
-            ))}
-          </div>
-          <div className="capability-relationships" aria-label="Relationships between capability domains">
-            {portfolio.capabilities.relationships.map((relationship) => (
-              <div className="capability-relationship" key={`${relationship.technology}-${relationship.to}`}>
-                <span>{domainNames[relationship.from]}</span>
-                <strong>{relationship.technology}</strong>
-                <span>{domainNames[relationship.to]}</span>
-                <p>{relationship.rationale}</p>
-              </div>
-            ))}
-          </div>
-        </Reveal>
+    <DocSection
+      id="capabilities"
+      lede="I work across the seams: APIs expose workflows, data preserves evidence, and models are tested against explicit baselines before anything depends on them."
+      number="4"
+      rail="Capabilities"
+      title="Systems, data, and models with stated boundaries."
+    >
+      <div className="doc-block cap-table">
+        {capabilityDomains.map((domain, index) => (
+          <Reveal as="div" className="cap-row" delay={index * 0.03} key={domain.key}>
+            <h3 className="cap-domain">{domain.title}</h3>
+            <p className="cap-desc">{domain.description}</p>
+            <ul className="cap-tech">
+              {domain.technologies.map((technology) => <li key={technology}>{technology}</li>)}
+            </ul>
+          </Reveal>
+        ))}
       </div>
-    </section>
+
+      <div className="doc-block">
+        <p className="technical-label">Where the domains meet</p>
+        <div className="seam-list">
+          {portfolio.capabilities.relationships.map((relationship) => (
+            <Reveal
+              as="div"
+              className="seam"
+              key={`${relationship.technology}-${relationship.to}`}
+            >
+              <p className="seam-path">
+                <span>{domainNames[relationship.from]}</span>
+                <span aria-hidden="true">→</span>
+                <strong>{relationship.technology}</strong>
+                <span aria-hidden="true">→</span>
+                <span>{domainNames[relationship.to]}</span>
+              </p>
+              <p className="seam-rationale">{relationship.rationale}</p>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </DocSection>
   );
 }
 
-export function AboutSection() {
+export function BackgroundSection() {
+  const { education } = portfolio;
+
   return (
-    <section className="section" id="about" aria-labelledby="about-heading">
-      <div className="page-shell">
-        <Reveal className="section-heading section-heading--compact">
-          <div>
-            <p className="section-kicker">04 / About</p>
-            <h2 className="section-title" id="about-heading">The model is only one part of the system.</h2>
-          </div>
+    <DocSection
+      id="background"
+      number="5"
+      rail="Background"
+      title="The model is only one part of the system."
+    >
+      <div className="doc-block">
+        <Reveal className="prose">
+          <p>{portfolio.about}</p>
+          <p>
+            My work spans backend services, data infrastructure, and applied AI — not as isolated
+            demos, but as systems that can be tested, reviewed, and understood by someone who did
+            not build them.
+          </p>
         </Reveal>
-        <div className="about-grid">
-          <Reveal>
-            <p className="about-statement">{portfolio.about}</p>
-            <p className="about-copy">
-              My work spans backend services, data infrastructure, and applied AI—not as isolated demos, but as systems that can be tested, reviewed, and understood.
-            </p>
-          </Reveal>
-          <Reveal className="education-card" delay={0.06}>
-            <p className="technical-label">Education / In progress</p>
-            <h3>{portfolio.education.institution}</h3>
-            <p>{portfolio.education.degree} — {portfolio.education.field}</p>
-            <p>{portfolio.education.location}</p>
-            <div className="education-meta">
-              <div><span className="technical-label">Period</span><strong>{portfolio.education.period}</strong></div>
+
+        <Reveal className="doc-block" delay={0.05}>
+          <dl className="titleblock-meta">
+            <div className="meta-row">
+              <dt>Institution</dt>
+              <dd>{education.institution}</dd>
             </div>
-          </Reveal>
-        </div>
+            <div className="meta-row">
+              <dt>Programme</dt>
+              <dd>{education.degree} — {education.field}</dd>
+            </div>
+            <div className="meta-row">
+              <dt>Period</dt>
+              <dd className="figure-value">{education.period} · In progress</dd>
+            </div>
+            <div className="meta-row">
+              <dt>CGPA</dt>
+              <dd className="figure-value">{education.cgpa}</dd>
+            </div>
+          </dl>
+        </Reveal>
       </div>
-    </section>
+    </DocSection>
   );
 }
 
 export function ContactSection() {
   return (
-    <section className="section section--contact" id="contact" aria-labelledby="contact-heading">
-      <div className="page-shell">
-        <Reveal className="contact-panel">
-          <div className="contact-inner">
-            <p className="section-kicker">05 / Contact</p>
-            <h2 className="contact-title" id="contact-heading">{portfolio.contact.heading}</h2>
-            <p className="contact-copy">{portfolio.contact.copy}</p>
-            <div className="contact-actions">
-              <a className="email-link" href={portfolio.links.email}>
-                <Mail aria-hidden="true" size={17} /> {portfolio.identity.email}
-              </a>
-              <CopyEmail email={portfolio.identity.email} />
-            </div>
-            <div className="hero-socials contact-socials">
-              <ExternalLink href={portfolio.links.github}><Code2 aria-hidden="true" size={14} /> GitHub</ExternalLink>
-              <ExternalLink href={portfolio.links.linkedin}><ContactRound aria-hidden="true" size={14} /> LinkedIn</ExternalLink>
-            </div>
+    <section aria-labelledby="contact-heading" className="close-field" id="contact">
+      <div className="page-shell close-inner">
+        <div>
+          <h2 className="close-title" id="contact-heading">{portfolio.contact.heading}</h2>
+          <p className="close-copy">{portfolio.contact.copy}</p>
+        </div>
+        <div className="close-actions">
+          <a className="close-email" href={portfolio.links.email}>{portfolio.identity.email}</a>
+          <div className="close-secondary">
+            <CopyEmail email={portfolio.identity.email} />
+            <ExternalLink href={portfolio.links.github}>GitHub</ExternalLink>
+            <ExternalLink href={portfolio.links.linkedin}>LinkedIn</ExternalLink>
           </div>
-        </Reveal>
+        </div>
       </div>
     </section>
   );

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArrowLeft, ArrowUpRight, Code2, ExternalLink as ExternalLinkIcon } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -70,6 +70,20 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const nextProject = getNextProject(project.slug);
   const groupedTechnology = technologyGroups(project.stack);
   const isCollaborative = project.slug === "real-time-fraud-detection";
+
+  // Section numbers stay contiguous when a project carries no measured evidence,
+  // so a cross-reference in the copy always resolves to the section it names.
+  const order = [
+    "brief",
+    "architecture",
+    "decisions",
+    "validation",
+    ...(project.metrics.length > 0 ? ["evidence"] : []),
+    "limits",
+    "technology",
+  ] as const;
+  const section = (name: (typeof order)[number]) => String(order.indexOf(name) + 1);
+
   const projectJsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareSourceCode",
@@ -85,191 +99,251 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <>
-      <main id="main-content">
-        <section className="case-hero">
-          <div className="page-shell">
-            <Link className="case-breadcrumb" href="/#work">
-              <ArrowLeft aria-hidden="true" size={14} /> Selected work
-            </Link>
-            <div className="case-heading-grid">
-              <Reveal>
-                <p className="case-index">PROJECT / {project.index} · {project.status}</p>
-                <h1 className="case-title">{project.title}</h1>
-                <p className="case-subtitle">{project.subtitle}</p>
-              </Reveal>
-              <Reveal delay={0.06}>
-                <p className="case-summary">{project.summary}</p>
-                <div className="case-meta-list">
-                  <div className="case-meta-row"><span>Status</span><span>{project.status}</span></div>
-                  <div className="case-meta-row"><span>Role</span><span>{project.role}</span></div>
-                  <div className="case-meta-row"><span>Domain</span><span>{project.domain}</span></div>
-                  <div className="case-meta-row">
-                    <span>Evidence</span>
-                    <span>
-                      <ExternalLink className="project-arrow" href={project.repository}>Repository</ExternalLink>
-                      {project.demoUrl ? <> · <ExternalLink className="project-arrow" href={project.demoUrl}>Live demo</ExternalLink></> : null}
-                    </span>
-                  </div>
+      <main className="page-shell" id="main-content">
+        <div className="case-titleblock">
+          <Link className="case-breadcrumb" href="/#work">
+            <ArrowLeft aria-hidden="true" size={13} /> §2 Selected work
+          </Link>
+
+          <div className="titleblock-grid">
+            <Reveal>
+              <h1 className="case-title">{project.title}</h1>
+              <p className="case-subtitle">{project.subtitle}</p>
+            </Reveal>
+
+            <Reveal delay={0.06}>
+              <dl className="titleblock-meta">
+                <div className="meta-row">
+                  <dt>Status</dt>
+                  <dd>{project.status}</dd>
                 </div>
-              </Reveal>
-            </div>
-            <Reveal className="case-visual" delay={0.08}>
-              <ProjectVisual kind={project.visualKind} labelled />
+                <div className="meta-row">
+                  <dt>Role</dt>
+                  <dd>{project.role}</dd>
+                </div>
+                <div className="meta-row">
+                  <dt>Domain</dt>
+                  <dd>{project.domain}</dd>
+                </div>
+                <div className="meta-row">
+                  <dt>Source</dt>
+                  <dd>
+                    <ExternalLink className="link" href={project.repository}>Repository</ExternalLink>
+                    {project.demoUrl ? (
+                      <> · <ExternalLink className="link" href={project.demoUrl}>Live demo</ExternalLink></>
+                    ) : null}
+                  </dd>
+                </div>
+              </dl>
             </Reveal>
           </div>
-        </section>
 
-        <section className="section">
-          <div className="page-shell case-content-grid">
-            <div className="case-section-label"><p className="section-kicker">01 / Brief</p></div>
-            <div>
-              <Reveal className="case-prose">
-                <p>{project.problem}</p>
-                {project.overview.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-                {project.ownershipNote ? <p className="ownership-note">{project.ownershipNote}</p> : null}
-              </Reveal>
-              <Reveal className="case-facts" delay={0.04}>
-                {project.constraints.map((constraint, index) => (
-                  <article className="case-fact" key={constraint}>
-                    <span className="technical-label">Constraint / {String(index + 1).padStart(2, "0")}</span>
-                    <h3>{index === 0 ? "Operating boundary" : "Constraint"}</h3>
-                    <p>{constraint}</p>
-                  </article>
-                ))}
-              </Reveal>
+          <Reveal delay={0.08}>
+            <figure className="figure">
+              <div className="figure-frame">
+                <ProjectVisual kind={project.visualKind} labelled />
+              </div>
+              <figcaption className="figure-caption">
+                <b>Figure 1</b>
+                {project.figureCaption}
+              </figcaption>
+            </figure>
+          </Reveal>
+        </div>
+
+        <section aria-labelledby="brief-heading" className="doc-section" id="brief">
+          <div className="doc-rail">
+            <span className="doc-num">§{section("brief")}</span>
+            <span className="doc-rail-label">Brief</span>
+          </div>
+          <div className="doc-body">
+            <Reveal>
+              <h2 className="doc-title" id="brief-heading">The problem this had to solve.</h2>
+            </Reveal>
+            <Reveal className="prose doc-block">
+              <p>{project.problem}</p>
+              {project.overview.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            </Reveal>
+            {project.ownershipNote ? <p className="note">{project.ownershipNote}</p> : null}
+
+            <div className="doc-block">
+              <p className="technical-label">Constraints</p>
+              <ol className="rule-list rule-list--limits">
+                {project.constraints.map((constraint) => <li key={constraint}>{constraint}</li>)}
+              </ol>
             </div>
           </div>
         </section>
 
-        <section className="section">
-          <div className="page-shell case-content-grid">
-            <div className="case-section-label"><p className="section-kicker">02 / Architecture</p></div>
-            <Reveal className="architecture-steps">
-              {project.architecture.map((step, index) => (
-                <article className="architecture-step" key={step.id}>
-                  <div className="architecture-step-index">{String(index + 1).padStart(2, "0")}</div>
-                  <div>
-                    <h2>{step.label}</h2>
-                    {step.detail ? <p>{step.detail}</p> : null}
-                  </div>
-                  <span className={`architecture-kind architecture-kind--${step.kind}`}>{step.kind}</span>
-                </article>
+        <section aria-labelledby="architecture-heading" className="doc-section" id="architecture">
+          <div className="doc-rail">
+            <span className="doc-num">§{section("architecture")}</span>
+            <span className="doc-rail-label">Architecture</span>
+          </div>
+          <div className="doc-body">
+            <Reveal>
+              <h2 className="doc-title" id="architecture-heading">How the system is put together.</h2>
+            </Reveal>
+            <Reveal as="div" className="doc-block stage-list">
+              {project.architecture.map((step) => (
+                <div className="stage" key={step.id}>
+                  <h3 className="stage-label">{step.label}</h3>
+                  <p className="stage-detail">{step.detail ?? ""}</p>
+                  <span className="stage-kind">{step.kind}</span>
+                </div>
               ))}
             </Reveal>
           </div>
         </section>
 
-        <section className="section">
-          <div className="page-shell case-content-grid">
-            <div className="case-section-label"><p className="section-kicker">03 / Decisions</p></div>
-            <div className="decision-grid">
+        <section aria-labelledby="decisions-heading" className="doc-section" id="decisions">
+          <div className="doc-rail">
+            <span className="doc-num">§{section("decisions")}</span>
+            <span className="doc-rail-label">Decisions</span>
+          </div>
+          <div className="doc-body">
+            <Reveal>
+              <h2 className="doc-title" id="decisions-heading">What was chosen, and what it cost.</h2>
+            </Reveal>
+            <div className="doc-block">
               {project.decisions.map((decision, index) => (
-                <Reveal as="div" className="decision-card" delay={index * 0.035} key={decision.title}>
-                  <span className="technical-label">Decision / {String(index + 1).padStart(2, "0")}</span>
-                  <h3>{decision.title}</h3>
-                  <p><strong>Choice:</strong> {decision.choice}</p>
-                  <p><strong>Why:</strong> {decision.rationale}</p>
-                  {decision.tradeoff ? <p><strong>Tradeoff:</strong> {decision.tradeoff}</p> : null}
+                <Reveal as="div" className="decision" delay={index * 0.03} key={decision.title}>
+                  <h3 className="decision-title">{decision.title}</h3>
+                  <dl className="decision-fields">
+                    <div className="decision-field">
+                      <dt>Choice</dt>
+                      <dd>{decision.choice}</dd>
+                    </div>
+                    <div className="decision-field">
+                      <dt>Rationale</dt>
+                      <dd>{decision.rationale}</dd>
+                    </div>
+                    {decision.tradeoff ? (
+                      <div className="decision-field decision-field--cost">
+                        <dt>Cost</dt>
+                        <dd>{decision.tradeoff}</dd>
+                      </div>
+                    ) : null}
+                  </dl>
                 </Reveal>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="section">
-          <div className="page-shell case-content-grid">
-            <div className="case-section-label"><p className="section-kicker">04 / Validation</p></div>
-            <div>
-              <Reveal as="div">
-                <ul className="validation-list">
-                  {project.validation.map((item) => <li key={item}>{item}</li>)}
-                </ul>
-              </Reveal>
-              {project.artifact ? (
-                <Reveal as="div" className="project-artifact" delay={0.05}>
-                  <div className="project-artifact-frame">
+        <section aria-labelledby="validation-heading" className="doc-section" id="validation">
+          <div className="doc-rail">
+            <span className="doc-num">§{section("validation")}</span>
+            <span className="doc-rail-label">Validation</span>
+          </div>
+          <div className="doc-body">
+            <Reveal>
+              <h2 className="doc-title" id="validation-heading">How it was checked.</h2>
+            </Reveal>
+            <Reveal as="div" className="doc-block">
+              <ul className="rule-list rule-list--limits">
+                {project.validation.map((item) => <li key={item}>{item}</li>)}
+              </ul>
+            </Reveal>
+
+            {project.artifact ? (
+              <Reveal as="div" className="doc-block" delay={0.05}>
+                <figure className="figure">
+                  <div className="figure-frame">
                     <Image
                       alt={project.artifact.alt}
                       height={900}
                       loading="lazy"
-                      sizes="(max-width: 860px) calc(100vw - 32px), 880px"
+                      sizes="(max-width: 860px) calc(100vw - 40px), 880px"
                       src={project.artifact.src}
                       width={1600}
                     />
                   </div>
-                  <div className="project-artifact-caption">
-                    <span className="technical-label">Repository artifact</span>
-                    <p>{project.artifact.caption}</p>
-                    <ExternalLink className="project-arrow" href={project.artifact.sourceUrl}>
-                      Inspect source <ArrowUpRight aria-hidden="true" size={15} />
-                    </ExternalLink>
-                  </div>
-                </Reveal>
-              ) : null}
-            </div>
+                  <figcaption className="figure-caption">
+                    <b>Figure 2 · Repository artifact</b>
+                    {project.artifact.caption}{" "}
+                    <ExternalLink className="link" href={project.artifact.sourceUrl}>Inspect the source</ExternalLink>
+                  </figcaption>
+                </figure>
+              </Reveal>
+            ) : null}
           </div>
         </section>
 
         {project.metrics.length > 0 ? (
-          <section className="section" aria-label="Project evidence and benchmark context">
-            <div className="page-shell case-content-grid">
-              <div className="case-section-label"><p className="section-kicker">05 / Evidence</p></div>
-              <div className={`case-metrics case-metrics--${project.metrics.length}`}>
+          <section aria-labelledby="evidence-heading" className="doc-section" id="evidence">
+            <div className="doc-rail">
+              <span className="doc-num">§{section("evidence")}</span>
+              <span className="doc-rail-label">Evidence</span>
+            </div>
+            <div className="doc-body">
+              <Reveal>
+                <h2 className="doc-title" id="evidence-heading">What was measured.</h2>
+                <p className="doc-lede">
+                  Each figure states the conditions it was measured under. None of them describe
+                  production traffic.
+                </p>
+              </Reveal>
+              <Reveal as="div" className="doc-block evidence-grid">
                 {project.metrics.map((metric) => (
-                  <div className="case-metric" key={`${metric.value}-${metric.label}`}>
-                    <span className="technical-label">{/\d/.test(metric.value) ? "Evidence / context" : "System property"}</span>
-                    <strong>{metric.value}</strong>
-                    <span>{metric.label}</span>
-                    {metric.detail ? <small className="case-metric-detail">{metric.detail}</small> : null}
+                  <div className="evidence" key={`${metric.value}-${metric.label}`}>
+                    <p className="evidence-value">{metric.value}</p>
+                    <div>
+                      <p className="evidence-label">{metric.label}</p>
+                      {metric.detail ? <p className="evidence-detail">{metric.detail}</p> : null}
+                    </div>
                   </div>
                 ))}
-              </div>
+              </Reveal>
             </div>
           </section>
         ) : null}
 
-        <section className="section">
-          <div className="page-shell case-content-grid">
-            <div className="case-section-label"><p className="section-kicker">{project.metrics.length > 0 ? "06" : "05"} / Limits</p></div>
-            <Reveal as="div">
-              <ul className="limitations-list">
+        <section aria-labelledby="limits-heading" className="doc-section" id="limits">
+          <div className="doc-rail">
+            <span className="doc-num">§{section("limits")}</span>
+            <span className="doc-rail-label">Limits</span>
+          </div>
+          <div className="doc-body">
+            <Reveal>
+              <h2 className="doc-title" id="limits-heading">Where this stops being true.</h2>
+            </Reveal>
+            <Reveal as="div" className="doc-block">
+              <ul className="rule-list rule-list--limits">
                 {project.limitations.map((item) => <li key={item}>{item}</li>)}
               </ul>
             </Reveal>
           </div>
         </section>
 
-        <section className="section">
-          <div className="page-shell case-content-grid">
-            <div className="case-section-label"><p className="section-kicker">{project.metrics.length > 0 ? "07" : "06"} / Technology</p></div>
-            <div>
-              <div className="technology-groups">
-                {groupedTechnology.map((group) => (
-                  <div className="technology-group" key={group.label}>
-                    <h3>{group.label}</h3>
-                    <ul>{group.items.map((item) => <li key={item}>{item}</li>)}</ul>
-                  </div>
-                ))}
-              </div>
-              <div className="hero-actions repository-cta">
-                <ExternalLink className="primary-cta" href={project.repository}>
-                  <Code2 aria-hidden="true" size={16} /> Explore repository
-                </ExternalLink>
-                {project.demoUrl ? (
-                  <ExternalLink className="secondary-cta" href={project.demoUrl}>
-                    <ExternalLinkIcon aria-hidden="true" size={16} /> Open live demo
-                  </ExternalLink>
-                ) : null}
-              </div>
+        <section aria-labelledby="technology-heading" className="doc-section" id="technology">
+          <div className="doc-rail">
+            <span className="doc-num">§{section("technology")}</span>
+            <span className="doc-rail-label">Technology</span>
+          </div>
+          <div className="doc-body">
+            <Reveal>
+              <h2 className="doc-title" id="technology-heading">What it is built with.</h2>
+            </Reveal>
+            <Reveal as="div" className="doc-block tech-groups">
+              {groupedTechnology.map((group) => (
+                <div className="tech-group" key={group.label}>
+                  <h3>{group.label}</h3>
+                  <ul>{group.items.map((item) => <li key={item}>{item}</li>)}</ul>
+                </div>
+              ))}
+            </Reveal>
+            <div className="work-links doc-block">
+              <ExternalLink href={project.repository}>Explore the repository</ExternalLink>
+              {project.demoUrl ? <ExternalLink href={project.demoUrl}>Open the live demo</ExternalLink> : null}
             </div>
           </div>
         </section>
 
         {nextProject ? (
-          <Link className="next-project" href={`/projects/${nextProject.slug}`}>
-            <span className="technical-label">Next project / {nextProject.index}</span>
-            <strong>{nextProject.title}</strong>
-            <span className="project-arrow">Continue exploring <ArrowUpRight aria-hidden="true" size={18} /></span>
+          <Link className="next-doc" href={`/projects/${nextProject.slug}`}>
+            <span className="next-doc-label">Next document</span>
+            <span className="next-doc-title">{nextProject.title}</span>
           </Link>
         ) : null}
       </main>

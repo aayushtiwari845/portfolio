@@ -35,7 +35,7 @@ export function IpoAnalyticsVisual(props: ProjectVisualProps) {
         const stageClass = index === pipeline.length - 1 ? styles.outputBox : index === 3 ? styles.decisionBox : styles.pipelineStage;
         return (
           <g className={stageClass} key={stage.label}>
-            <rect height="52" rx="6" width="104" x={x} y="70" />
+            <rect height="52" width="104" x={x} y="70" />
             <text className={styles.stageLabel} x={x + 52} y="92" textAnchor="middle">{stage.label}</text>
             <text className={styles.stageMeta} x={x + 52} y="109" textAnchor="middle">{stage.meta}</text>
           </g>
@@ -63,7 +63,7 @@ export function IpoAnalyticsVisual(props: ProjectVisualProps) {
       </g>
 
       <g className={styles.modelResult}>
-        <rect height="48" rx="6" width="272" x="344" y="268" />
+        <rect height="48" width="272" x="344" y="268" />
         <text className={styles.metricValueSmall} x="360" y="290">0.9808</text>
         <text className={styles.stageMeta} x="360" y="305">5-FOLD CV R²</text>
         <path d="M463 278V306" />
@@ -91,7 +91,7 @@ function IpoCompact() {
         return (
           <g className={stageClass} key={stage.label}>
             <circle cx="42" cy={y + 18} r="5" />
-            <rect height="36" rx="6" width="250" x="60" y={y} />
+            <rect height="36" width="250" x="60" y={y} />
             <text x="76" y={y + 23}>{stage.label}</text>
             <text className={styles.compactMeta} x="294" y={y + 23} textAnchor="end">{stage.meta}</text>
           </g>
@@ -99,7 +99,7 @@ function IpoCompact() {
       })}
 
       <g className={styles.compactAnalyticsPanel}>
-        <rect height="120" rx="7" width="300" x="20" y="304" />
+        <rect height="120" width="300" x="20" y="304" />
         <text className={styles.compactGroupLabel} x="38" y="326">PROJECT-DATA RESULTS</text>
         <path d="M42 396V340M42 396H168" />
         <circle className={styles.clusterOne} cx="65" cy="381" r="5" />

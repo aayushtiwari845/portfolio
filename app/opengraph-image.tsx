@@ -1,162 +1,134 @@
 import { ImageResponse } from "next/og";
 
 import { portfolio } from "@/data/portfolio";
+import { loadDocFonts, og, ogFontFamily } from "@/lib/og";
 
 export const alt =
   "Aayush Tiwari — software engineering, AI systems, and data infrastructure";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-function SystemGraph() {
-  return (
-    <svg
-      aria-hidden="true"
-      height="390"
-      viewBox="0 0 390 390"
-      width="390"
-    >
-      <g fill="none" stroke="#28404a" strokeWidth="1.5">
-        <path d="M46 96L146 48L257 83L342 38" />
-        <path d="M46 96L113 188L224 154L332 229" />
-        <path d="M113 188L62 309L181 337L332 229" />
-        <path d="M224 154L181 337" />
-        <path d="M257 83L224 154L342 38" />
-      </g>
-      <g fill="#07090b" stroke="#6c8a95" strokeWidth="2">
-        <circle cx="46" cy="96" r="8" />
-        <circle cx="146" cy="48" r="6" />
-        <circle cx="257" cy="83" r="7" />
-        <circle cx="342" cy="38" r="5" />
-        <circle cx="113" cy="188" r="7" />
-        <circle cx="224" cy="154" r="10" />
-        <circle cx="332" cy="229" r="7" />
-        <circle cx="62" cy="309" r="5" />
-        <circle cx="181" cy="337" r="8" />
-      </g>
-      <g fill="#a6fbff">
-        <circle cx="224" cy="154" r="4" />
-        <circle cx="332" cy="229" r="3" />
-      </g>
-      <g fill="#c7ff61">
-        <circle cx="257" cy="83" r="3" />
-      </g>
-    </svg>
-  );
-}
-
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
   const siteLabel = portfolio.metadata.siteUrl.replace(/^https?:\/\//, "");
+  const fonts = await loadDocFonts();
+  const current = portfolio.experiences[0];
+
+  const metaRows: readonly (readonly [string, string])[] = [
+    ["Author", portfolio.identity.fullName],
+    ["Discipline", portfolio.identity.descriptor],
+    ["Location", portfolio.identity.location],
+    ["Most recent", `${current.role}, ${current.company}`],
+  ];
 
   return new ImageResponse(
     (
       <div
         style={{
-          alignItems: "stretch",
-          backgroundColor: "#07090b",
-          backgroundImage:
-            "linear-gradient(rgba(85, 111, 122, 0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(85, 111, 122, 0.10) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-          color: "#f3f1e9",
+          background: og.stock,
+          color: og.ink,
           display: "flex",
-          fontFamily: "Arial, sans-serif",
+          flexDirection: "column",
+          fontFamily: ogFontFamily,
           height: "100%",
-          overflow: "hidden",
-          padding: "64px 70px",
-          position: "relative",
+          justifyContent: "space-between",
+          padding: "56px 64px",
           width: "100%",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            width: "68%",
-          }}
-        >
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <div
             style={{
-              color: "#9da8aa",
+              borderBottom: `2px solid ${og.ink}`,
+              color: og.ink3,
               display: "flex",
-              fontSize: 18,
-              letterSpacing: "0.18em",
+              fontSize: 20,
+              gap: 28,
+              letterSpacing: "0.1em",
+              paddingBottom: 14,
               textTransform: "uppercase",
             }}
           >
-            {portfolio.identity.displayName} / Portfolio
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <div
-              style={{
-                color: "#a6fbff",
-                display: "flex",
-                fontSize: 17,
-                letterSpacing: "0.16em",
-                marginBottom: 24,
-                textTransform: "uppercase",
-              }}
-            >
-              Software / AI systems / Data
-            </div>
-            <div
-              style={{
-                display: "flex",
-                fontSize: 64,
-                fontWeight: 600,
-                letterSpacing: "-0.045em",
-                lineHeight: 1.02,
-                maxWidth: 760,
-              }}
-            >
-              I build backend and data systems that keep AI behavior inspectable.
-            </div>
+            <span style={{ color: og.ink }}>Engineering portfolio</span>
+            <span>Updated {portfolio.metadata.lastUpdated}</span>
           </div>
 
           <div
             style={{
-              alignItems: "center",
-              color: "#9da8aa",
               display: "flex",
-              fontSize: 18,
-              justifyContent: "space-between",
-              letterSpacing: "0.08em",
-              width: 710,
+              fontSize: 66,
+              fontWeight: 600,
+              letterSpacing: "-0.035em",
+              lineHeight: 1.02,
+              marginTop: 44,
+              maxWidth: 900,
             }}
           >
-            <span>{siteLabel}</span>
-            <span style={{ color: "#c7ff61" }}>SYS / ACTIVE</span>
+            {portfolio.identity.headline}
           </div>
         </div>
 
-        <div
-          style={{
-            alignItems: "center",
-            display: "flex",
-            height: "100%",
-            justifyContent: "center",
-            position: "absolute",
-            right: 22,
-            top: 0,
-            width: 430,
-          }}
-        >
-          <SystemGraph />
-        </div>
+        <div style={{ display: "flex", gap: 32, justifyContent: "space-between", width: "100%" }}>
+          <div style={{ display: "flex", flexDirection: "column", width: 645 }}>
+            {metaRows.map(([label, value]) => (
+              <div
+                key={label}
+                style={{
+                  borderTop: `1px solid ${og.rule}`,
+                  display: "flex",
+                  gap: 22,
+                  paddingBottom: 9,
+                  paddingTop: 9,
+                }}
+              >
+                <span
+                  style={{
+                    color: og.ink3,
+                    display: "flex",
+                    flexShrink: 0,
+                    fontSize: 15,
+                    letterSpacing: "0.09em",
+                    textTransform: "uppercase",
+                    width: 145,
+                  }}
+                >
+                  {label}
+                </span>
+                <span style={{ display: "flex", fontSize: 19 }}>{value}</span>
+              </div>
+            ))}
+          </div>
 
-        <div
-          style={{
-            background: "#a6fbff",
-            display: "flex",
-            height: 2,
-            left: 0,
-            position: "absolute",
-            top: 0,
-            width: 190,
-          }}
-        />
+          <div
+            style={{
+              alignItems: "flex-end",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              width: 355,
+            }}
+          >
+            <div
+              style={{
+                background: og.mark,
+                color: og.ink,
+                display: "flex",
+                fontSize: 20,
+                fontWeight: 600,
+                lineHeight: 1.3,
+                maxWidth: 355,
+                padding: "12px 18px",
+                textAlign: "right",
+              }}
+            >
+              {portfolio.identity.availability}
+            </div>
+            <div style={{ color: og.ink3, display: "flex", fontSize: 18, marginTop: 18 }}>
+              {siteLabel}
+            </div>
+          </div>
+        </div>
       </div>
     ),
-    size,
+    { ...size, fonts: fonts.length > 0 ? fonts : undefined },
   );
 }

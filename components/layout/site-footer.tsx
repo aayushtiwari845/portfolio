@@ -6,15 +6,14 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="page-shell footer-inner">
-        <div className="footer-identity">
-          <span>Aayush Tiwari</span><br />
-          <span style={{ color: "var(--text-dim)" }}>Software / Systems / AI / Data</span>
-        </div>
-        <div className="footer-time">
-          <span className="signal-dot" aria-hidden="true" />
+        <p className="footer-identity">
+          <strong>{portfolio.identity.displayName}</strong> — {portfolio.identity.descriptor}
+        </p>
+        <p className="footer-time">
+          <span aria-hidden="true" className="signal-dot" />
           <span>Mumbai / IST</span>
           <MumbaiClock />
-        </div>
+        </p>
         <div className="footer-links">
           <ExternalLink href={portfolio.links.github}>GitHub</ExternalLink>
           <ExternalLink href={portfolio.links.linkedin}>LinkedIn</ExternalLink>

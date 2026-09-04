@@ -1,6 +1,8 @@
 import { ImageResponse } from "next/og";
 
 import { portfolio, projects } from "@/data/portfolio";
+import { getProjectStaticParams } from "@/lib/portfolio";
+import { loadDocFonts, og, ogFontFamily } from "@/lib/og";
 
 export const alt = "Aayush Tiwari portfolio project case study";
 export const size = { width: 1200, height: 630 };
@@ -10,14 +12,17 @@ type ProjectImageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export default async function ProjectOpenGraphImage({
-  params,
-}: ProjectImageProps) {
+// Prerender one preview per case study; the site ships no on-demand routes.
+export function generateStaticParams() {
+  return getProjectStaticParams();
+}
+
+export default async function ProjectOpenGraphImage({ params }: ProjectImageProps) {
   const { slug } = await params;
   const project = projects.find((entry) => entry.slug === slug);
+  const fonts = await loadDocFonts();
 
-  const index = project?.index ?? "SYS / 00";
-  const title = project?.title ?? "Selected System";
+  const title = project?.title ?? "Selected system";
   const subtitle = project?.subtitle ?? "Engineering case study";
   const domain = project?.domain ?? "Software / AI systems / Data";
   const status = project?.status ?? "Engineering case study";
@@ -27,70 +32,54 @@ export default async function ProjectOpenGraphImage({
     (
       <div
         style={{
-          backgroundColor: "#07090b",
-          backgroundImage:
-            "linear-gradient(rgba(85, 111, 122, 0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(85, 111, 122, 0.10) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-          color: "#f3f1e9",
+          background: og.stock,
+          color: og.ink,
           display: "flex",
           flexDirection: "column",
-          fontFamily: "Arial, sans-serif",
+          fontFamily: ogFontFamily,
           height: "100%",
           justifyContent: "space-between",
-          overflow: "hidden",
-          padding: "64px 70px",
-          position: "relative",
+          padding: "56px 64px",
           width: "100%",
         }}
       >
         <div
           style={{
-            alignItems: "center",
-            color: "#9da8aa",
+            borderBottom: `2px solid ${og.ink}`,
+            color: og.ink3,
             display: "flex",
-            fontSize: 17,
+            fontSize: 20,
             justifyContent: "space-between",
-            letterSpacing: "0.16em",
+            letterSpacing: "0.1em",
+            paddingBottom: 14,
             textTransform: "uppercase",
             width: "100%",
           }}
         >
-          <span>Aayush Tiwari / Selected systems</span>
-          <span style={{ color: "#c7ff61" }}>{index}</span>
+          <span style={{ color: og.ink }}>{portfolio.identity.displayName} — Selected work</span>
+          <span>{domain}</span>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", maxWidth: 980 }}>
           <div
             style={{
-              color: "#a6fbff",
               display: "flex",
-              fontSize: 18,
-              letterSpacing: "0.15em",
-              marginBottom: 24,
-              textTransform: "uppercase",
-            }}
-          >
-            {domain}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 78,
+              fontSize: 82,
               fontWeight: 600,
-              letterSpacing: "-0.05em",
-              lineHeight: 0.95,
+              letterSpacing: "-0.04em",
+              lineHeight: 0.98,
             }}
           >
             {title}
           </div>
           <div
             style={{
-              color: "#aeb8b9",
+              color: og.ink2,
               display: "flex",
-              fontSize: 29,
-              lineHeight: 1.25,
-              marginTop: 26,
-              maxWidth: 940,
+              fontSize: 30,
+              lineHeight: 1.28,
+              marginTop: 24,
+              maxWidth: 900,
             }}
           >
             {subtitle}
@@ -99,33 +88,30 @@ export default async function ProjectOpenGraphImage({
 
         <div
           style={{
-            alignItems: "center",
-            color: "#8b979a",
+            alignItems: "flex-end",
+            borderTop: `1px solid ${og.rule}`,
             display: "flex",
-            fontSize: 17,
             justifyContent: "space-between",
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
+            paddingTop: 18,
             width: "100%",
           }}
         >
-          <span>{siteLabel}</span>
-          <span>{status}</span>
+          <span style={{ color: og.ink3, display: "flex", fontSize: 19 }}>{siteLabel}</span>
+          <span
+            style={{
+              background: og.mark,
+              color: og.ink,
+              display: "flex",
+              fontSize: 19,
+              fontWeight: 600,
+              padding: "10px 16px",
+            }}
+          >
+            {status}
+          </span>
         </div>
-
-        <div
-          style={{
-            background: "#a6fbff",
-            display: "flex",
-            height: 2,
-            left: 0,
-            position: "absolute",
-            top: 0,
-            width: 190,
-          }}
-        />
       </div>
     ),
-    size,
+    { ...size, fonts: fonts.length > 0 ? fonts : undefined },
   );
 }

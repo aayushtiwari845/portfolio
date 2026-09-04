@@ -4,11 +4,11 @@ export const THEME_CHANGE_EVENT = "portfolio-theme-change";
 export const themes = ["dark", "light"] as const;
 export type Theme = (typeof themes)[number];
 
-export const DEFAULT_THEME: Theme = "dark";
+export const DEFAULT_THEME: Theme = "light";
 
 export const THEME_COLORS: Readonly<Record<Theme, string>> = {
-  dark: "#050606",
-  light: "#f3f1ea",
+  dark: "#141416",
+  light: "#fcfbf8",
 };
 
 export function isTheme(value: unknown): value is Theme {

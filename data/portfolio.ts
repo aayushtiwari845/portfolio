@@ -68,6 +68,12 @@ export interface Project {
   readonly highlights: readonly string[];
   readonly architecture: readonly ArchitectureStep[];
   readonly visualKind: VisualKind;
+  /**
+   * What this project's figure shows and what it does not. Written per figure:
+   * three of the five diagrams carry measured values, so one shared caption
+   * cannot be true of all of them.
+   */
+  readonly figureCaption: string;
   readonly seoDescription: string;
 }
 
@@ -82,6 +88,22 @@ export interface Experience {
   readonly highlights: readonly string[];
   readonly stack: readonly string[];
   readonly note?: string;
+}
+
+/**
+ * A claim this portfolio explicitly does not make. Every entry restates an
+ * evidence boundary that already governs the case studies, so the site says
+ * out loud what it will not let a reader assume.
+ */
+export interface NonGoal {
+  readonly title: string;
+  readonly detail: string;
+  /**
+   * The sections this boundary governs, as ids: "experience" for §1, or a
+   * project slug resolved to its §2.n position. Rendered as marginal
+   * cross-references so a reader can go straight to the work being bounded.
+   */
+  readonly refs: readonly string[];
 }
 
 export interface CapabilityGroup {
@@ -114,6 +136,7 @@ export interface Portfolio {
     readonly descriptor: string;
     readonly headline: string;
     readonly introduction: string;
+    readonly availability: string;
   };
   readonly links: {
     readonly email: string;
@@ -141,12 +164,14 @@ export interface Portfolio {
     readonly relationships: readonly CapabilityRelationship[];
   };
   readonly projects: readonly Project[];
+  readonly nonGoals: readonly NonGoal[];
   readonly metadata: {
     readonly siteUrl: string;
     readonly title: string;
     readonly titleTemplate: string;
     readonly description: string;
     readonly locale: string;
+    readonly lastUpdated: string;
   };
   readonly about: string;
   readonly contact: {
@@ -167,6 +192,7 @@ export const portfolio = {
     headline: "I build backend and data systems that keep AI behavior inspectable.",
     introduction:
       "Based in Mumbai, I build backend platforms, streaming pipelines, and applied AI systems with explicit operational boundaries.",
+    availability: "Open to 2027 new-grad software engineering roles",
   },
   links: {
     email: "mailto:aayushkumar345@gmail.com",
@@ -177,8 +203,9 @@ export const portfolio = {
   navigation: [
     { label: "Experience", href: "/#experience" },
     { label: "Work", href: "/#work" },
+    { label: "Non-goals", href: "/#non-goals" },
     { label: "Capabilities", href: "/#capabilities" },
-    { label: "About", href: "/#about" },
+    { label: "Background", href: "/#background" },
     { label: "Contact", href: "/#contact" },
     { label: "Résumé", href: "/resume" },
   ],
@@ -493,6 +520,8 @@ export const portfolio = {
         },
       ],
       visualKind: "conclave",
+      figureCaption:
+        "Shows the full flow from public sources through normalisation, the feature engine, a four-way agent fan-out and fan-in, deterministic consensus, evaluation, and the dashboard. The counts it carries — 20+ engineered metrics, six dashboard tabs — describe the system's shape; no measured scores, timings, or throughput appear.",
       seoDescription:
         "Explore CONCLAVE, Aayush Tiwari's multi-agent LLM system for evidence-driven Indian mutual-fund ranking, deterministic consensus, and evaluation.",
     },
@@ -627,6 +656,8 @@ export const portfolio = {
         },
       ],
       visualKind: "tracepilot",
+      figureCaption:
+        "Shows the incident path from OpenTelemetry input through time and topology scoping to correlation and an evidence-cited diagnosis. The incident identifier and its seven linked signals are an illustrative walkthrough, not a recorded incident, and no latency or accuracy figures appear.",
       seoDescription:
         "Explore TracePilot, Aayush Tiwari's distributed-systems incident platform for telemetry correlation, auditable root-cause ranking, and evidence-cited diagnosis.",
     },
@@ -776,6 +807,8 @@ export const portfolio = {
         },
       ],
       visualKind: "fraud",
+      figureCaption:
+        "Shows the Kafka to Spark to inference path together with the benchmark's own measured values: 3,285 events per second, a 26.53 ms median batch, 99.2% AUC retained on a reduced feature set, 284K+ transactions, and 577:1 class imbalance. Every figure comes from a simulated local streaming benchmark, not production traffic.",
       seoDescription:
         "Explore a collaborative academic Kafka and Spark fraud-detection pipeline evaluated in a local simulated streaming benchmark.",
     },
@@ -883,6 +916,8 @@ export const portfolio = {
         },
       ],
       visualKind: "civiclens",
+      figureCaption:
+        "Shows the archival path from the source PostgreSQL/Supabase rows through a credentialed exporter to content-addressed IPFS storage, and the static browser view that reads the exported archive. No volumes, timings, or availability figures are represented.",
       seoDescription:
         "Explore CivicLens, Aayush Tiwari's deployed civic issue archive connecting Supabase data, Storacha/IPFS storage, and a searchable static dashboard.",
     },
@@ -1027,8 +1062,42 @@ export const portfolio = {
         },
       ],
       visualKind: "ipo",
+      figureCaption:
+        "Shows the analysis path over the curated dataset alongside the project's own results: a 0.9808 five-fold cross-validated R², a median absolute error near 4.15%, and two K-Means risk clusters across 63 records in 27 sectors. These describe that dataset only and are not prospective.",
       seoDescription:
         "Explore Aayush Tiwari's Indian IPO Analytics project covering 63 NSE/BSE IPOs, 27 sectors, regression, clustering, and an interactive Dash dashboard.",
+    },
+  ],
+  nonGoals: [
+    {
+      title: "Production scale claimed as my own",
+      detail:
+        "The Barclays platform processed files of 80M+ records across DEV, UAT, and pre-production. Public copy here stays at résumé-level scope, describes no internal system, and implies no Barclays endorsement.",
+      refs: ["experience"],
+    },
+    {
+      title: "A municipal case-management platform",
+      detail:
+        "CivicLens is a credentialed Supabase-to-Storacha/IPFS archival utility plus a deployed static dashboard over exported archives. It does not accept public submissions and does not manage cases.",
+      refs: ["civiclens"],
+    },
+    {
+      title: "A deployed payment system",
+      detail:
+        "The real-time fraud pipeline's throughput and latency come from a simulated local streaming benchmark, not production traffic. It is an academic collaboration with Aditya Ravi and Atharva Indulkar, and the public repository is owned by Aditya Ravi.",
+      refs: ["real-time-fraud-detection"],
+    },
+    {
+      title: "A market forecast",
+      detail:
+        "The IPO regression is scoped to a small curated 2019–2024 dataset. It describes that dataset. It is not prospective, and it is not investment advice.",
+      refs: ["indian-ipo-analytics"],
+    },
+    {
+      title: "Models trusted without a baseline",
+      detail:
+        "TracePilot's learned ranker lost to its deterministic baseline and stayed ineligible for promotion. Conclave's persisted study found a directional but not statistically significant advantage over a simple baseline. Both results are reported as they came out.",
+      refs: ["tracepilot", "conclave"],
     },
   ],
   metadata: {
@@ -1038,6 +1107,7 @@ export const portfolio = {
     description:
       "Portfolio of Aayush Tiwari, a software and AI engineer building backend systems, real-time data infrastructure, ML platforms, and applied AI products.",
     locale: "en_IN",
+    lastUpdated: "2026-09-03",
   },
   about:
     "I gravitate toward systems where a model is only one component: evidence has to be collected, decisions replayed, and failure boundaries made explicit. That is why my projects pair AI experiments with baselines, tests, and visible limitations.",

@@ -83,6 +83,40 @@ export function MotionActivator() {
       node.querySelectorAll<HTMLElement>(motionTargetSelector).forEach(registerTarget);
     };
 
+    /**
+     * An in-page anchor can move the viewport past an element without it ever
+     * intersecting, and IntersectionObserver reports no entry for a target
+     * that crossed no threshold. Sweep anything now above the viewport so a
+     * jump to a later section can never leave earlier content invisible.
+     */
+    const revealPassedTargets = () => {
+      if (!eligible) return;
+
+      targets.forEach((target) => {
+        if (
+          revealedTargets.has(target)
+          || !target.hasAttribute("data-reveal")
+          || target.hasAttribute("data-motion-visual")
+          || target.getBoundingClientRect().bottom > 0
+        ) {
+          return;
+        }
+
+        revealedTargets.add(target);
+        updateTarget(target);
+        intersectionObserver?.unobserve(target);
+      });
+    };
+
+    let sweepFrame = 0;
+    const scheduleSweep = () => {
+      if (sweepFrame) return;
+      sweepFrame = window.requestAnimationFrame(() => {
+        sweepFrame = 0;
+        revealPassedTargets();
+      });
+    };
+
     const updateEligibility = () => {
       eligible = canAnimate();
       root.dataset.motion = eligible ? "on" : "off";
@@ -136,13 +170,18 @@ export function MotionActivator() {
         });
 
     mutationObserver?.observe(document.body, { childList: true, subtree: true });
+    window.addEventListener("scroll", scheduleSweep, { passive: true });
+    window.addEventListener("hashchange", scheduleSweep);
     document.addEventListener("visibilitychange", handleVisibilityChange);
     reducedMotionQuery.addEventListener("change", updateEligibility);
     connection?.addEventListener("change", updateEligibility);
 
     return () => {
+      window.cancelAnimationFrame(sweepFrame);
       intersectionObserver?.disconnect();
       mutationObserver?.disconnect();
+      window.removeEventListener("scroll", scheduleSweep);
+      window.removeEventListener("hashchange", scheduleSweep);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       reducedMotionQuery.removeEventListener("change", updateEligibility);
       connection?.removeEventListener("change", updateEligibility);

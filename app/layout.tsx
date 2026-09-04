@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Archivo, Martian_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 
+import { HashScroll } from "@/components/layout/hash-scroll";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { MotionActivator } from "@/components/motion/motion-activator";
@@ -12,16 +13,21 @@ import { portfolio } from "@/data/portfolio";
 import "./globals.css";
 import "./motion-effects.css";
 
-const geist = Geist({
+// Width is a working axis in this design system, not decoration: the document
+// title block is set expanded, running text sits at normal width, and the
+// tabular label rail is condensed. One self-hosted family covers all three.
+const archivo = Archivo({
   subsets: ["latin"],
-  variable: "--font-geist",
-  display: "optional",
+  axes: ["wdth"],
+  variable: "--font-sans",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
+const martianMono = Martian_Mono({
   subsets: ["latin"],
-  variable: "--font-geist-mono",
-  display: "optional",
+  axes: ["wdth"],
+  variable: "--font-mono",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -52,8 +58,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: THEME_COLORS.dark,
-  colorScheme: "dark light",
+  themeColor: THEME_COLORS.light,
+  colorScheme: "light dark",
   width: "device-width",
   initialScale: 1,
 };
@@ -61,7 +67,8 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html
-      className={`${geist.variable} ${geistMono.variable}`}
+      className={`${archivo.variable} ${martianMono.variable}`}
+      data-scroll-behavior="smooth"
       data-theme={DEFAULT_THEME}
       lang="en"
       suppressHydrationWarning
@@ -71,6 +78,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       </head>
       <body>
         <MotionActivator />
+        <HashScroll />
         <a className="skip-link" href="#main-content">Skip to content</a>
         <SiteHeader
           displayName={portfolio.identity.displayName}

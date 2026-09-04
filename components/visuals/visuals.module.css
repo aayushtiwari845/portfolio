@@ -1,19 +1,21 @@
 .visual {
-  --v-surface: var(--surface, #0d1013);
-  --v-surface-2: var(--surface-2, #12161b);
-  --v-text: var(--text, #f2f0e9);
-  --v-muted: #a9b3bc;
-  --v-line: rgba(181, 202, 219, 0.2);
-  --v-line-strong: rgba(181, 202, 219, 0.38);
-  --v-cyan: var(--cyan, #74e8ff);
-  --v-acid: var(--acid, #c8f45b);
-  --v-warn: #ffb96a;
+  /* The figures are drawn in the document's own ink. There is no separate
+   * diagram palette: ink, rule grey, and the one amber, nothing else. */
+  --v-surface: transparent;
+  --v-surface-2: var(--stock-2);
+  --v-text: var(--ink);
+  --v-muted: var(--ink-3);
+  --v-line: var(--rule);
+  --v-line-strong: var(--rule-strong);
+  --v-cyan: var(--ink);
+  --v-acid: var(--ink);
+  --v-warn: var(--ink-3);
 
   container-type: inline-size;
   display: block;
   width: 100%;
   color: var(--v-text);
-  font-family: var(--font-mono, "Geist Mono", ui-monospace, monospace);
+  font-family: var(--font-mono, ui-monospace, monospace);
   isolation: isolate;
 }
 
@@ -35,11 +37,15 @@
 .compactCanvas text {
   fill: currentColor;
   font-variant-numeric: tabular-nums;
+  /* These figures were drawn against a narrower mono. Condensing on the
+   * width axis restores the metrics they were laid out for, rather than
+   * re-tuning several dozen individual font sizes. */
+  font-variation-settings: "wdth" 79;
 }
 
 .desktopCanvas text {
   font-size: 10px;
-  letter-spacing: 0.065em;
+  letter-spacing: 0.03em;
 }
 
 .microGrid {
@@ -153,21 +159,21 @@
 .correlationCell rect,
 .modelResult > rect,
 .fraudMetrics > rect {
-  fill: rgba(18, 22, 27, 0.9);
+  fill: none;
   stroke: var(--v-line-strong);
   stroke-width: 1;
 }
 
 .decisionBox rect {
-  fill: rgba(200, 244, 91, 0.055);
-  stroke: rgba(200, 244, 91, 0.48);
-  stroke-width: 1;
+  fill: none;
+  stroke: var(--v-acid);
+  stroke-width: 1.4;
 }
 
 .outputBox rect {
-  fill: rgba(116, 232, 255, 0.065);
-  stroke: rgba(116, 232, 255, 0.52);
-  stroke-width: 1;
+  fill: none;
+  stroke: var(--v-line-strong);
+  stroke-width: 1.4;
 }
 
 .outputBox > circle,
@@ -177,17 +183,13 @@
 
 .metricValueSmall {
   fill: var(--v-text) !important;
-  font-family: var(--font-sans, "Geist", ui-sans-serif, sans-serif);
+  font-family: var(--font-sans, ui-sans-serif, sans-serif);
   font-size: 16px !important;
   font-weight: 580;
   letter-spacing: -0.025em !important;
 }
 
 /* CONCLAVE */
-.conclave {
-  --v-cyan: #74e8f5;
-}
-
 .agentBank,
 .transactions,
 .distributionPanel {
@@ -195,8 +197,8 @@
 }
 
 .agent rect {
-  fill: rgba(15, 20, 24, 0.96);
-  stroke: rgba(116, 232, 245, 0.42);
+  fill: none;
+  stroke: var(--v-line-strong);
   stroke-width: 1;
 }
 
@@ -205,26 +207,20 @@
 }
 
 .agent:nth-child(even) circle {
-  fill: var(--v-acid);
+  fill: none;
 }
 
 .consensusCore {
-  fill: var(--v-acid);
-  filter: drop-shadow(0 0 5px rgba(200, 244, 91, 0.6));
+  fill: none;
   transform-box: fill-box;
   transform-origin: center;
   animation: soft-pulse 2.4s ease-in-out infinite paused;
 }
 
 /* TRACEPILOT */
-.tracepilot {
-  --v-cyan: #79d9ff;
-}
-
 .liveStatus circle,
 .syncStatus circle {
-  fill: var(--v-acid);
-  filter: drop-shadow(0 0 4px rgba(200, 244, 91, 0.6));
+  fill: none;
 }
 
 .liveStatus text,
@@ -248,7 +244,7 @@
 
 .servicePanel .alertNode,
 .compactServiceGraph .alertNode {
-  fill: rgba(255, 185, 106, 0.16);
+  fill: none;
   stroke: var(--v-warn);
   transform-box: fill-box;
   transform-origin: center;
@@ -256,7 +252,7 @@
 }
 
 .evidenceRow > rect {
-  fill: rgba(255, 255, 255, 0.025);
+  fill: var(--v-surface-2);
   stroke: var(--v-line);
 }
 
@@ -280,7 +276,7 @@
 }
 
 .rankingBox > rect {
-  fill: rgba(255, 255, 255, 0.025);
+  fill: var(--v-surface-2);
   stroke: var(--v-line-strong);
 }
 
@@ -290,22 +286,15 @@
 }
 
 .rankFill {
-  fill: var(--v-cyan) !important;
-  transform-box: fill-box;
-  transform-origin: left center;
-  animation: rank-in 1.15s cubic-bezier(0.22, 1, 0.36, 1) both paused;
+  display: none;
 }
 
 .evidenceCitation {
-  fill: var(--v-acid) !important;
+  fill: var(--v-text) !important;
   font-size: 8.5px !important;
 }
 
 /* FRAUD */
-.fraud {
-  --v-cyan: #65e8e1;
-}
-
 .fraudMetrics > path,
 .modelResult > path {
   stroke: var(--v-line);
@@ -319,13 +308,11 @@
 .transaction,
 .flaggedTransaction {
   fill: var(--v-cyan);
-  filter: drop-shadow(0 0 3px rgba(101, 232, 225, 0.6));
   animation: transaction-flow 3.4s linear infinite paused;
 }
 
 .flaggedTransaction {
   fill: var(--v-warn);
-  filter: drop-shadow(0 0 5px rgba(255, 185, 106, 0.75));
   animation-duration: 4.3s;
 }
 
@@ -336,8 +323,8 @@
 }
 
 .fraudOutcome rect {
-  fill: rgba(255, 185, 106, 0.08);
-  stroke: rgba(255, 185, 106, 0.58);
+  fill: none;
+  stroke: var(--v-acid);
 }
 
 .fraudOutcome text {
@@ -347,21 +334,17 @@
 }
 
 /* CIVICLENS */
-.civiclens {
-  --v-cyan: #75d9ff;
-}
-
 .archiveSource > rect,
 .archiveExporter > rect,
 .archiveStorage > rect,
 .archiveDashboard > rect:first-of-type {
-  fill: rgba(18, 22, 27, 0.92);
+  fill: none;
   stroke: var(--v-line-strong);
   stroke-width: 1;
 }
 
 .databaseRow rect {
-  fill: rgba(117, 217, 255, 0.035);
+  fill: none;
   stroke: var(--v-line);
 }
 
@@ -389,26 +372,26 @@
 }
 
 .archiveStorage > path:first-of-type {
-  fill: rgba(117, 217, 255, 0.055);
+  fill: none;
   stroke: var(--v-cyan);
   stroke-width: 1.2;
 }
 
 .archiveStorage > path:nth-of-type(2) {
   fill: none;
-  stroke: rgba(117, 217, 255, 0.64);
+  stroke: var(--v-line-strong);
   stroke-width: 1;
 }
 
 .cidLabel {
-  fill: var(--v-acid) !important;
+  fill: var(--v-text) !important;
   font-size: 9px !important;
   font-weight: 650;
 }
 
 .archiveDashboard > rect:nth-of-type(2) {
-  fill: rgba(7, 10, 13, 0.72);
-  stroke: rgba(117, 217, 255, 0.3);
+  fill: none;
+  stroke: var(--v-line-strong);
 }
 
 .archiveSignal {
@@ -416,10 +399,6 @@
 }
 
 /* IPO */
-.ipo {
-  --v-cyan: #72dfe9;
-}
-
 .scatterPlot > path:first-of-type,
 .distributionAxis,
 .compactAnalyticsPanel > path:first-of-type {
@@ -439,7 +418,7 @@
 }
 
 .clusterTwo {
-  fill: var(--v-acid);
+  fill: none;
 }
 
 .trendLine,
@@ -454,7 +433,7 @@
 }
 
 .distributionFill {
-  fill: rgba(114, 223, 233, 0.1);
+  fill: none;
 }
 
 .distributionLine {
@@ -473,7 +452,7 @@
   fill: var(--v-text);
   font-size: 13px;
   font-weight: 630;
-  letter-spacing: 0.035em;
+  letter-spacing: 0.012em;
 }
 
 .compactEyebrow {
@@ -519,20 +498,20 @@
 .compactArchiveResult > rect,
 .compactAnalyticsPanel > rect,
 .compactAgentGroup > rect {
-  fill: rgba(18, 22, 27, 0.94);
+  fill: none;
   stroke: var(--v-line-strong);
   stroke-width: 1;
 }
 
 .compactDecision rect {
-  fill: rgba(200, 244, 91, 0.055);
-  stroke: rgba(200, 244, 91, 0.5);
+  fill: none;
+  stroke: var(--v-acid);
   stroke-width: 1;
 }
 
 .compactOutput rect {
-  fill: rgba(116, 232, 255, 0.07);
-  stroke: rgba(116, 232, 255, 0.55);
+  fill: none;
+  stroke: var(--v-line-strong);
   stroke-width: 1;
 }
 
@@ -560,25 +539,25 @@
 .compactMetricStrip > text:not(.compactMeta),
 .compactResultValue {
   fill: var(--v-text) !important;
-  font-family: var(--font-sans, "Geist", ui-sans-serif, sans-serif);
+  font-family: var(--font-sans, ui-sans-serif, sans-serif);
   font-size: 16px !important;
   font-weight: 600 !important;
   letter-spacing: -0.02em !important;
 }
 
 .compactStatRow text {
-  fill: var(--v-acid);
+  fill: var(--v-text);
   font-size: 10.5px;
   font-weight: 650;
 }
 
 .compactArchiveResult > rect {
-  fill: rgba(200, 244, 91, 0.045);
-  stroke: rgba(200, 244, 91, 0.4);
+  fill: none;
+  stroke: var(--v-acid);
 }
 
 .compactArchiveResult text:first-of-type {
-  fill: var(--v-acid);
+  fill: var(--v-text);
   font-size: 11px;
   font-weight: 650;
 }
@@ -590,40 +569,6 @@
 .compactAnalyticsPanel .trendLine {
   stroke-dasharray: 180;
   stroke-dashoffset: 180;
-}
-
-/* Warm-paper diagram treatment. Project identities stay distinct, but their
- * signal colors are deepened so thin SVG strokes and micro-copy remain crisp. */
-:global(html[data-theme="light"]) .visual {
-  --v-surface: var(--surface);
-  --v-surface-2: var(--surface-2);
-  --v-text: var(--text);
-  --v-muted: #58635f;
-  --v-line: rgba(23, 52, 49, 0.2);
-  --v-line-strong: rgba(23, 52, 49, 0.54);
-  --v-cyan: var(--cyan);
-  --v-acid: var(--acid);
-  --v-warn: #9b4d1d;
-}
-
-:global(html[data-theme="light"]) .visual.conclave {
-  --v-cyan: #087580;
-}
-
-:global(html[data-theme="light"]) .visual.tracepilot {
-  --v-cyan: #176f91;
-}
-
-:global(html[data-theme="light"]) .visual.fraud {
-  --v-cyan: #08766e;
-}
-
-:global(html[data-theme="light"]) .visual.civiclens {
-  --v-cyan: #1a6f8f;
-}
-
-:global(html[data-theme="light"]) .visual.ipo {
-  --v-cyan: #14737a;
 }
 
 :global(html[data-theme="light"]) .visual :is(
@@ -650,69 +595,60 @@
     .compactAnalyticsPanel > rect,
     .compactAgentGroup > rect
   ) {
-  fill: rgba(255, 253, 248, 0.92);
+  fill: none;
   stroke: var(--v-line-strong);
 }
 
 :global(html[data-theme="light"]) .visual :is(.decisionBox rect, .compactDecision rect) {
-  fill: rgba(92, 115, 24, 0.08);
-  stroke: rgba(92, 115, 24, 0.5);
+  fill: var(--v-surface-2);
+  stroke: var(--v-line-strong);
 }
 
 :global(html[data-theme="light"]) .visual :is(.outputBox rect, .compactOutput rect) {
-  fill: rgba(8, 116, 129, 0.075);
-  stroke: rgba(8, 116, 129, 0.5);
+  fill: none;
+  stroke: var(--v-line-strong);
 }
 
 :global(html[data-theme="light"]) .visual .agent rect {
-  fill: rgba(255, 253, 248, 0.96);
-  stroke: rgba(8, 117, 128, 0.4);
+  fill: none;
+  stroke: var(--v-line-strong);
 }
 
 :global(html[data-theme="light"]) .visual :is(.evidenceRow > rect, .rankingBox > rect) {
-  fill: rgba(255, 253, 248, 0.68);
+  fill: none;
 }
 
 :global(html[data-theme="light"]) .visual :is(.servicePanel .alertNode, .compactServiceGraph .alertNode) {
-  fill: rgba(155, 77, 29, 0.11);
+  fill: var(--v-surface-2);
 }
 
 :global(html[data-theme="light"]) .visual .fraudOutcome rect {
-  fill: rgba(155, 77, 29, 0.08);
-  stroke: rgba(155, 77, 29, 0.58);
+  fill: var(--v-surface-2);
+  stroke: var(--v-line-strong);
 }
 
 :global(html[data-theme="light"]) .visual .databaseRow rect {
-  fill: rgba(26, 111, 143, 0.055);
+  fill: none;
 }
 
 :global(html[data-theme="light"]) .visual .archiveStorage > path:first-of-type {
-  fill: rgba(26, 111, 143, 0.075);
+  fill: none;
 }
 
 :global(html[data-theme="light"]) .visual .archiveDashboard > rect:nth-of-type(2) {
-  fill: rgba(238, 235, 227, 0.86);
-  stroke: rgba(26, 111, 143, 0.32);
+  fill: none;
+  stroke: var(--v-line-strong);
 }
 
 :global(html[data-theme="light"]) .visual .distributionFill {
-  fill: rgba(20, 115, 122, 0.11);
+  fill: none;
 }
 
 :global(html[data-theme="light"]) .visual .compactArchiveResult > rect {
-  fill: rgba(92, 115, 24, 0.07);
-  stroke: rgba(92, 115, 24, 0.42);
+  fill: var(--v-surface-2);
+  stroke: var(--v-line-strong);
 }
 
-:global(html[data-theme="light"]) .visual :is(
-    .consensusCore,
-    .liveStatus circle,
-    .syncStatus circle,
-    .transaction,
-    .flaggedTransaction
-  ) {
-  filter: drop-shadow(0 1px 2px rgba(29, 39, 36, 0.2));
-}
 
 .visual[data-motion-state="active"]:not(.isReduced) :is(
     .signalPath,
@@ -817,4 +753,13 @@
 
 @keyframes draw-line {
   to { stroke-dashoffset: 0; }
+}
+
+/* Square every corner. Rounded rectangles read as cards; a design doc's
+ * figures are drawn with ruled cells. The rx/ry attributes are gone from the
+ * SVG source too — this stays as a guard so a re-added one cannot ship. */
+.desktopCanvas rect,
+.compactCanvas rect {
+  rx: 0;
+  ry: 0;
 }

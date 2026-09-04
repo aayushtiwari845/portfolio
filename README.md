@@ -2,13 +2,16 @@
 
 A production-oriented portfolio for [Aayush Tiwari](https://aayushktiwari.tech), a software and AI engineer working across backend systems, real-time data infrastructure, ML platforms, and applied AI. He is currently pursuing a B.Tech in Artificial Intelligence & Data Science at K.J. Somaiya School of Engineering, with an expected completion date of July 2027.
 
-The experience uses a “living systems / telemetry” visual language to turn architecture, system behavior, and verified engineering metrics into the primary storytelling layer. It is built as a static-first Next.js application and does not require a CMS, database, API server, or runtime environment variables.
+The site is set as an engineering design document: a title block, a numbered outline that doubles as the navigation, and sections that argue — including a `Non-goals` section that states what the work does not claim. That form was chosen because it is the artifact this audience already trusts to judge engineering thinking. It is built as a static-first Next.js application and does not require a CMS, database, API server, or runtime environment variables.
+
+The durable visual decisions live in [`DESIGN.md`](DESIGN.md); the product truth the design serves lives in [`PRODUCT.md`](PRODUCT.md).
 
 ## Technology
 
 - Next.js App Router, React, and strict TypeScript
 - Tailwind CSS v4 with a custom design-token layer
-- Native CSS motion and lightweight SVG system graphics
+- Archivo (variable, with the `wdth` axis used as a working design axis) and Martian Mono, self-hosted through `next/font`
+- Native CSS motion and hand-authored SVG figures
 - Radix primitives and `cmdk` for accessible interactive controls
 - Vitest and Testing Library for focused automated coverage
 - ESLint flat config and GitHub Actions for delivery checks
@@ -28,7 +31,7 @@ public/                 Static assets and an optional supplied résumé PDF
 .github/workflows/      Continuous-integration checks
 ```
 
-Each project is rendered at `/projects/[slug]` and has its own system-specific visual language. Open Graph images are generated with Next.js image routes, so no checked-in social preview bitmap is required.
+Each project is rendered at `/projects/[slug]` as its own numbered sub-document — brief, architecture, decisions with their costs, validation, evidence, limits, technology — and carries a system-specific SVG figure. Open Graph images are generated with Next.js image routes, so no checked-in social preview bitmap is required.
 
 ## Local development
 
@@ -46,9 +49,9 @@ Open [http://localhost:3000](http://localhost:3000). Production metadata never u
 
 ## Color themes
 
-The interface includes independently designed dark and light systems. Dark remains the first-visit default; an explicit choice is stored locally under `portfolio-theme` and applied by a small synchronous head script before the page paints, preventing a dark-to-light flash. Theme switching does not require a provider, server state, environment variable, or external dependency.
+The interface includes independently designed light and dark systems. Light is the first-visit default, chosen from the use scene: the site is read during a working day, on a laptop, beside an ATS and a mail client. An explicit choice is stored locally under `portfolio-theme` and applied by a small synchronous head script before the page paints, preventing a flash. Theme switching does not require a provider, server state, environment variable, or external dependency.
 
-When adjusting the palette, update the semantic tokens and the project-visual tokens together. Validate home, project, résumé, dialog, mobile-navigation, reduced-motion, and print states in both themes rather than treating the light theme as a global inversion.
+Dark is not a mechanical inversion — it is the same document read on a lit screen at night, and its tokens are tuned separately. When adjusting the palette, update the semantic tokens and the project-visual `--v-*` tokens together, and verify contrast in **both** themes rather than assuming one follows from the other. Validate home, project, résumé, dialog, mobile-navigation, reduced-motion, and print states in each.
 
 ## Quality commands
 
@@ -71,11 +74,22 @@ To add a project:
 1. Add a fully typed project entry to the `projects` collection in `data/portfolio.ts` with a unique URL-safe slug.
 2. Supply its overview, architecture stages, engineering highlights, stack, repository URL, and only verified metrics.
 3. Map its `visualKind` to a purposeful project visualization when the existing visual registry does not cover it.
-4. Run all quality commands. The case-study route, sitemap entry, and project Open Graph image are generated from the data entry.
+4. Write its `figureCaption` — see below. This is not optional and it is not boilerplate.
+5. Run all quality commands. The case-study route, sitemap entry, and project Open Graph image are generated from the data entry.
 
 Social and contact destinations are also data-driven. Change them in `portfolio.links`; do not duplicate URLs inside components.
 
-The `/resume` route is a web-readable résumé generated from the same portfolio data. A PDF download should only be enabled when a current PDF has been supplied: place it under `public/resume/`, then point the configured résumé link to that file. Do not add an empty or placeholder download.
+### Three fields that carry the site's argument
+
+`figureCaption` (per project) states what that project's diagram shows **and what it does not**. It must be written against the figure's actual contents, one caption per figure. A shared template is the failure mode this field exists to prevent: three of the five diagrams display measured values, so any caption claiming "no measured performance is represented" is false on those three. When you change a diagram, re-read its caption.
+
+`nonGoals` (site-wide) drives the `Non-goals` section — the claims this work explicitly does not make. Each entry restates an evidence boundary that already governs a case study, so the site says out loud what it will not let a reader assume. Adding a project with a scope limit means adding its boundary here too.
+
+`metadata.lastUpdated` is the document date shown in the title block. It is maintained by hand, not generated: update it when the content materially changes, and leave it alone for a redeploy that changes nothing.
+
+The `/resume` route is a web-readable résumé generated from the same portfolio data.
+
+To offer a PDF download, drop a current PDF into `public/resume/` — any `.pdf` file in that directory is picked up. [`lib/resume.ts`](lib/resume.ts) resolves it at build time and renders a download link with the file size; when the directory is empty or missing, the link is omitted entirely rather than shipping a dead or placeholder download. No configuration or code change is needed either way.
 
 Keep these evidence boundaries intact when editing public copy or structured data:
 
@@ -86,12 +100,12 @@ Keep these evidence boundaries intact when editing public copy or structured dat
 ## Performance and progressive enhancement
 
 - Core content is server-rendered and remains readable before client enhancement runs.
-- The hero uses a lightweight SVG topology on capable screens and keeps the mobile first view focused on the thesis and actions.
+- The first screen is type and tabular metadata only: there is no decorative hero graphic to download or lay out.
 - Reduced-motion and touch states remove continuous or pointer-dependent visual work.
-- Decorative graphics are code-native, avoiding heavyweight stock images and large texture downloads.
+- Every figure is a hand-authored SVG that depicts a real pipeline, avoiding stock imagery and large texture downloads. Nothing decorative ships.
 - Static project graphics and CSS-native motion avoid shipping a general-purpose animation runtime.
 
-The hero thesis, calls to action, and current professional context remain complete even when decorative graphics or JavaScript do not run.
+The title block, the numbered outline, the calls to action, and the current professional context remain complete when JavaScript does not run. Entrance motion only engages after the client confirms `IntersectionObserver`, no reduced-motion preference, and no save-data hint; content is visible by default in every other case.
 
 ## Accessibility
 

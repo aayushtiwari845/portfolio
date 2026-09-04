@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { SectionLink } from "./section-link";
 
 export interface NavigationItem {
   readonly label: string;
@@ -71,12 +72,6 @@ export function SiteHeader({
     () => navigation.filter((item) => item.href.startsWith("/#")),
     [navigation],
   );
-  const wordmarkInitials = displayName
-    .split(/\s+/)
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -176,7 +171,6 @@ export function SiteHeader({
       <div aria-hidden="true" className="scroll-progress" />
       <header className="site-header" data-menu-open={menuOpen} data-scrolled={scrolled}>
         <Link className="wordmark" href="/">
-          <span className="wordmark-mark">{wordmarkInitials}</span>
           <span className="wordmark-label">{displayName}</span>
           <span className="sr-only">— home</span>
         </Link>
@@ -185,7 +179,7 @@ export function SiteHeader({
           {sectionLinks.map((item) => {
             const current = currentFor(item.href);
             return (
-              <Link
+              <SectionLink
                 aria-current={current}
                 className="nav-link"
                 data-active={current === "location"}
@@ -193,7 +187,7 @@ export function SiteHeader({
                 key={item.href}
               >
                 {item.label}
-              </Link>
+              </SectionLink>
             );
           })}
         </nav>

@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { ExternalLink } from "@/components/ui/external-link";
 import { portfolio, projects } from "@/data/portfolio";
+import { getResumeDownload } from "@/lib/resume";
 
 export const metadata: Metadata = {
   title: "Résumé",
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 export default function ResumePage() {
   const featuredProjects = projects.slice(0, 3);
   const additionalProjects = projects.slice(3);
+  const download = getResumeDownload();
 
   return (
     <main className="resume-page" id="main-content">
@@ -22,16 +24,16 @@ export default function ResumePage() {
           <ArrowLeft aria-hidden="true" size={14} /> Return to portfolio
         </Link>
         <header className="resume-header">
-          <div>
-            <p className="technical-label">Web résumé / Current</p>
-            <h1 className="resume-title">{portfolio.identity.displayName}</h1>
-            <p className="section-intro" style={{ marginTop: 22 }}>{portfolio.identity.descriptor}</p>
-          </div>
+          <h1 className="resume-title">{portfolio.identity.displayName}</h1>
+          <p className="section-intro">{portfolio.identity.descriptor}</p>
           <div className="resume-contact">
             <span>{portfolio.identity.location}</span>
             <a href={portfolio.links.email}>{portfolio.identity.email}</a>
             <ExternalLink href={portfolio.links.github}>GitHub</ExternalLink>
             <ExternalLink href={portfolio.links.linkedin}>LinkedIn</ExternalLink>
+            {download ? (
+              <a download href={download.href}>Download {download.sizeLabel}</a>
+            ) : null}
           </div>
         </header>
 
@@ -67,7 +69,7 @@ export default function ResumePage() {
                 </div>
                 <p>{project.summary}</p>
                 <p className="technical-label">
-                  {project.metrics[0]?.value} {project.metrics[0]?.label} · {project.stack.slice(0, 5).join(" / ")}
+                  {project.stack.slice(0, 5).join(" / ")}
                 </p>
               </article>
             ))}
@@ -88,7 +90,7 @@ export default function ResumePage() {
 
         <section className="resume-section" aria-labelledby="resume-capabilities">
           <h2 id="resume-capabilities">Capabilities</h2>
-          <div className="capability-groups" style={{ marginTop: 0 }}>
+          <div className="capability-groups">
             {portfolio.capabilities.groups.map((group) => (
               <div className="capability-group" key={group.id}>
                 <h3>{group.label}</h3>
@@ -110,7 +112,7 @@ export default function ResumePage() {
           </article>
         </section>
 
-        <div style={{ paddingTop: 44 }}>
+        <div className="resume-close">
           <Link className="secondary-cta" href="/#contact">
             Start a conversation <ArrowUpRight aria-hidden="true" size={15} />
           </Link>

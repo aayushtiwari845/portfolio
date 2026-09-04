@@ -33,3 +33,17 @@ next-server.*.log
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# impeccable working files (PRODUCT.md, DESIGN.md and .impeccable/surfaces are committed)
+/.impeccable/review/
+/.impeccable/questions/
+/.impeccable/hook.cache.json
+/.impeccable/config.local.json
+/.impeccable/build/
+/.impeccable/mocks/
+
+# machine-local harness settings (absolute paths, per-machine hook wiring)
+/.claude/settings.local.json
+
+# local preview server config for AI coding tools
+/.claude/launch.json

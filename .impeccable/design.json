@@ -1,0 +1,652 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-04T11:38:09.618Z",
+  "title": "Design System: Aayush Tiwari — Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "stock": {
+        "role": "neutral",
+        "displayName": "Document Stock",
+        "canonical": "#fcfbf8",
+        "tonalRamp": [
+          "#17150f",
+          "#2e2b21",
+          "#4c483b",
+          "#6d6858",
+          "#928c79",
+          "#b9b3a0",
+          "#ddd8c9",
+          "#fcfbf8"
+        ]
+      },
+      "stock-2": {
+        "role": "neutral",
+        "displayName": "Stock Tint",
+        "canonical": "#f4f2ec",
+        "tonalRamp": [
+          "#16150f",
+          "#2c2a20",
+          "#49463a",
+          "#696556",
+          "#8e8977",
+          "#b5b09d",
+          "#d9d5c6",
+          "#f4f2ec"
+        ]
+      },
+      "stock-3": {
+        "role": "neutral",
+        "displayName": "Stock Shade",
+        "canonical": "#eae7de",
+        "tonalRamp": [
+          "#151409",
+          "#2b291b",
+          "#474434",
+          "#67634f",
+          "#8c876f",
+          "#b2ad93",
+          "#d5d0ba",
+          "#eae7de"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#1a1815",
+        "tonalRamp": [
+          "#1a1815",
+          "#2f2c26",
+          "#4c483f",
+          "#6a6558",
+          "#8b8676",
+          "#adA795",
+          "#d0cbb8",
+          "#f0eddd"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink Secondary",
+        "canonical": "#4c483f",
+        "tonalRamp": [
+          "#191712",
+          "#2f2c25",
+          "#4c483f",
+          "#69645a",
+          "#8a8478",
+          "#aca698",
+          "#cfc9b9",
+          "#f1ecdd"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Ink Muted",
+        "canonical": "#767166",
+        "tonalRamp": [
+          "#1a1814",
+          "#302d26",
+          "#4d493f",
+          "#6a655a",
+          "#767166",
+          "#a49e90",
+          "#c8c2b2",
+          "#ece6d6"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline Rule",
+        "canonical": "rgba(26, 24, 21, 0.16)",
+        "tonalRamp": [
+          "rgba(26,24,21,0.9)",
+          "rgba(26,24,21,0.72)",
+          "rgba(26,24,21,0.56)",
+          "rgba(26,24,21,0.42)",
+          "rgba(26,24,21,0.3)",
+          "rgba(26,24,21,0.22)",
+          "rgba(26,24,21,0.16)",
+          "rgba(26,24,21,0.08)"
+        ]
+      },
+      "rule-strong": {
+        "role": "neutral",
+        "displayName": "Strong Rule",
+        "canonical": "rgba(26, 24, 21, 0.42)",
+        "tonalRamp": [
+          "rgba(26,24,21,0.95)",
+          "rgba(26,24,21,0.8)",
+          "rgba(26,24,21,0.66)",
+          "rgba(26,24,21,0.54)",
+          "rgba(26,24,21,0.42)",
+          "rgba(26,24,21,0.3)",
+          "rgba(26,24,21,0.2)",
+          "rgba(26,24,21,0.1)"
+        ]
+      },
+      "mark": {
+        "role": "primary",
+        "displayName": "Review Amber",
+        "canonical": "#efc93d",
+        "tonalRamp": [
+          "#2b2205",
+          "#4c3d0a",
+          "#6e5810",
+          "#917418",
+          "#b59120",
+          "#d5ae2c",
+          "#efc93d",
+          "#f8e494"
+        ]
+      },
+      "mark-ink": {
+        "role": "primary",
+        "displayName": "Mark Ink",
+        "canonical": "#1a1815",
+        "tonalRamp": [
+          "#0d0c0a",
+          "#1a1815",
+          "#2f2c26",
+          "#4c483f",
+          "#6a6558",
+          "#8b8676",
+          "#ada795",
+          "#d0cbb8"
+        ]
+      },
+      "dark-stock": {
+        "role": "neutral",
+        "displayName": "Night Stock",
+        "canonical": "#141416",
+        "tonalRamp": [
+          "#0a0a0b",
+          "#141416",
+          "#232327",
+          "#35353b",
+          "#4c4c53",
+          "#6f6f77",
+          "#a0a0a8",
+          "#d4d4d9"
+        ]
+      },
+      "dark-stock-2": {
+        "role": "neutral",
+        "displayName": "Night Tint",
+        "canonical": "#1b1b1e",
+        "tonalRamp": [
+          "#0c0c0d",
+          "#1b1b1e",
+          "#292930",
+          "#3b3b44",
+          "#525259",
+          "#75757e",
+          "#a5a5ad",
+          "#d7d7dc"
+        ]
+      },
+      "dark-stock-3": {
+        "role": "neutral",
+        "displayName": "Night Shade",
+        "canonical": "#232327",
+        "tonalRamp": [
+          "#101012",
+          "#232327",
+          "#313137",
+          "#43434b",
+          "#5a5a63",
+          "#7d7d87",
+          "#adadb5",
+          "#dedee3"
+        ]
+      },
+      "dark-ink": {
+        "role": "neutral",
+        "displayName": "Night Ink",
+        "canonical": "#f0efea",
+        "tonalRamp": [
+          "#1a1a17",
+          "#31302c",
+          "#4e4d47",
+          "#6c6a63",
+          "#8d8b82",
+          "#afaca2",
+          "#d0cec5",
+          "#f0efea"
+        ]
+      },
+      "dark-ink-2": {
+        "role": "neutral",
+        "displayName": "Night Ink Secondary",
+        "canonical": "#b0ada4",
+        "tonalRamp": [
+          "#1b1a17",
+          "#32302b",
+          "#4f4c45",
+          "#6d6961",
+          "#8e8a80",
+          "#b0ada4",
+          "#d1cec7",
+          "#f1efeb"
+        ]
+      },
+      "dark-ink-3": {
+        "role": "neutral",
+        "displayName": "Night Ink Muted",
+        "canonical": "#8b867a",
+        "tonalRamp": [
+          "#1a1815",
+          "#302e28",
+          "#4d4a41",
+          "#6b675b",
+          "#8b867a",
+          "#aca798",
+          "#cec9b9",
+          "#efebdd"
+        ]
+      },
+      "dark-rule": {
+        "role": "neutral",
+        "displayName": "Night Hairline",
+        "canonical": "rgba(240, 239, 234, 0.17)",
+        "tonalRamp": [
+          "rgba(240,239,234,0.9)",
+          "rgba(240,239,234,0.72)",
+          "rgba(240,239,234,0.58)",
+          "rgba(240,239,234,0.45)",
+          "rgba(240,239,234,0.32)",
+          "rgba(240,239,234,0.24)",
+          "rgba(240,239,234,0.17)",
+          "rgba(240,239,234,0.09)"
+        ]
+      },
+      "dark-rule-strong": {
+        "role": "neutral",
+        "displayName": "Night Strong Rule",
+        "canonical": "rgba(240, 239, 234, 0.45)",
+        "tonalRamp": [
+          "rgba(240,239,234,0.95)",
+          "rgba(240,239,234,0.82)",
+          "rgba(240,239,234,0.68)",
+          "rgba(240,239,234,0.56)",
+          "rgba(240,239,234,0.45)",
+          "rgba(240,239,234,0.32)",
+          "rgba(240,239,234,0.21)",
+          "rgba(240,239,234,0.11)"
+        ]
+      },
+      "dark-mark": {
+        "role": "primary",
+        "displayName": "Night Review Amber",
+        "canonical": "#e0b92e",
+        "tonalRamp": [
+          "#281f04",
+          "#473808",
+          "#67520e",
+          "#886c15",
+          "#aa871d",
+          "#c6a026",
+          "#e0b92e",
+          "#f0d97f"
+        ]
+      },
+      "dark-mark-ink": {
+        "role": "primary",
+        "displayName": "Night Mark Ink",
+        "canonical": "#16150f",
+        "tonalRamp": [
+          "#0b0a07",
+          "#16150f",
+          "#2b291d",
+          "#464233",
+          "#63604c",
+          "#85806a",
+          "#a8a38b",
+          "#cbc7b1"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Document Title",
+        "purpose": "The one title per page, in the title block. Archivo at wdth 124; line count governed by the column, never a ch cap."
+      },
+      "headline": {
+        "displayName": "Section Title",
+        "purpose": "Numbered section titles (§1–§6), capped at 22ch, wdth 108."
+      },
+      "title": {
+        "displayName": "Project Title",
+        "purpose": "Project titles in Selected Work, wdth 110."
+      },
+      "subtitle": {
+        "displayName": "Finding",
+        "purpose": "The negative or qualified finding under each project, ruled off with a full-Ink hairline above it."
+      },
+      "body": {
+        "displayName": "Argument",
+        "purpose": "Running prose at wdth 100 inside a 68ch measure, set at Ink Secondary."
+      },
+      "body-small": {
+        "displayName": "Supporting Copy",
+        "purpose": "List items, non-goal bodies, evidence labels, descriptions."
+      },
+      "label": {
+        "displayName": "Label Rail",
+        "purpose": "Mono uppercase field names, rail labels, nav links, running heads. Condensed to wdth 85–88 in stack and rail roles."
+      },
+      "label-micro": {
+        "displayName": "Micro Label",
+        "purpose": "Metadata terms, alternative-row terms, palette group headings."
+      },
+      "data": {
+        "displayName": "Figure Value",
+        "purpose": "Dates, identifiers, § references, clock. Tabular figures always on."
+      },
+      "measurement": {
+        "displayName": "Evidence Measurement",
+        "purpose": "The single large number in an evidence row; its boundary sits beneath it on a leader line."
+      },
+      "figure-glyph": {
+        "displayName": "Figure Glyph",
+        "purpose": "All type inside SVG figures, condensed to wdth 79 to restore the metrics the diagrams were drawn against."
+      },
+      "data-lead": {
+        "displayName": "Mono Lead",
+        "purpose": "Mono links and inline references at 0.75rem — the most-used mono step on the site."
+      },
+      "body-compact": {
+        "displayName": "Compact Body",
+        "purpose": "Tabular values, entry roles and reference-list copy at 0.875rem."
+      },
+      "entry-title": {
+        "displayName": "Entry Title",
+        "purpose": "Experience entry organisation and mobile navigation, Archivo at wdth 108."
+      },
+      "case-display": {
+        "displayName": "Case Display",
+        "purpose": "Case-study title, one step above the homepage display, Archivo at wdth 116."
+      },
+      "close-email": {
+        "displayName": "Close Email",
+        "purpose": "The email address in the close field; scales with the region it owns."
+      },
+      "section-display": {
+        "displayName": "Section Display",
+        "purpose": "Close field, resume title and the 404. Shares a 2rem floor and a 3.5rem ceiling."
+      },
+      "case-subtitle": {
+        "displayName": "Case Subtitle",
+        "purpose": "Case-study standfirst under the title."
+      },
+      "figure-caption-glyph": {
+        "displayName": "Figure Caption Glyph",
+        "purpose": "Figure caption and CID text inside diagrams, 9px condensed to wdth 79."
+      },
+      "figure-annotation": {
+        "displayName": "Figure Annotation",
+        "purpose": "Smallest figure annotation: evidence citations and outcome flags, 8.5px."
+      },
+      "figure-lead-value": {
+        "displayName": "Figure Lead Value",
+        "purpose": "A figure's own lead measurement at 16px — the value it is built around."
+      }
+    },
+    "shadows": [
+      {
+        "name": "shadow-lift",
+        "value": "0 18px 40px -24px rgba(26, 24, 21, 0.42)",
+        "purpose": "Modal dialog only (command palette). Dark theme uses 0 18px 40px -24px rgba(0,0,0,0.7). No content surface may carry it."
+      },
+      {
+        "name": "header-veil",
+        "value": "backdrop-filter: saturate(150%) blur(10px) over color-mix(in srgb, var(--stock) 92%, transparent)",
+        "purpose": "Sticky header only. Depth by veil, not by shadow; a hairline appears at the bottom edge once scrolled."
+      },
+      {
+        "name": "dialog-overlay",
+        "value": "background: color-mix(in srgb, var(--ink) 42%, transparent); backdrop-filter: blur(3px)",
+        "purpose": "Behind the command palette and mobile sheet."
+      }
+    ],
+    "motion": [
+      {
+        "name": "lift",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The only easing curve in the system. Every transition and every reveal uses it."
+      },
+      {
+        "name": "settle-duration",
+        "value": "780ms",
+        "purpose": "Content settles up into place after its section rule draws."
+      },
+      {
+        "name": "settle-distance",
+        "value": "10px",
+        "purpose": "The whole translate distance of the reveal. Nothing moves further."
+      },
+      {
+        "name": "draw-duration",
+        "value": "620ms",
+        "purpose": "A section's hairline drawing across, left to right, before its content settles."
+      },
+      {
+        "name": "state-transition",
+        "value": "160ms",
+        "purpose": "Link, border and colour state changes."
+      },
+      {
+        "name": "underline-scale",
+        "value": "220ms",
+        "purpose": "Nav underline scaling in from the left origin."
+      },
+      {
+        "name": "row-wash",
+        "value": "200ms",
+        "purpose": "Outline and reference-list hover wash to Stock Tint."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "@media (prefers-reduced-motion: reduce) { durations 0.001ms; scroll-progress hidden; reveals forced visible }",
+        "purpose": "Motion is an enhancement layered on top of fully readable server-rendered HTML."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "alternatives",
+        "value": "620px"
+      },
+      {
+        "name": "tabular",
+        "value": "760px"
+      },
+      {
+        "name": "chrome",
+        "value": "900px"
+      },
+      {
+        "name": "work-grid",
+        "value": "940px"
+      },
+      {
+        "name": "rail",
+        "value": "1000px"
+      },
+      {
+        "name": "page-max",
+        "value": "1200px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Ruled Link",
+      "kind": "button",
+      "refersTo": "link-ruled",
+      "description": "The primary affordance in the system. The rule under the text is the button; no filled buttons exist anywhere on the site.",
+      "html": "<a class=\"ds-link\" href=\"#\">Read the TracePilot case study</a>",
+      "css": ".ds-link { display: inline; border: 0; border-bottom: 1px solid var(--rule-strong, rgba(26,24,21,0.42)); border-radius: 0; padding-bottom: 1px; color: var(--ink, #1a1815); font-family: var(--font-sans, Archivo), Arial, sans-serif; font-size: 1.0625rem; font-weight: 500; text-decoration: none; transition: border-color 160ms cubic-bezier(0.16,1,0.3,1), color 160ms cubic-bezier(0.16,1,0.3,1); } .ds-link:hover { border-bottom-color: var(--ink, #1a1815); } .ds-link:focus-visible { outline: 2px solid var(--ink, #1a1815); outline-offset: 3px; }"
+    },
+    {
+      "name": "Chrome Button",
+      "kind": "button",
+      "refersTo": "chrome-button",
+      "description": "Header instruments: command trigger, theme toggle, mobile menu. Hairline box, mono label, no fill at any state.",
+      "html": "<button class=\"ds-chrome-btn\" type=\"button\"><svg width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.6-3.6\"/></svg>SEARCH<kbd>⌘K</kbd></button>",
+      "css": ".ds-chrome-btn { display: inline-flex; height: 30px; align-items: center; gap: 7px; padding-inline: 8px; border: 1px solid var(--rule, rgba(26,24,21,0.16)); border-radius: 0; background: none; color: var(--ink-2, #4c483f); font-family: var(--font-mono, 'Martian Mono'), ui-monospace, monospace; font-size: 0.6875rem; letter-spacing: 0.02em; cursor: pointer; transition: border-color 160ms cubic-bezier(0.16,1,0.3,1), color 160ms cubic-bezier(0.16,1,0.3,1); } .ds-chrome-btn svg { flex: none; } .ds-chrome-btn kbd { font-family: inherit; font-size: 0.625rem; color: var(--ink-3, #767166); } .ds-chrome-btn:hover { border-color: var(--rule-strong, rgba(26,24,21,0.42)); color: var(--ink, #1a1815); } .ds-chrome-btn:focus-visible { outline: 2px solid var(--ink, #1a1815); outline-offset: 3px; }"
+    },
+    {
+      "name": "Status Row",
+      "kind": "custom",
+      "refersTo": "status-row",
+      "description": "The amber field in the title block's metadata list. The canonical demonstration of Colour-Is-The-Sheet: a filled row, never a highlighted word.",
+      "html": "<dl class=\"ds-meta\"><div class=\"ds-meta-row\"><dt>Discipline</dt><dd>Backend / data infrastructure / applied AI</dd></div><div class=\"ds-meta-row ds-meta-row--status\"><dt>Status</dt><dd>Open to 2027 new-grad roles</dd></div></dl>",
+      "css": ".ds-meta { display: grid; margin: 0; border-top: 1px solid var(--rule, rgba(26,24,21,0.16)); } .ds-meta-row { display: grid; gap: 4px 20px; padding-block: 11px; border-bottom: 1px solid var(--rule, rgba(26,24,21,0.16)); grid-template-columns: 6.5rem minmax(0,1fr); } .ds-meta-row dt { color: var(--ink-3, #767166); font-family: var(--font-mono, 'Martian Mono'), ui-monospace, monospace; font-size: 0.625rem; letter-spacing: 0.06em; line-height: 1.7; text-transform: uppercase; } .ds-meta-row dd { margin: 0; font-family: var(--font-sans, Archivo), Arial, sans-serif; font-size: 0.875rem; line-height: 1.5; } .ds-meta-row--status { padding-inline: 12px; margin-inline: -12px; background: var(--mark, #efc93d); color: var(--mark-ink, #1a1815); border-bottom-color: transparent; } .ds-meta-row--status dt { color: color-mix(in srgb, var(--mark-ink, #1a1815) 68%, transparent); } .ds-meta-row--status dd { font-weight: 600; }"
+    },
+    {
+      "name": "Numbered Outline Row",
+      "kind": "nav",
+      "refersTo": "outline-row",
+      "description": "The table of contents is the primary navigation. Its § numbers are cross-reference targets elsewhere on the site, so the sequence carries real information.",
+      "html": "<nav class=\"ds-contents\"><a class=\"ds-contents-row\" href=\"#work\"><span class=\"ds-contents-num\">§2</span><span class=\"ds-contents-label\">Selected Work</span><span class=\"ds-contents-note\">5 systems</span></a><a class=\"ds-contents-row\" href=\"#nongoals\"><span class=\"ds-contents-num\">§4</span><span class=\"ds-contents-label\">Non-goals</span><span class=\"ds-contents-note\">What this is not</span></a></nav>",
+      "css": ".ds-contents { display: block; border-top: 1px solid var(--ink, #1a1815); } .ds-contents-row { display: grid; align-items: baseline; gap: 16px; padding-block: 18px; border-bottom: 1px solid var(--rule, rgba(26,24,21,0.16)); grid-template-columns: 2.5rem minmax(0,1fr) auto; color: var(--ink, #1a1815); text-decoration: none; transition: background-color 200ms cubic-bezier(0.16,1,0.3,1); } .ds-contents-row:hover { background: var(--stock-2, #f4f2ec); } .ds-contents-row:focus-visible { outline: 2px solid var(--ink, #1a1815); outline-offset: 3px; } .ds-contents-num { color: var(--ink-3, #767166); font-family: var(--font-mono, 'Martian Mono'), ui-monospace, monospace; font-size: 0.75rem; font-variant-numeric: tabular-nums; } .ds-contents-label { font-family: var(--font-sans, Archivo), Arial, sans-serif; font-size: 1.375rem; font-variation-settings: 'wdth' 106; font-weight: 600; letter-spacing: -0.018em; } .ds-contents-note { color: var(--ink-3, #767166); font-family: var(--font-mono, 'Martian Mono'), ui-monospace, monospace; font-size: 0.6875rem; text-align: right; }"
+    },
+    {
+      "name": "Figure Caption",
+      "kind": "custom",
+      "refersTo": "figure-caption",
+      "description": "Every figure states what it measures and what it does not, tied to its plate by a real leader line.",
+      "html": "<figure class=\"ds-figure\"><div class=\"ds-figure-frame\"><svg viewBox=\"0 0 320 90\" width=\"100%\"><rect x=\"8\" y=\"18\" width=\"84\" height=\"46\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.15\" opacity=\"0.45\"/><rect x=\"118\" y=\"18\" width=\"84\" height=\"46\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.15\" opacity=\"0.45\"/><path d=\"M92 41h26\" stroke=\"currentColor\" stroke-width=\"1.15\" stroke-linecap=\"round\" opacity=\"0.6\"/><text x=\"8\" y=\"12\" font-size=\"9.5\" letter-spacing=\"0.12em\" fill=\"currentColor\">TRACEPILOT / INCIDENT 0241</text></svg></div><figcaption class=\"ds-figure-caption\"><b>Figure 2.1</b>Ranking path for one incident. Shows the deterministic baseline beside the learned ranker; <em>does not show</em> production traffic or held-out evaluation.</figcaption></figure>",
+      "css": ".ds-figure { margin: 0; color: var(--ink, #1a1815); font-family: var(--font-mono, 'Martian Mono'), ui-monospace, monospace; } .ds-figure-frame { padding-block: 12px; } .ds-figure-frame svg rect { rx: 0; ry: 0; } .ds-figure-caption { position: relative; display: block; max-width: 46ch; margin-top: 18px; padding-left: 26px; color: var(--ink-3, #767166); font-family: var(--font-sans, Archivo), Arial, sans-serif; font-size: 0.8125rem; line-height: 1.55; } .ds-figure-caption::before { content: ''; position: absolute; top: 0.62em; left: 0; width: 16px; height: 1px; background: var(--rule-strong, rgba(26,24,21,0.42)); } .ds-figure-caption b { display: block; margin-bottom: 5px; color: var(--ink-2, #4c483f); font-family: var(--font-mono, 'Martian Mono'), ui-monospace, monospace; font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; } .ds-figure-caption em { font-style: normal; color: var(--ink-2, #4c483f); }"
+    },
+    {
+      "name": "Command Palette",
+      "kind": "input",
+      "refersTo": "command-dialog",
+      "description": "The only floating surface in the system, and the only user of --shadow-lift. Square, hairline-bordered, borderless input.",
+      "html": "<div class=\"ds-command\"><div class=\"ds-command-header\"><input class=\"ds-command-input\" placeholder=\"Jump to a section or project\" /></div><div class=\"ds-command-list\"><div class=\"ds-command-heading\">Sections</div><div class=\"ds-command-item\" data-selected=\"true\">Selected Work<span class=\"ds-command-shortcut\">§2</span></div><div class=\"ds-command-item\">Non-goals<span class=\"ds-command-shortcut\">§4</span></div></div></div>",
+      "css": ".ds-command { width: min(100% - 32px, 560px); border: 1px solid var(--rule-strong, rgba(26,24,21,0.42)); border-radius: 0; background: var(--stock, #fcfbf8); box-shadow: 0 18px 40px -24px rgba(26,24,21,0.42); color: var(--ink, #1a1815); } .ds-command-header { padding: 14px 16px; border-bottom: 1px solid var(--rule, rgba(26,24,21,0.16)); } .ds-command-input { width: 100%; border: 0; background: none; color: inherit; font-family: var(--font-sans, Archivo), Arial, sans-serif; font-size: 0.9375rem; outline: none; } .ds-command-input::placeholder { color: var(--ink-3, #767166); } .ds-command-list { padding: 8px 0 10px; } .ds-command-heading { padding: 10px 16px 6px; color: var(--ink-3, #767166); font-family: var(--font-mono, 'Martian Mono'), ui-monospace, monospace; font-size: 0.625rem; letter-spacing: 0.06em; text-transform: uppercase; } .ds-command-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px; color: var(--ink-2, #4c483f); font-family: var(--font-sans, Archivo), Arial, sans-serif; font-size: 0.875rem; cursor: pointer; } .ds-command-item:hover, .ds-command-item[data-selected=\"true\"] { background: var(--stock-2, #f4f2ec); color: var(--ink, #1a1815); font-weight: 600; } .ds-command-shortcut { margin-left: auto; color: var(--ink-3, #767166); font-family: var(--font-mono, 'Martian Mono'), ui-monospace, monospace; font-size: 0.625rem; font-weight: 400; }"
+    },
+    {
+      "name": "Close Field",
+      "kind": "custom",
+      "refersTo": "close-field",
+      "description": "The second and last amber region on a page: a full-bleed sheet carrying the contact close. Mark Ink type only, no chips, no buttons.",
+      "html": "<section class=\"ds-close\"><div class=\"ds-close-inner\"><div><h2 class=\"ds-close-title\">Start from the work.</h2><p class=\"ds-close-copy\">Open a case study, then write. The fastest conversations start from a finding you disagree with.</p></div><div class=\"ds-close-actions\"><a class=\"ds-close-email\" href=\"#\">aayush@example.com</a><div class=\"ds-close-secondary\"><a href=\"#\">Copy address</a><a href=\"#\">GitHub</a><a href=\"#\">LinkedIn</a></div></div></div></section>",
+      "css": ".ds-close { background: var(--mark, #efc93d); color: var(--mark-ink, #1a1815); font-family: var(--font-sans, Archivo), Arial, sans-serif; } .ds-close-inner { display: grid; gap: 40px; padding: 72px 24px; grid-template-columns: minmax(0,1.3fr) minmax(0,1fr); align-items: end; } .ds-close-title { max-width: 18ch; margin: 0; font-size: clamp(2rem, 4.4vw, 3.5rem); font-variation-settings: 'wdth' 112; font-weight: 600; line-height: 1.06; letter-spacing: -0.03em; } .ds-close-copy { max-width: 46ch; margin: 20px 0 0; font-size: 1.0625rem; line-height: 1.55; opacity: 0.78; } .ds-close-actions { display: grid; gap: 14px; justify-items: start; } .ds-close-email { display: inline-block; border-bottom: 2px solid var(--mark-ink, #1a1815); padding-bottom: 3px; color: inherit; font-size: 1.5rem; font-variation-settings: 'wdth' 104; font-weight: 600; letter-spacing: -0.02em; text-decoration: none; } .ds-close-secondary { display: flex; flex-wrap: wrap; gap: 10px 22px; font-family: var(--font-mono, 'Martian Mono'), ui-monospace, monospace; font-size: 0.75rem; } .ds-close-secondary a { border-bottom: 1px solid color-mix(in srgb, var(--mark-ink, #1a1815) 45%, transparent); padding-bottom: 2px; color: inherit; text-decoration: none; transition: border-color 160ms cubic-bezier(0.16,1,0.3,1); } .ds-close-secondary a:hover { border-bottom-color: var(--mark-ink, #1a1815); } .ds-close a:focus-visible { outline: 2px solid var(--mark-ink, #1a1815); outline-offset: 3px; }"
+    },
+    {
+      "name": "Evidence Row",
+      "kind": "custom",
+      "refersTo": "figure-caption",
+      "description": "A measurement with its boundary attached. The number is large and tabular; the qualification travels with it on a leader line.",
+      "html": "<div class=\"ds-evidence\"><div class=\"ds-evidence-row\"><p class=\"ds-evidence-value\">+0.4 pp</p><div><p class=\"ds-evidence-label\">Learned ranker over the deterministic baseline</p><p class=\"ds-evidence-detail\">Directional only; not statistically significant at the sample size collected. The model was held back from promotion.</p></div></div></div>",
+      "css": ".ds-evidence { border-top: 1px solid var(--rule, rgba(26,24,21,0.16)); color: var(--ink, #1a1815); } .ds-evidence-row { display: grid; gap: 8px 28px; padding-block: 24px; border-bottom: 1px solid var(--rule, rgba(26,24,21,0.16)); grid-template-columns: minmax(0,13rem) minmax(0,1fr); align-items: baseline; } .ds-evidence-value { margin: 0; font-family: var(--font-mono, 'Martian Mono'), ui-monospace, monospace; font-size: 1.875rem; font-variant-numeric: tabular-nums; font-weight: 500; letter-spacing: -0.04em; line-height: 1.15; } .ds-evidence-label { margin: 0; font-family: var(--font-sans, Archivo), Arial, sans-serif; font-size: 0.9375rem; line-height: 1.5; } .ds-evidence-detail { position: relative; max-width: 52ch; margin: 7px 0 0; padding-left: 22px; color: var(--ink-3, #767166); font-family: var(--font-sans, Archivo), Arial, sans-serif; font-size: 0.8125rem; line-height: 1.55; } .ds-evidence-detail::before { content: ''; position: absolute; top: 0.62em; left: 0; width: 14px; height: 1px; background: var(--rule-strong, rgba(26,24,21,0.42)); }"
+    },
+    {
+      "name": "Header Navigation",
+      "kind": "nav",
+      "refersTo": "chrome-button",
+      "description": "Sticky running head: name as type (there is no logo), mono uppercase links whose underline scales in from the left, and a full-Ink reading-progress bar on the bottom edge.",
+      "html": "<header class=\"ds-header\"><span class=\"ds-wordmark\">Aayush Tiwari</span><nav class=\"ds-nav\"><a href=\"#\" data-active=\"true\">Work</a><a href=\"#\">Experience</a><a href=\"#\">Contact</a></nav><span class=\"ds-progress\"></span></header>",
+      "css": ".ds-header { position: relative; display: flex; align-items: center; gap: 24px; padding: 14px 24px; border-bottom: 1px solid var(--rule, rgba(26,24,21,0.16)); background: color-mix(in srgb, var(--stock, #fcfbf8) 92%, transparent); backdrop-filter: saturate(150%) blur(10px); color: var(--ink, #1a1815); } .ds-wordmark { margin-right: auto; font-family: var(--font-sans, Archivo), Arial, sans-serif; font-size: 0.9375rem; font-variation-settings: 'wdth' 112; font-weight: 600; letter-spacing: -0.012em; } .ds-nav { display: flex; gap: 22px; } .ds-nav a { position: relative; color: var(--ink-3, #767166); font-family: var(--font-mono, 'Martian Mono'), ui-monospace, monospace; font-size: 0.6875rem; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none; transition: color 160ms cubic-bezier(0.16,1,0.3,1); } .ds-nav a::before { content: ''; position: absolute; right: 0; bottom: -5px; left: 0; height: 1px; background: var(--ink, #1a1815); transform: scaleX(0); transform-origin: 0 50%; transition: transform 220ms cubic-bezier(0.16,1,0.3,1); } .ds-nav a:hover, .ds-nav a[data-active=\"true\"] { color: var(--ink, #1a1815); } .ds-nav a[data-active=\"true\"]::before, .ds-nav a:hover::before { transform: scaleX(1); } .ds-nav a:focus-visible { outline: 2px solid var(--ink, #1a1815); outline-offset: 3px; } .ds-progress { position: absolute; bottom: -1px; left: 0; height: 2px; width: 38%; background: var(--ink, #1a1815); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Engineering Design Doc",
+    "overview": "This is a website set as the artifact its audience already trusts to judge thinking: a numbered, dated design document with a title block, an outline that is also the navigation, sections that argue, figures that state their own limits, and Non-goals and Alternatives Considered written down where a reader can check them. The page is document stock, not a canvas. Nothing floats, nothing is enclosed, nothing is decorated. Structure is carried entirely by white space, one hairline rule, and a working type-width axis.\n\nDensity is high and evenly paced. Two reading speeds share one page: a tabular metadata block answers the scanner in a glance, and everything under it rewards the reader who continues. Restraint is the argument — the audience is judging engineering judgment, and ornament a working engineer would not ship reads as a lack of it. Light is the first-visit default, chosen for the screening-pass scene; dark is independently derived for a lit screen at night, not a mechanical inversion of the light theme.\n\nThe build refuses the dark-terminal accent portfolio and the centered full-bleed hero. There are no cards, no boxes around content, no gradients, no glows, no rounded rectangles inside diagrams, and no imagery beyond three real product screenshots and five code-authored figures. There is no monogram: PRODUCT.md binds the identity to the name alone, so the favicon is the section mark § — the notation the document is already organized around.",
+    "keyCharacteristics": [
+      "Document stock and ink, warm-tinted, never neutral grey",
+      "One amber that owns whole regions and is never a mark on a word",
+      "Archivo's width axis used functionally: expanded titles, normal argument, condensed labels",
+      "Martian Mono for every figure, label, date, and measurement — data only",
+      "Hairline rules and space instead of containers; zero corner radius on content",
+      "One motion grammar, one easing curve, everything readable before JS"
+    ],
+    "rules": [
+      {
+        "name": "The Colour-Is-The-Sheet Rule",
+        "body": "Amber owns a whole region or it does not appear. It is never a text colour, a chip, an icon tint, a border, or an underline. If a value cannot be expressed by filling the entire row or the entire band, it is expressed in ink instead.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two-Regions Rule",
+        "body": "In a full page, amber may claim at most two regions: one field inside the title block and one full-bleed close. A third amber region means the palette has become an accent system, which is the thing this world rejects.",
+        "section": "colors"
+      },
+      {
+        "name": "The Independent-Dark Rule",
+        "body": "Dark is authored, not computed. Its stock is a cool near-black against warm-white ink, its rules sit one step brighter in relative terms than the light theme's, and its amber is darkened so a filled field does not glare. Never derive a dark value by inverting a light one.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink-Only Figure Rule",
+        "body": "Diagrams are drawn in the document's own ink, rule grey and muted grey. No off-palette hue, no fill washes beyond the stock steps, no glow. A figure that needs a second colour needs a second figure.",
+        "section": "colors"
+      },
+      {
+        "name": "The Width-Is-A-Working-Axis Rule",
+        "body": "Width carries hierarchy in this system the way weight does elsewhere. Expanded (wdth 104–124) means title; normal (100) means argument; condensed (79–88) means annotation. Never set a decorative width — every value on the axis has to correspond to a role.",
+        "section": "typography"
+      },
+      {
+        "name": "The Mono-Is-Data Rule",
+        "body": "Martian Mono appears where the content is a date, an identifier, a measurement, a section reference, or a field name. It never appears because the subject matter is \"technical\". A sentence is never set in mono.",
+        "section": "typography"
+      },
+      {
+        "name": "The Figure-Width Rule",
+        "body": "SVG figure text is set at wdth 79. The diagrams were laid out against a narrower mono; condensing on the width axis restores the metrics they were drawn for instead of re-tuning dozens of individual font sizes. Any new figure inherits the 79.",
+        "section": "typography"
+      },
+      {
+        "name": "The Ninety-Percent-Ink Rule",
+        "body": "Headings and emphasis take full Ink; running prose takes Ink Secondary; annotation takes Ink Muted. Three ink values do all the emphasis work, so nothing needs a colour to stand out.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-Content Rule",
+        "body": "No content surface ever carries a shadow. --shadow-lift exists for one thing — a modal dialog that must read as detached from the page — and reaching for it anywhere else means the layout needed a rule or more space instead.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Rule-Not-Box Rule",
+        "body": "Every separation in the system is one 1px hairline or an interval of space. A stronger separation is expressed by promoting the hairline from rule to full ink, never by adding a second line, a border box, or a fill.",
+        "section": "elevation"
+      },
+      {
+        "name": "The No-Cards Rule",
+        "body": "Nothing in page structure is enclosed in a bordered or filled box. This governs content containers and page composition. Ruled cells inside a diagram are exempt: they are figure notation, and that exemption was raised, argued and accepted in review rather than assumed.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Square-Corner Rule",
+        "body": "Radius is 0 unless the shape is inherently round. A rounded rectangle anywhere — content, dialog, figure — reads as a card and breaks the world.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do carry every separation with one 1px hairline or an interval of space, and promote a hairline to full Ink when it must read harder.",
+      "Do use the width axis functionally: wdth 124 for the document title, 104–116 for titles, 100 for argument, 79–88 for labels and figure text.",
+      "Do reserve Martian Mono for dates, identifiers, § references, measurements and field names, with tabular figures on.",
+      "Do let amber own a whole row or a whole band, with Mark Ink type on it, and nothing else.",
+      "Do give every figure a caption naming what it measures and what it does not, tied on with a real leader line.",
+      "Do keep running prose inside 68ch and use the narrower per-role caps (56/54/52/46/22/18ch) where the build already sets them.",
+      "Do author dark-theme values independently and verify contrast in both themes.",
+      "Do ship everything visible in the server-rendered HTML and let motion be an enhancement that a reduced-motion or save-data reader never sees.",
+      "Do keep every decision's cost visible next to the decision, at full Ink."
+    ],
+    "donts": [
+      "Don't put content in a card, a bordered box, or a filled panel. Ruled cells inside a diagram are the sole exemption.",
+      "Don't use a corner radius on anything rectangular — content, dialog, or figure rect. The rx: 0; ry: 0 guard is there to catch it.",
+      "Don't use amber as a text colour, chip, badge, icon tint, border, or underline, and don't let a third amber region appear on a page.",
+      "Don't put amber, or any off-palette hue, inside a figure.",
+      "Don't add a shadow, glow, or gradient to a content surface; --shadow-lift belongs to the modal dialog alone.",
+      "Don't introduce a second easing curve, a hover flourish, or a per-element entrance animation. There is one curve and one authored moment.",
+      "Don't style a link as a filled button; the underline is the affordance.",
+      "Don't set a sentence in mono, or reach for mono because a topic is technical.",
+      "Don't add a monogram, logotype, or brand device — the name set in Archivo and the § mark are the whole identity.",
+      "Don't override --v-* tokens on an ancestor and expect figures to change; they are declared on .visual itself.",
+      "Don't derive a dark-theme value by inverting a light-theme value."
+    ]
+  }
+}

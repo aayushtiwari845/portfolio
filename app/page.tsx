@@ -1,10 +1,10 @@
-import { HeroSystemGraphic } from "@/components/hero/HeroSystemGraphic";
 import {
-  AboutSection,
+  BackgroundSection,
   CapabilitiesSection,
   ContactSection,
   ExperienceSection,
-  HeroSection,
+  NonGoalsSection,
+  TitleBlock,
   WorkSection,
 } from "@/components/sections/home-sections";
 import { portfolio, projects } from "@/data/portfolio";
@@ -44,18 +44,15 @@ const personJsonLd = {
 export default function Home() {
   return (
     <>
-      <main className="site-main" id="main-content">
-        <HeroSection visual={<HeroSystemGraphic />} />
-        <div className="section-rule" aria-hidden="true" />
+      <main className="page-shell" id="main-content">
+        <TitleBlock />
         <ExperienceSection />
-        <div className="section-rule" aria-hidden="true" />
         <WorkSection />
-        <div className="section-rule" aria-hidden="true" />
+        <NonGoalsSection />
         <CapabilitiesSection />
-        <div className="section-rule" aria-hidden="true" />
-        <AboutSection />
-        <ContactSection />
+        <BackgroundSection />
       </main>
+      <ContactSection />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c") }}

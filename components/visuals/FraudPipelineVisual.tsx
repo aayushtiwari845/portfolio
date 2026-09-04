@@ -28,7 +28,7 @@ export function FraudPipelineVisual(props: ProjectVisualProps) {
       <text className={styles.statusText} x="616" y="30" textAnchor="end">KAFKA → SPARK → INFERENCE</text>
 
       <g className={styles.fraudMetrics}>
-        <rect height="48" rx="6" width="592" x="24" y="66" />
+        <rect height="48" width="592" x="24" y="66" />
         <text className={styles.metricValueSmall} x="42" y="88">3,285/s</text>
         <text className={styles.stageMeta} x="42" y="103">THROUGHPUT</text>
         <path d="M212 76V104M408 76V104" />
@@ -45,7 +45,7 @@ export function FraudPipelineVisual(props: ProjectVisualProps) {
         const x = 24 + index * 100;
         return (
           <g className={index === stages.length - 1 ? styles.outputBox : styles.pipelineStage} key={stage.label}>
-            <rect height="62" rx="6" width="84" x={x} y="149" />
+            <rect height="62" width="84" x={x} y="149" />
             <text className={styles.stageLabel} x={x + 42} y="174" textAnchor="middle">{stage.label}</text>
             <text className={styles.stageMeta} x={x + 42} y="195" textAnchor="middle">{stage.meta}</text>
             <circle cx={x + 42} cy="211" r="3" />
@@ -69,7 +69,7 @@ export function FraudPipelineVisual(props: ProjectVisualProps) {
 
       <g className={styles.fraudOutcome}>
         <path d="M566 221V246" />
-        <rect height="26" rx="5" width="100" x="516" y="246" />
+        <rect height="26" width="100" x="516" y="246" />
         <text x="566" y="263" textAnchor="middle">FLAGGED EVENT</text>
       </g>
 
@@ -89,7 +89,7 @@ function FraudCompact() {
       <text className={styles.compactEyebrow} x="20" y="26">FRAUD / STREAMING PATH</text>
 
       <g className={styles.compactMetricStrip}>
-        <rect height="48" rx="6" width="300" x="20" y="40" />
+        <rect height="48" width="300" x="20" y="40" />
         <text x="38" y="61">3,285/s</text>
         <text className={styles.compactMeta} x="38" y="77">THROUGHPUT</text>
         <path d="M170 50V78" />
@@ -105,7 +105,7 @@ function FraudCompact() {
         return (
           <g className={Box} key={stage.label}>
             <circle cx="42" cy={y + 18} r="5" />
-            <rect height="36" rx="6" width="250" x="60" y={y} />
+            <rect height="36" width="250" x="60" y={y} />
             <text x="76" y={y + 23}>{stage.label}</text>
             <text className={styles.compactMeta} x="294" y={y + 23} textAnchor="end">{stage.meta}</text>
           </g>
