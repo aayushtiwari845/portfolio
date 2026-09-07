@@ -220,8 +220,8 @@ The build refuses the dark-terminal accent portfolio and the centered full-bleed
 **Key Characteristics:**
 - Document stock and ink, warm-tinted, never neutral grey
 - One amber that owns whole regions and is never a mark on a word
-- Archivo's width axis used functionally: expanded titles, normal argument, condensed labels
-- Martian Mono for every figure, label, date, and measurement — data only
+- Three faces, each with one job: Space Grotesk for headings, Inter Tight for argument, JetBrains Mono for data
+- JetBrains Mono for every figure, label, date, and measurement. Data only, never atmosphere
 - Hairline rules and space instead of containers; zero corner radius on content, one radius token for the reading panel
 - One motion grammar, one easing curve, everything readable before JS
 
@@ -255,63 +255,38 @@ A two-material palette: warm document stock and ink tinted to that paper, plus a
 
 ## Typography
 
-**Display / Body Font:** Archivo (variable, `wght` + `wdth` axes; self-hosted through `next/font`), falling back to Helvetica Neue, Arial.
-**Label / Figure Font:** Martian Mono (variable, `wght` + `wdth` axes; self-hosted through `next/font`), falling back to ui-monospace, SFMono-Regular, Consolas.
+**Display Font:** Space Grotesk (variable `wght`; self-hosted through `next/font`), falling back to Helvetica Neue, Arial.
+**Body Font:** Inter Tight (variable `wght`; self-hosted through `next/font`), falling back to Helvetica Neue, Arial.
+**Label / Figure Font:** JetBrains Mono (variable `wght`; self-hosted through `next/font`), falling back to ui-monospace, SFMono-Regular, Consolas.
 
-**Character:** One grotesque family carries the whole voice, and its width axis does the work that a second display face would otherwise do. Titles are set wide and tight-tracked so they read as a printed document's head; running text sits at normal width for legibility; the label rail is condensed and tracked out so field names read as annotation. Martian Mono is never atmosphere — it appears only where the content is literally data.
+**Character:** Three faces, each with one job. Space Grotesk sets every heading: a technical grotesk with enough character to carry a title block and enough restraint not to fight the scene behind it. Inter Tight runs the body, because the case studies are long and dense and nothing reads better at fifteen paragraphs. JetBrains Mono is reserved for figures and telemetry and never appears in a sentence.
+
+This replaces a single-family system built on Archivo's width axis. Neither of the new faces has a width axis, so every `font-variation-settings: "wdth"` declaration was removed rather than left as a no-op that described a system no longer in place. Hierarchy is now carried by size, weight and colour alone.
 
 ### Hierarchy
-- **Display** (600, `clamp(2.25rem, 4.4vw, 3.625rem)`, `wdth` 124, LH 1.0, tracking −0.03em): The document title, once per page, in the title block. Line count is governed by the column, never by a `ch` cap.
-- **Headline** (600, `clamp(1.75rem, 3.2vw, 2.75rem)`, `wdth` 108, max 22ch): Numbered section titles.
-- **Title** (600, `clamp(1.625rem, 2.8vw, 2.25rem)`, `wdth` 110): Project titles inside Selected Work. Related widths: outline rows and mobile nav `wdth` 106, experience organisations `wdth` 108, the close-field title and 404 title `wdth` 112–116.
-- **Subtitle / Finding** (600, 1.1875rem, `wdth` 104, LH 1.42): The negative-or-qualified finding under each project — the most persuasive sentence on the page, set one step above body and ruled off with a full-ink hairline above it.
-- **Body** (400, 1.0625rem, `wdth` 100, LH 1.62, measure 68ch): Running argument. Prose blocks sit at Ink Secondary; `strong` returns to full Ink at 600.
-- **Body Small** (400, 0.9375rem, LH 1.5–1.6): List items, non-goal bodies, evidence labels, secondary descriptions.
-- **Label** (mono, 500, 0.6875rem, tracking 0.06em, uppercase): Field names, rail labels, nav links, breadcrumbs, running heads. The doc rail label runs `wdth` 88; stack lists run `wdth` 85.
-- **Label Micro** (mono, 0.625rem, tracking 0.06em, uppercase): Metadata field names, alternative-row terms, palette group headings.
+- **Display** (600, `clamp(2.25rem, 4.4vw, 3.625rem)`, LH 1.0, tracking −0.03em): The document title, once per page, in the title block.
+- **Headline** (600, `clamp(1.75rem, 3.2vw, 2.75rem)`, max 22ch): Section titles.
+- **Title** (600, `clamp(1.625rem, 2.8vw, 2.25rem)`): Project titles inside Selected Work.
+- **Subtitle / Finding** (600, 1.1875rem, LH 1.42): The negative-or-qualified finding under each project, the most persuasive sentence on the page, set one step above body and ruled off above.
+- **Body** (400, 1.125rem, LH 1.68, measure 66ch): Running argument. Prose sits at Ink Secondary; `strong` returns to full Ink at 600.
+- **Body Small** (400, 0.9375rem, LH 1.5–1.6): List items, evidence labels, secondary descriptions.
+- **Body Label** (500, 0.875rem): A body name in the orrery, set beneath the planet it belongs to.
+- **Star Label** (600, 1.125rem, tracking −0.01em): The author's name on the star. One step above every other label in the scene, because it is the only body that is a person and the only one that leads to the résumé.
+- **Label** (mono, 500, 0.6875rem, tracking 0.06em, uppercase): Field names, rail labels, nav links, breadcrumbs, running heads.
+- **Label Micro** (mono, 0.625rem, tracking 0.06em, uppercase): Metadata field names, the figure caption, the view toggle.
 - **Data** (mono, 0.8125rem, tabular figures, tracking −0.02em): Dates, identifiers, `§` references, clock.
-- **Measurement** (mono, 500, `clamp(1.375rem, 2.6vw, 1.875rem)`, tabular, tracking −0.04em): The single large number in each evidence row, with its boundary set beneath it on a leader line.
-- **Figure Glyph** (mono, 650, 8.5–10.5px, `wdth` 79): All type inside SVG figures.
+- **Measurement** (mono, 500, `clamp(1.375rem, 2.6vw, 1.875rem)`, tabular, tracking −0.04em): The single large number in each evidence row.
+- **Figure Glyph** (mono, 650, 8.5–10.5px): All type inside SVG figures, sized in px against the coordinate system the diagrams were drawn in.
 
 ### Named Rules
 
-**The Width-Is-A-Working-Axis Rule.** Width carries hierarchy in this system the way weight does elsewhere. Expanded (`wdth` 104–124) means title; normal (100) means argument; condensed (79–88) means annotation. Never set a decorative width — every value on the axis has to correspond to a role.
+**The Mono-Is-Data Rule.** JetBrains Mono appears where the content is a date, an identifier, a measurement, a section reference, or a field name. It never appears because the subject matter is "technical". A sentence is never set in mono.
 
-**The Mono-Is-Data Rule.** Martian Mono appears where the content is a date, an identifier, a measurement, a section reference, or a field name. It never appears because the subject matter is "technical". A sentence is never set in mono.
+**The Three-Faces-One-Job-Each Rule.** Headings are Space Grotesk, argument is Inter Tight, data is JetBrains Mono. A face never crosses into another's role to add variety; if something needs to stand apart, it moves on the size or ink ramp instead.
 
-**The Figure-Width Rule.** SVG figure text is set at `wdth` 79. The diagrams were laid out against a narrower mono; condensing on the width axis restores the metrics they were drawn for instead of re-tuning dozens of individual font sizes. Any new figure inherits the 79.
+**The Ninety-Percent-Ink Rule.** Headings and emphasis take full Ink; running prose takes Ink Secondary; annotation takes Ink Muted. Three ink values do all the emphasis work, so nothing needs a colour to stand out. Every step clears WCAG AA against its ground, and the first two clear AAA.
 
-**The Ninety-Percent-Ink Rule.** Headings and emphasis take full Ink; running prose takes Ink Secondary; annotation takes Ink Muted. Three ink values do all the emphasis work, so nothing needs a colour to stand out.
-
-## Layout
-
-**The page.** A single centered column, `min(100% - 2×gutter, 1200px)`, gutter 24px above 900px and 20px below. There is no full-width canvas apart from the close field, which bleeds its amber to the viewport edge and re-centers its own inner grid.
-
-**The rail.** Above 1000px, document sections are a two-column grid: a `9.5rem` sticky rail carrying `§n` and a condensed section label, and the content column beside it. The rail sticks at `top: 96px`, matching `scroll-padding-top: 96px` so anchor navigation lands under the sticky header. Below 1000px the rail collapses to a single inline baseline row above the content.
-
-**Measure.** Running prose caps at `68ch`. Narrower caps are used deliberately by role: 56ch for project summaries and findings, 54ch for the title-block abstract, 52ch for evidence detail, 46ch for figure captions and close copy, 22ch for section titles, 18ch for the close title.
-
-**Rhythm.** Vertical spacing is a fluid ladder, not a fixed 4/8 scale: sections `clamp(56px, 8vw, 108px)`, major blocks `clamp(38px, 5vw, 64px)`, blocks `clamp(28px, 3.4vw, 44px)`, entries `clamp(26px, 3vw, 38px)`, tabular rows a flat 20px or 11px. Each step is bounded at both ends so mobile never collapses and desktop never sprawls.
-
-**Tabular grids.** Every list in the system is a real grid with a fixed first column: metadata `6.5rem`, outline `2.5rem`, alternatives `9.5rem`, non-goal cross-references `5.5rem`, evidence `13rem`, experience `12rem`, reference list `3rem / 1.1fr / 1.4fr / auto`. Columns collapse to a single stack at their own breakpoint rather than at a global one.
-
-**Breakpoints.** 620px (alternatives), 760px (experience, non-goals, evidence, reference list), 900px (title block, close field, and the chrome switch to mobile nav), 940px (work grid), 1000px (section rail). `@media (pointer: coarse)` adds 7px of vertical padding to every small mono link so touch targets clear on phones.
-
-**Alternation.** Project entries alternate figure side above 940px by re-ordering the figure to column 2 on odd rows. This is the only compositional variation in the system.
-
-**Motion.** One grammar, one curve (`cubic-bezier(0.16, 1, 0.3, 1)`): a section's hairline draws across in 620ms, then its content settles up 10px over 780ms. There are no hover flourishes, no per-element entrances, and no second easing curve anywhere. Everything is visible by default in the server-rendered HTML; motion is only enabled after an activator confirms IntersectionObserver, no `prefers-reduced-motion`, and no save-data hint. Reduced motion collapses all durations to ~0 and hides the scroll-progress bar. Figure animations pause when the figure is off screen.
-
-## Elevation & Depth
-
-The system is flat by doctrine. There is no shadow vocabulary for content: separation is white space and one 1px rule, and the only tonal layering is `Stock Tint` appearing as a transient hover or selection wash. Depth in figures is drawn, not lit — stroke weight and rule strength carry it.
-
-Two exceptions exist, both confined to floating browser chrome and neither available to content: the sticky header uses `backdrop-filter: saturate(150%) blur(10px)` over a 92% stock mix and reveals a bottom hairline only once scrolled, and the command palette dialog carries `--shadow-lift` (`0 18px 40px -24px`) with a `rule-strong` 1px border over a 42%-ink blurred overlay.
-
-### Named Rules
-
-**The Flat-Content Rule.** No content surface ever carries a shadow. `--shadow-lift` exists for one thing — a modal dialog that must read as detached from the page — and reaching for it anywhere else means the layout needed a rule or more space instead.
-
-**The Rule-Not-Box Rule.** Every separation in the system is one 1px hairline or an interval of space. A stronger separation is expressed by promoting the hairline from `rule` to full `ink` (used above the title block's doctype line, the outline, and each project's finding), never by adding a second line, a border box, or a fill.
+**The Label-Sits-Under-Its-Body Rule.** Every label in the orrery is centred beneath the body it names, never beside it. Off to one side a name drifts away from the thing it names as the scene rotates, and at the star, whose disc is large, it ends up adrift in the corona.
 
 ## Shapes
 
@@ -352,7 +327,7 @@ Figures are ink line work: no fills beyond the two stock steps, stroke widths 0.
 
 ### Numbered Outline (signature)
 - **Character:** The table of contents is the primary navigation, and the numbers are load-bearing.
-- **Structure:** `2.5rem` mono `§n` / expanded label (`wdth` 106) / right-aligned mono note, on hairline-bounded rows over a full-Ink top rule.
+- **Structure:** `2.5rem` mono `§n` / display label / right-aligned mono note, on hairline-bounded rows over a full-Ink top rule.
 - **Hover:** `Stock Tint` wash over 200ms. Nothing moves.
 - **Cross-reference:** The same `§n` and `§2.n` values are rendered as running heads on project entries, as figure numbers, and as live anchor links in the Non-goals cross-reference column. The numbering a reader sees is the numbering a reference names — sequence is information, not decoration.
 
@@ -369,8 +344,8 @@ Figures are ink line work: no fills beyond the two stock steps, stroke widths 0.
 - **Structure:** A `9.5rem` mono-term definition list on hairlines, capped at 56ch. The `--cost` row promotes its value to full Ink so the price of the decision reads as strongly as the decision.
 
 ### Navigation
-- **Header:** Sticky, 92% stock with a saturating blur, revealing a hairline only when scrolled. Wordmark at `wdth` 112 / 0.9375rem — the name set as type, since the identity has no logo. Nav links are mono uppercase 0.6875rem at Ink Muted; a 1px underline scales in from the left over 220ms on hover and stays scaled for the active section. A 2px full-Ink scroll-progress bar sits on the header's bottom edge, driven by `animation-timeline: scroll(root block)` where supported.
-- **Mobile (<900px):** Desktop nav, command trigger and résumé link hide; a menu trigger opens a top sheet on stock with a hairline bottom, listing sections as `wdth` 106 / 1.25rem display links on hairlines.
+- **Header:** Sticky, 92% stock with a saturating blur, revealing a hairline only when scrolled. Wordmark at 0.9375rem, the name set as type, since the identity has no logo. Nav links are mono uppercase 0.6875rem at Ink Muted; a 1px underline scales in from the left over 220ms on hover and stays scaled for the active section. A 2px full-Ink scroll-progress bar sits on the header's bottom edge, driven by `animation-timeline: scroll(root block)` where supported.
+- **Mobile (<900px):** Desktop nav, command trigger and résumé link hide; a menu trigger opens a top sheet on stock with a hairline bottom, listing sections as 1.25rem display links on hairlines.
 
 ### Command Palette
 - **Style:** Square dialog, `min(100% - 32px, 560px)`, at `14vh`, 1px `rule-strong` border, `--shadow-lift`, over a 42%-ink blurred overlay.
@@ -380,7 +355,7 @@ Figures are ink line work: no fills beyond the two stock steps, stroke widths 0.
 ### Close Field (signature)
 - **Character:** The document's colophon-scale ending, and the only full-bleed region on the site.
 - **Style:** Full amber sheet, Mark Ink type, `clamp(56px, 9vw, 118px)` of vertical padding, a 1.3fr/1fr grid bottom-aligned above 900px.
-- **Contents:** Title at `wdth` 112 capped at 18ch; the email address as a display-face link with a 2px Mark Ink underline; secondary mono links underlined at a 45% Mark Ink mix, promoting to full on hover.
+- **Contents:** Title capped at 18ch; the email address as a display-face link with a 2px Mark Ink underline; secondary mono links underlined at a 45% Mark Ink mix, promoting to full on hover.
 - **Focus inside the field** switches the outline to Mark Ink so the ring stays visible on amber.
 
 ### Focus & Selection
@@ -393,8 +368,8 @@ The header, footer, skip link and close field are removed and the body reverts t
 
 ### Do:
 - **Do** carry every separation with one 1px hairline or an interval of space, and promote a hairline to full Ink when it must read harder.
-- **Do** use the width axis functionally: `wdth` 124 for the document title, 104–116 for titles, 100 for argument, 79–88 for labels and figure text.
-- **Do** reserve Martian Mono for dates, identifiers, `§` references, measurements and field names, with tabular figures on.
+- **Do** keep each face to its own job: Space Grotesk for headings, Inter Tight for argument, JetBrains Mono for data. Move on the size or ink ramp when something needs to stand apart, never by borrowing another face.
+- **Do** reserve JetBrains Mono for dates, identifiers, `§` references, measurements and field names, with tabular figures on.
 - **Do** let amber own a whole row or a whole band, with Mark Ink type on it, and nothing else.
 - **Do** give every figure a caption naming what it measures and what it does not, tied on with a real leader line.
 - **Do** keep running prose inside `68ch` and use the narrower per-role caps (56/54/52/46/22/18ch) where the build already sets them.
@@ -411,6 +386,6 @@ The header, footer, skip link and close field are removed and the body reverts t
 - **Don't** introduce a second easing curve, a hover flourish, or a per-element entrance animation. There is one curve and one authored moment.
 - **Don't** style a link as a filled button; the underline is the affordance.
 - **Don't** set a sentence in mono, or reach for mono because a topic is technical.
-- **Don't** add a monogram, logotype, or brand device — the name set in Archivo and the `§` mark are the whole identity.
+- **Don't** add a monogram, logotype, or brand device. The name set in Space Grotesk and the `§` mark are the whole identity.
 - **Don't** override `--v-*` tokens on an ancestor and expect figures to change; they are declared on `.visual` itself.
 - **Don't** derive a dark-theme value by inverting a light-theme value.
