@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     siteName: portfolio.identity.displayName,
     title: portfolio.metadata.title,
     description: portfolio.metadata.description,
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${portfolio.identity.displayName} — Software, AI systems, and data infrastructure` }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${portfolio.identity.displayName}: software, AI systems, and data infrastructure` }],
   },
   twitter: {
     card: "summary_large_image",

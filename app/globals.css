@@ -1664,7 +1664,7 @@ a:not(.link):not(.skip-link):hover {
 }
 
 .rule-list--limits li::before {
-  content: "—";
+  content: "–";
   color: var(--ink-3);
   font-family: var(--font-figure);
   font-size: 0.75rem;
@@ -1918,7 +1918,7 @@ a:not(.link):not(.skip-link):hover {
 }
 
 .resume-entry ul li::before {
-  content: "—";
+  content: "–";
   color: var(--ink-3);
   font-family: var(--font-figure);
   font-size: 0.6875rem;

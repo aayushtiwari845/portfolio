@@ -164,7 +164,7 @@ export function TitleBlock() {
               <div className="meta-row">
                 <dt>Education</dt>
                 <dd>
-                  {education.degree}, {education.field} — {education.institution}
+                  {education.degree} in {education.field}, {education.institution}
                   <br />
                   <span className="figure-value">{education.period} · CGPA {education.cgpa}</span>
                 </dd>
@@ -439,9 +439,9 @@ export function BackgroundSection() {
         <Reveal className="prose">
           <p>{portfolio.about}</p>
           <p>
-            My work spans backend services, data infrastructure, and applied AI — not as isolated
-            demos, but as systems that can be tested, reviewed, and understood by someone who did
-            not build them.
+            My work spans backend services, data infrastructure, and applied AI. Not as isolated
+            demos, but as systems that can be tested, reviewed, and understood by someone who
+            did not build them.
           </p>
         </Reveal>
 
@@ -453,7 +453,7 @@ export function BackgroundSection() {
             </div>
             <div className="meta-row">
               <dt>Programme</dt>
-              <dd>{education.degree} — {education.field}</dd>
+              <dd>{education.degree} in {education.field}</dd>
             </div>
             <div className="meta-row">
               <dt>Period</dt>

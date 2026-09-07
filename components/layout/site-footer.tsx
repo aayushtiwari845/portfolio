@@ -7,7 +7,7 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="page-shell footer-inner">
         <p className="footer-identity">
-          <strong>{portfolio.identity.displayName}</strong> — {portfolio.identity.descriptor}
+          <strong>{portfolio.identity.displayName}</strong> · {portfolio.identity.descriptor}
         </p>
         <p className="footer-time">
           <span aria-hidden="true" className="signal-dot" />

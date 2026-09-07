@@ -93,7 +93,7 @@ describe("portfolio data", () => {
 
       expect(project.seoDescription.length).toBeGreaterThan(80);
       expect(metadata).toEqual({
-        title: `${project.title} — Aayush Tiwari`,
+        title: `${project.title} | Aayush Tiwari`,
         description: project.seoDescription,
         canonicalUrl: `${portfolio.metadata.siteUrl}/projects/${project.slug}`,
       });

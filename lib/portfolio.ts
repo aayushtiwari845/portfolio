@@ -61,7 +61,7 @@ export function getProjectMetadata(slug: string):
   }
 
   return {
-    title: `${project.title} — Aayush Tiwari`,
+    title: `${project.title} | Aayush Tiwari`,
     description: project.seoDescription,
     canonicalUrl: `${portfolio.metadata.siteUrl}/projects/${project.slug}`,
   };

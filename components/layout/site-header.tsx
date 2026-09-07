@@ -173,7 +173,7 @@ export function SiteHeader({
       <header className="site-header" data-menu-open={menuOpen} data-scrolled={scrolled}>
         <Link className="wordmark" href="/">
           <span className="wordmark-label">{displayName}</span>
-          <span className="sr-only">— home</span>
+          <span className="sr-only">, home</span>
         </Link>
 
         <nav className="desktop-nav" aria-label="Primary navigation">

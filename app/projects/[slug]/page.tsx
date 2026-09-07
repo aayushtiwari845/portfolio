@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
     openGraph: {
       type: "article",
       url: canonical,
-      title: `${project.title} — ${project.subtitle}`,
+      title: `${project.title}: ${project.subtitle}`,
       description: project.seoDescription,
       images: [{ url: `${canonical}/opengraph-image`, width: 1200, height: 630, alt: `${project.title} engineering case study` }],
     },

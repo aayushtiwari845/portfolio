@@ -48,7 +48,7 @@ export default function ResumePage() {
             {portfolio.experiences.map((experience) => (
               <article className="resume-entry" key={experience.id}>
                 <div className="resume-entry-head">
-                  <h3>{experience.company} — {experience.role}</h3>
+                  <h3>{experience.company} · {experience.role}</h3>
                   <span className="technical-label">{experience.period}</span>
                 </div>
                 <p>{experience.summary}</p>
@@ -107,7 +107,7 @@ export default function ResumePage() {
               <h3>{portfolio.education.institution}</h3>
               <span className="technical-label">{portfolio.education.period}</span>
             </div>
-            <p>{portfolio.education.degree} — {portfolio.education.field}</p>
+            <p>{portfolio.education.degree} in {portfolio.education.field}</p>
             <p>CGPA {portfolio.education.cgpa} · {portfolio.education.location}</p>
           </article>
         </section>

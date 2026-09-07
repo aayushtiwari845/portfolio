@@ -197,7 +197,7 @@ export const portfolio = {
     field: "Artificial Intelligence & Data Science",
     startDate: "2023-08",
     endDate: "2027-07",
-    period: "Aug 2023 — Jul 2027",
+    period: "Aug 2023 – Jul 2027",
     cgpa: "9.71",
     location: "Mumbai, India",
   },
@@ -208,7 +208,7 @@ export const portfolio = {
       role: "Technology Developer Intern",
       startDate: "2026-06",
       endDate: "2026-08",
-      period: "June 2026 — August 2026",
+      period: "June 2026 – August 2026",
       summary:
         "Helped move a sanctions-screening platform from proof of concept toward a scalable, configuration-driven system spanning engineering design, processing workflows, and operational tooling.",
       highlights: [
@@ -228,7 +228,7 @@ export const portfolio = {
       role: "Backend Developer Intern",
       startDate: "2025-09",
       endDate: "2025-11",
-      period: "September 2025 — November 2025",
+      period: "September 2025 – November 2025",
       summary:
         "Refactored a Node.js backend for an AI counselling product, separating inference from session state and simplifying a four-stage conversational workflow.",
       highlights: [
@@ -246,7 +246,7 @@ export const portfolio = {
       role: "Data Analytics Intern",
       startDate: "2024-12",
       endDate: "2025-01",
-      period: "December 2024 — January 2025",
+      period: "December 2024 – January 2025",
       summary:
         "Built SQL-based ETL and analytics workflows that consolidated operational data into a normalized warehouse and decision-ready Power BI reporting.",
       highlights: [
@@ -503,7 +503,7 @@ export const portfolio = {
       ],
       visualKind: "conclave",
       figureCaption:
-        "Shows the full flow from public sources through normalisation, the feature engine, a four-way agent fan-out and fan-in, deterministic consensus, evaluation, and the dashboard. The counts it carries — 20+ engineered metrics, six dashboard tabs — describe the system's shape; no measured scores, timings, or throughput appear.",
+        "Shows the full flow from public sources through normalisation, the feature engine, a four-way agent fan-out and fan-in, deterministic consensus, evaluation, and the dashboard. The counts it carries (20+ engineered metrics, six dashboard tabs) describe the system's shape. No measured scores, timings, or throughput appear.",
       seoDescription:
         "Explore CONCLAVE, Aayush Tiwari's multi-agent LLM system for evidence-driven Indian mutual-fund ranking, deterministic consensus, and evaluation.",
     },
@@ -1052,8 +1052,8 @@ export const portfolio = {
   ],
   metadata: {
     siteUrl: "https://aayushktiwari.tech",
-    title: "Aayush Tiwari — Software Engineer | AI Systems & Data Infrastructure",
-    titleTemplate: "%s — Aayush Tiwari",
+    title: "Aayush Tiwari, Software Engineer: AI Systems and Data Infrastructure",
+    titleTemplate: "%s | Aayush Tiwari",
     description:
       "Portfolio of Aayush Tiwari, a software and AI engineer building backend systems, real-time data infrastructure, ML platforms, and applied AI products.",
     locale: "en_IN",

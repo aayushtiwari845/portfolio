@@ -4,7 +4,7 @@ import { portfolio } from "@/data/portfolio";
 import { loadDocFonts, og, ogFontFamily } from "@/lib/og";
 
 export const alt =
-  "Aayush Tiwari — software engineering, AI systems, and data infrastructure";
+  "Aayush Tiwari: software engineering, AI systems, and data infrastructure";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

@@ -56,7 +56,7 @@ export default async function ProjectOpenGraphImage({ params }: ProjectImageProp
             width: "100%",
           }}
         >
-          <span style={{ color: og.ink }}>{portfolio.identity.displayName} — Selected work</span>
+          <span style={{ color: og.ink }}>{portfolio.identity.displayName} · Selected work</span>
           <span>{domain}</span>
         </div>
 
