@@ -2,15 +2,9 @@
 
 import { useEffect } from "react";
 
+import { readMotionEnvironment } from "@/lib/motion";
+
 const motionTargetSelector = "[data-reveal], [data-motion-visual]";
-
-interface SaveDataConnection extends EventTarget {
-  readonly saveData?: boolean;
-}
-
-interface NavigatorWithConnection extends Navigator {
-  readonly connection?: SaveDataConnection;
-}
 
 function isInitiallyVisible(element: Element) {
   const bounds = element.getBoundingClientRect();
@@ -28,20 +22,13 @@ function isInitiallyVisible(element: Element) {
 export function MotionActivator() {
   useEffect(() => {
     const root = document.documentElement;
-    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const connection = (navigator as NavigatorWithConnection).connection;
+    const environment = readMotionEnvironment();
     const targets = new Set<HTMLElement>();
     const intersectingTargets = new WeakSet<HTMLElement>();
     const revealedTargets = new WeakSet<HTMLElement>();
 
     let eligible = false;
     let intersectionObserver: IntersectionObserver | null = null;
-
-    const canAnimate = () => (
-      "IntersectionObserver" in window
-      && !reducedMotionQuery.matches
-      && !connection?.saveData
-    );
 
     const updateTarget = (target: HTMLElement) => {
       const isIntersecting = intersectingTargets.has(target);
@@ -118,7 +105,7 @@ export function MotionActivator() {
     };
 
     const updateEligibility = () => {
-      eligible = canAnimate();
+      eligible = environment.canAnimate();
       root.dataset.motion = eligible ? "on" : "off";
 
       targets.forEach(updateTarget);
@@ -148,7 +135,7 @@ export function MotionActivator() {
       });
     }
 
-    eligible = canAnimate();
+    eligible = environment.canAnimate();
     if (eligible) root.dataset.motion = "on";
     registerTree(document);
     root.dataset.motion = eligible ? "on" : "off";
@@ -173,8 +160,7 @@ export function MotionActivator() {
     window.addEventListener("scroll", scheduleSweep, { passive: true });
     window.addEventListener("hashchange", scheduleSweep);
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    reducedMotionQuery.addEventListener("change", updateEligibility);
-    connection?.addEventListener("change", updateEligibility);
+    const unsubscribe = environment.subscribe(updateEligibility);
 
     return () => {
       window.cancelAnimationFrame(sweepFrame);
@@ -183,8 +169,7 @@ export function MotionActivator() {
       window.removeEventListener("scroll", scheduleSweep);
       window.removeEventListener("hashchange", scheduleSweep);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      reducedMotionQuery.removeEventListener("change", updateEligibility);
-      connection?.removeEventListener("change", updateEligibility);
+      unsubscribe();
       delete root.dataset.motion;
     };
   }, []);
