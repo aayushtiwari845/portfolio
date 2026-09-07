@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { ModeToggle } from "@/components/orrery/mode-toggle";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { SectionLink } from "./section-link";
 
@@ -193,6 +194,8 @@ export function SiteHeader({
         </nav>
 
         <div className="header-actions">
+          {/* There is no orrery outside the home page, so no switch is offered. */}
+          {pathname === "/" ? <ModeToggle className="mode-toggle--header" /> : null}
           <ThemeToggle className="theme-toggle--header" />
           {commandRequested ? (
             <DeferredCommandPalette defaultOpen />

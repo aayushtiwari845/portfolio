@@ -1,32 +1,44 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Martian_Mono } from "next/font/google";
+import { Inter_Tight, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import type { ReactNode } from "react";
 
 import { HashScroll } from "@/components/layout/hash-scroll";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { MotionActivator } from "@/components/motion/motion-activator";
+import { ModeScript } from "@/components/orrery/mode-script";
+import { DEFAULT_VIEW } from "@/components/orrery/mode";
 import { ThemeScript } from "@/components/theme/theme-script";
 import { DEFAULT_THEME, THEME_COLORS } from "@/components/theme/theme";
 import { portfolio } from "@/data/portfolio";
 
 import "./globals.css";
 import "./motion-effects.css";
+import "./orrery.css";
 
-// Width is a working axis in this design system, not decoration: the document
-// title block is set expanded, running text sits at normal width, and the
-// tabular label rail is condensed. One self-hosted family covers all three.
-const archivo = Archivo({
+// Three faces, each with one job, chosen for a dark spatial interface rather
+// than for a paper document.
+//
+// Space Grotesk sets every heading: a technical grotesk with enough character
+// to carry a title block, and enough restraint not to fight the scene behind
+// it. Inter Tight runs the body, because the case studies are long and dense
+// and nothing reads better at fifteen paragraphs. JetBrains Mono is reserved
+// for figures and telemetry, never for prose.
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  axes: ["wdth"],
-  variable: "--font-sans",
+  variable: "--font-display-face",
   display: "swap",
 });
 
-const martianMono = Martian_Mono({
+const interTight = Inter_Tight({
   subsets: ["latin"],
-  axes: ["wdth"],
-  variable: "--font-mono",
+  variable: "--font-body-face",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono-face",
   display: "swap",
 });
 
@@ -67,14 +79,16 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html
-      className={`${archivo.variable} ${martianMono.variable}`}
+      className={`${spaceGrotesk.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
       data-scroll-behavior="smooth"
       data-theme={DEFAULT_THEME}
+      data-view={DEFAULT_VIEW}
       lang="en"
       suppressHydrationWarning
     >
       <head>
         <ThemeScript />
+        <ModeScript />
       </head>
       <body>
         <MotionActivator />

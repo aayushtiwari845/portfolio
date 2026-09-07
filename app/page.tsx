@@ -1,9 +1,9 @@
+import { OrreryStage } from "@/components/orrery/orrery-stage";
 import {
   BackgroundSection,
   CapabilitiesSection,
   ContactSection,
   ExperienceSection,
-  NonGoalsSection,
   TitleBlock,
   WorkSection,
 } from "@/components/sections/home-sections";
@@ -44,11 +44,11 @@ const personJsonLd = {
 export default function Home() {
   return (
     <>
+      <OrreryStage />
       <main className="page-shell" id="main-content">
         <TitleBlock />
         <ExperienceSection />
         <WorkSection />
-        <NonGoalsSection />
         <CapabilitiesSection />
         <BackgroundSection />
       </main>

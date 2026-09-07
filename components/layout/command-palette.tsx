@@ -13,7 +13,6 @@ import {
   GraduationCap,
   Mail,
   Search,
-  ShieldAlert,
   UserRound,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -46,7 +45,6 @@ export function CommandPalette({ defaultOpen = false }: CommandPaletteProps) {
     () => [
       { label: "Selected work", value: "selected work projects", group: "Navigate", icon: BriefcaseBusiness, href: "/#work" },
       { label: "Experience", value: "experience internships", group: "Navigate", icon: UserRound, href: "/#experience" },
-      { label: "Non-goals", value: "non-goals boundaries limitations what this does not claim", group: "Navigate", icon: ShieldAlert, href: "/#non-goals" },
       { label: "Capabilities", value: "capabilities technologies skills", group: "Navigate", icon: GraduationCap, href: "/#capabilities" },
       { label: "Background", value: "background about education", group: "Navigate", icon: UserRound, href: "/#background" },
       { label: "View résumé", value: "resume cv", group: "Navigate", icon: FileText, href: "/resume" },

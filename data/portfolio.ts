@@ -90,22 +90,6 @@ export interface Experience {
   readonly note?: string;
 }
 
-/**
- * A claim this portfolio explicitly does not make. Every entry restates an
- * evidence boundary that already governs the case studies, so the site says
- * out loud what it will not let a reader assume.
- */
-export interface NonGoal {
-  readonly title: string;
-  readonly detail: string;
-  /**
-   * The sections this boundary governs, as ids: "experience" for §1, or a
-   * project slug resolved to its §2.n position. Rendered as marginal
-   * cross-references so a reader can go straight to the work being bounded.
-   */
-  readonly refs: readonly string[];
-}
-
 export interface CapabilityGroup {
   readonly id: string;
   readonly label: string;
@@ -164,7 +148,6 @@ export interface Portfolio {
     readonly relationships: readonly CapabilityRelationship[];
   };
   readonly projects: readonly Project[];
-  readonly nonGoals: readonly NonGoal[];
   readonly metadata: {
     readonly siteUrl: string;
     readonly title: string;
@@ -203,7 +186,6 @@ export const portfolio = {
   navigation: [
     { label: "Experience", href: "/#experience" },
     { label: "Work", href: "/#work" },
-    { label: "Non-goals", href: "/#non-goals" },
     { label: "Capabilities", href: "/#capabilities" },
     { label: "Background", href: "/#background" },
     { label: "Contact", href: "/#contact" },
@@ -1066,38 +1048,6 @@ export const portfolio = {
         "Shows the analysis path over the curated dataset alongside the project's own results: a 0.9808 five-fold cross-validated R², a median absolute error near 4.15%, and two K-Means risk clusters across 63 records in 27 sectors. These describe that dataset only and are not prospective.",
       seoDescription:
         "Explore Aayush Tiwari's Indian IPO Analytics project covering 63 NSE/BSE IPOs, 27 sectors, regression, clustering, and an interactive Dash dashboard.",
-    },
-  ],
-  nonGoals: [
-    {
-      title: "Production scale claimed as my own",
-      detail:
-        "The Barclays platform processed files of 80M+ records across DEV, UAT, and pre-production. Public copy here stays at résumé-level scope, describes no internal system, and implies no Barclays endorsement.",
-      refs: ["experience"],
-    },
-    {
-      title: "A municipal case-management platform",
-      detail:
-        "CivicLens is a credentialed Supabase-to-Storacha/IPFS archival utility plus a deployed static dashboard over exported archives. It does not accept public submissions and does not manage cases.",
-      refs: ["civiclens"],
-    },
-    {
-      title: "A deployed payment system",
-      detail:
-        "The real-time fraud pipeline's throughput and latency come from a simulated local streaming benchmark, not production traffic. It is an academic collaboration with Aditya Ravi and Atharva Indulkar, and the public repository is owned by Aditya Ravi.",
-      refs: ["real-time-fraud-detection"],
-    },
-    {
-      title: "A market forecast",
-      detail:
-        "The IPO regression is scoped to a small curated 2019–2024 dataset. It describes that dataset. It is not prospective, and it is not investment advice.",
-      refs: ["indian-ipo-analytics"],
-    },
-    {
-      title: "Models trusted without a baseline",
-      detail:
-        "TracePilot's learned ranker lost to its deterministic baseline and stayed ineligible for promotion. Conclave's persisted study found a directional but not statistically significant advantage over a simple baseline. Both results are reported as they came out.",
-      refs: ["tracepilot", "conclave"],
     },
   ],
   metadata: {

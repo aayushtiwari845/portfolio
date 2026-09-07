@@ -7,6 +7,12 @@ import { CopyEmail } from "@/components/ui/copy-email";
 import { ExternalLink } from "@/components/ui/external-link";
 import { ProjectVisual } from "@/components/work/project-visual";
 import {
+  CLOSING_WAYPOINT,
+  ESTABLISHING_WAYPOINT,
+  sideForWaypoint,
+  waypointForTarget,
+} from "@/lib/orrery/scene";
+import {
   homepageProjectEvidence,
   homepageProjectSlugs,
   portfolio,
@@ -52,29 +58,6 @@ const capabilityDomains = [
   },
 ] as const;
 
-/**
- * Resolve a non-goal reference id to the section it points at. Project slugs
- * take their §2.n position from the homepage running order, so the numbering a
- * reader sees in §2 is the numbering a cross-reference names.
- */
-function resolveReference(id: string) {
-  const projectIndex = homepageProjectSlugs.indexOf(id as ProjectSlug);
-
-  if (projectIndex >= 0) {
-    const project = homepageProjects[projectIndex];
-    return {
-      label: `§2.${projectIndex + 1}`,
-      title: project.title,
-      href: `/projects/${project.slug}`,
-    };
-  }
-
-  const section = documentSections.find((entry) => entry.id === id);
-  return section
-    ? { label: `§${section.number}`, title: section.label, href: `#${section.id}` }
-    : null;
-}
-
 const domainNames = {
   systems: "Systems",
   data: "Data",
@@ -86,10 +69,9 @@ const domainNames = {
 export const documentSections = [
   { id: "experience", number: "1", label: "Experience", note: `${portfolio.experiences.length} roles` },
   { id: "work", number: "2", label: "Selected work", note: `${projects.length} systems` },
-  { id: "non-goals", number: "3", label: "Non-goals", note: `${portfolio.nonGoals.length} boundaries` },
-  { id: "capabilities", number: "4", label: "Capabilities", note: `${capabilityDomains.length} domains` },
-  { id: "background", number: "5", label: "Background", note: "Education" },
-  { id: "contact", number: "6", label: "Contact", note: "Direct" },
+  { id: "capabilities", number: "3", label: "Capabilities", note: `${capabilityDomains.length} domains` },
+  { id: "background", number: "4", label: "Background", note: "Education" },
+  { id: "contact", number: "5", label: "Contact", note: "Direct" },
 ] as const;
 
 function DocSection({
@@ -98,6 +80,8 @@ function DocSection({
   rail,
   title,
   lede,
+  waypoint,
+  side,
   children,
 }: {
   id: string;
@@ -105,16 +89,25 @@ function DocSection({
   rail: string;
   title: string;
   lede?: string;
+  /** The camera stop this section holds, when its rows do not carry their own. */
+  waypoint?: number;
+  /** Which side the heading takes; rows below it alternate from there. */
+  side?: "left" | "right";
   children: ReactNode;
 }) {
   return (
-    <section aria-labelledby={`${id}-heading`} className="doc-section" id={id}>
-      <div className="doc-rail">
+    <section
+      aria-labelledby={`${id}-heading`}
+      className="doc-section"
+      data-orrery-waypoint={waypoint}
+      id={id}
+    >
+      <div className="doc-rail" data-orrery-side={side}>
         <span className="doc-num">§{number}</span>
         <span className="doc-rail-label">{rail}</span>
       </div>
       <div className="doc-body">
-        <Reveal>
+        <Reveal side={side}>
           <h2 className="doc-title" id={`${id}-heading`}>{title}</h2>
           {lede ? <p className="doc-lede">{lede}</p> : null}
         </Reveal>
@@ -129,7 +122,12 @@ export function TitleBlock() {
   const { education, identity } = portfolio;
 
   return (
-    <section aria-labelledby="doc-title" className="titleblock">
+    <section
+      aria-labelledby="doc-title"
+      className="titleblock"
+      data-orrery-side="left"
+      data-orrery-waypoint={ESTABLISHING_WAYPOINT}
+    >
         <p className="titleblock-doctype">
           <span>Engineering portfolio</span>
           <span className="figure-value">Updated {portfolio.metadata.lastUpdated}</span>
@@ -205,11 +203,19 @@ export function ExperienceSection() {
       lede="Three roles across production software, backend product systems, and analytical infrastructure. Scope notes state what each engagement did and did not cover."
       number="1"
       rail="Experience"
+      side="left"
       title="Built inside real operating constraints."
     >
       <div className="doc-block">
         {portfolio.experiences.map((experience, index) => (
-          <Reveal as="div" className="entry" delay={index * 0.04} key={experience.id}>
+          <Reveal
+            as="div"
+            className="entry"
+            delay={index * 0.04}
+            key={experience.id}
+            side={sideForWaypoint(waypointForTarget[experience.id] ?? 0)}
+            waypoint={waypointForTarget[experience.id]}
+          >
             <div>
               <p className="entry-when figure-value">{experience.period}</p>
               <h3 className="entry-org">{experience.company}</h3>
@@ -241,6 +247,7 @@ export function WorkSection() {
       lede="Each system is written up as its own document: the brief, the architecture, the decisions with their costs, what was measured, and where the result stops being true."
       number="2"
       rail="Selected work"
+      side="right"
       title="Systems with the evidence left in."
     >
       <div className="doc-block">
@@ -260,7 +267,14 @@ export function WorkSection() {
           const reference = `2.${index + 1}`;
 
           return (
-            <Reveal as="div" className="work-entry" delay={index * 0.03} key={project.slug}>
+            <Reveal
+              as="div"
+              className="work-entry"
+              delay={index * 0.03}
+              key={project.slug}
+              side={sideForWaypoint(waypointForTarget[project.slug] ?? 0)}
+              waypoint={waypointForTarget[project.slug]}
+            >
               <article>
                 <div className="work-head">
                   <span className="figure-value">§{reference}</span>
@@ -332,7 +346,13 @@ export function WorkSection() {
         <p className="technical-label">Also documented</p>
         <div className="reflist">
           {referencedProjects.map((project, index) => (
-            <Reveal as="div" delay={index * 0.03} key={project.slug}>
+            <Reveal
+              as="div"
+              delay={index * 0.03}
+              key={project.slug}
+              side={sideForWaypoint(waypointForTarget[project.slug] ?? 0)}
+              waypoint={waypointForTarget[project.slug]}
+            >
               <article className="reflist-row">
                 <span className="reflist-num figure-value">§2.{featuredProjects.length + index + 1}</span>
                 <h3 className="reflist-title">
@@ -355,47 +375,15 @@ export function WorkSection() {
   );
 }
 
-export function NonGoalsSection() {
-  return (
-    <DocSection
-      id="non-goals"
-      lede="A design doc says what it is not for. These boundaries hold everywhere on this site, including in the structured data search engines read."
-      number="3"
-      rail="Non-goals"
-      title="What this work does not claim."
-    >
-      <div className="doc-block nongoals">
-        {portfolio.nonGoals.map((nonGoal, index) => {
-          const references = nonGoal.refs
-            .map(resolveReference)
-            .filter((reference): reference is NonNullable<typeof reference> => reference !== null);
-
-          return (
-            <Reveal as="div" className="nongoal" delay={index * 0.03} key={nonGoal.title}>
-              <p className="nongoal-refs">
-                {references.map((reference) => (
-                  <SectionLink href={reference.href} key={reference.href}>
-                    {reference.label}
-                    <span className="sr-only"> — {reference.title}</span>
-                  </SectionLink>
-                ))}
-              </p>
-              <p><strong>Not {nonGoal.title.toLowerCase()}.</strong> {nonGoal.detail}</p>
-            </Reveal>
-          );
-        })}
-      </div>
-    </DocSection>
-  );
-}
-
 export function CapabilitiesSection() {
   return (
     <DocSection
       id="capabilities"
       lede="I work across the seams: APIs expose workflows, data preserves evidence, and models are tested against explicit baselines before anything depends on them."
-      number="4"
+      number="3"
       rail="Capabilities"
+      side="left"
+      waypoint={CLOSING_WAYPOINT}
       title="Systems, data, and models with stated boundaries."
     >
       <div className="doc-block cap-table">
@@ -441,8 +429,10 @@ export function BackgroundSection() {
   return (
     <DocSection
       id="background"
-      number="5"
+      number="4"
       rail="Background"
+      side="right"
+      waypoint={CLOSING_WAYPOINT}
       title="The model is only one part of the system."
     >
       <div className="doc-block">
