@@ -7,8 +7,8 @@ export type Theme = (typeof themes)[number];
 export const DEFAULT_THEME: Theme = "light";
 
 export const THEME_COLORS: Readonly<Record<Theme, string>> = {
-  dark: "#141416",
-  light: "#fcfbf8",
+  dark: "#101420",
+  light: "#fbfaf7",
 };
 
 export function isTheme(value: unknown): value is Theme {

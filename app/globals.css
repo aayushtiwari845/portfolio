@@ -21,53 +21,90 @@
 :root {
   color-scheme: light;
 
-  /* Document stock. Warm-neutral paper, not cream. */
-  --stock: #fcfbf8;
-  --stock-2: #f4f2ec;
-  --stock-3: #eae7de;
+  /* Paper, for the schematic. */
+  --stock: #fbfaf7;
+  --stock-2: #f2f0ea;
+  --stock-3: #e7e4db;
 
-  /* Ink, tinted to the paper rather than neutral grey. */
-  --ink: #1a1815;
-  --ink-2: #4c483f;
-  --ink-3: #767166;
+  /* Ink, pushed harder than the document this replaces: text now sits over a
+     rendered scene rather than over paper, and the old greys did not survive
+     the move. */
+  --ink: #14161c;
+  --ink-2: #454b57;
+  --ink-3: #5b6272;
 
-  --rule: rgba(26, 24, 21, 0.16);
-  --rule-strong: rgba(26, 24, 21, 0.42);
+  --rule: rgba(20, 22, 28, 0.14);
+  --rule-strong: rgba(20, 22, 28, 0.4);
 
-  /* The mark. Field colour only — see rule 2. */
-  --mark: #efc93d;
-  --mark-ink: #1a1815;
+  /* The star. */
+  --mark: #d99e00;
+  --mark-ink: #14161c;
 
-  --font-display: var(--font-sans), "Helvetica Neue", Arial, sans-serif;
-  --font-body: var(--font-sans), "Helvetica Neue", Arial, sans-serif;
-  --font-figure: var(--font-mono), ui-monospace, "SFMono-Regular", Consolas, monospace;
+  /*
+   * Domain hues.
+   *
+   * These are the same five colours the orrery paints its planets with, so a
+   * colour on the page and a colour in the scene always mean the same thing:
+   * the project's domain, as recorded in data/portfolio.ts. Darkened here for
+   * contrast against paper.
+   */
+  --hue-observability: #0c8d88;
+  --hue-ai: #6b3fd4;
+  --hue-streaming: #cf3a26;
+  --hue-civic: #12855a;
+  --hue-analytics: #3352cc;
+
+  --font-display: var(--font-display-face), "Helvetica Neue", Arial, sans-serif;
+  --font-body: var(--font-body-face), "Helvetica Neue", Arial, sans-serif;
+  --font-figure: var(--font-mono-face), ui-monospace, "SFMono-Regular", Consolas, monospace;
 
   --gutter: 24px;
   --page: min(100% - (var(--gutter) * 2), 1200px);
-  --measure: 68ch;
+  --measure: 66ch;
   --rail: 9.5rem;
 
+  /*
+   * The one radius in the system. Content is still square-cornered; this
+   * belongs solely to the reading panel that carries a case study or the
+   * résumé over the scene. See DESIGN.md, "Shapes".
+   */
+  --radius-panel: 20px;
+
   --lift: cubic-bezier(0.16, 1, 0.3, 1);
-  --shadow-lift: 0 18px 40px -24px rgba(26, 24, 21, 0.42);
+  --shadow-lift: 0 18px 40px -24px rgba(20, 22, 28, 0.42);
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  /* Not an inversion: the same document read on a lit screen at night. */
-  --stock: #141416;
-  --stock-2: #1b1b1e;
-  --stock-3: #232327;
+  /*
+   * Deep space, lifted off pure black and cast blue-violet.
+   *
+   * A near-black ground makes a starfield read as dead pixels and gives the
+   * glass panel nothing to refract. Lifting it a few steps reads as space with
+   * air in it and raises the perceived contrast of the amber and the five
+   * domain hues, without costing any text contrast: every ink step below still
+   * clears WCAG AA, and the first two clear AAA.
+   */
+  --stock: #101420;
+  --stock-2: #171c2b;
+  --stock-3: #202638;
 
-  --ink: #f0efea;
-  --ink-2: #b0ada4;
-  --ink-3: #8b867a;
+  --ink: #f4f6fa;
+  --ink-2: #ccd4e2;
+  --ink-3: #9aa4ba;
 
-  --rule: rgba(240, 239, 234, 0.17);
-  --rule-strong: rgba(240, 239, 234, 0.45);
+  --rule: rgba(244, 246, 250, 0.17);
+  --rule-strong: rgba(244, 246, 250, 0.46);
 
-  --mark: #e0b92e;
-  --mark-ink: #16150f;
+  --mark: #ffd24a;
+  --mark-ink: #0a0c12;
+
+  --hue-observability: #35d6d0;
+  --hue-ai: #9b6cf0;
+  --hue-streaming: #ff6b5a;
+  --hue-civic: #3fc98a;
+  --hue-analytics: #6d8dff;
 
   --shadow-lift: 0 18px 40px -24px rgba(0, 0, 0, 0.7);
 }
@@ -94,9 +131,8 @@ body {
   background: var(--stock);
   color: var(--ink);
   font-family: var(--font-body);
-  font-size: 1.0625rem;
-  font-variation-settings: "wdth" 100;
-  line-height: 1.62;
+  font-size: 1.125rem;
+  line-height: 1.68;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
@@ -350,7 +386,6 @@ a:not(.link):not(.skip-link):hover {
 .wordmark-label {
   font-family: var(--font-display);
   font-size: 0.9375rem;
-  font-variation-settings: "wdth" 112;
   font-weight: 600;
   letter-spacing: -0.012em;
 }
@@ -539,7 +574,6 @@ a:not(.link):not(.skip-link):hover {
   /* No ch-based cap here: `ch` scales with the type, so it pins the line
      count no matter what size the title is set at. The column governs. */
   font-size: clamp(2.25rem, 4.4vw, 3.625rem);
-  font-variation-settings: "wdth" 124;
   font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1.0;
@@ -657,7 +691,6 @@ a:not(.link):not(.skip-link):hover {
 .contents-label {
   font-family: var(--font-display);
   font-size: clamp(1.0625rem, 1.8vw, 1.375rem);
-  font-variation-settings: "wdth" 106;
   font-weight: 600;
   letter-spacing: -0.018em;
 }
@@ -716,7 +749,6 @@ a:not(.link):not(.skip-link):hover {
   color: var(--ink-3);
   font-family: var(--font-figure);
   font-size: 0.6875rem;
-  font-variation-settings: "wdth" 88;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -731,7 +763,6 @@ a:not(.link):not(.skip-link):hover {
 .doc-title {
   max-width: 22ch;
   font-size: clamp(1.75rem, 3.2vw, 2.75rem);
-  font-variation-settings: "wdth" 108;
   letter-spacing: -0.026em;
 }
 
@@ -783,7 +814,6 @@ a:not(.link):not(.skip-link):hover {
 .entry-org {
   margin-top: 6px;
   font-size: 1.25rem;
-  font-variation-settings: "wdth" 108;
   letter-spacing: -0.02em;
 }
 
@@ -833,7 +863,6 @@ a:not(.link):not(.skip-link):hover {
 
 .entry-stack {
   display: flex;
-  font-variation-settings: "wdth" 85;
   flex-wrap: wrap;
   gap: 4px 10px;
   margin-top: 18px;
@@ -906,7 +935,6 @@ a:not(.link):not(.skip-link):hover {
 
 .work-title {
   font-size: clamp(1.625rem, 2.8vw, 2.25rem);
-  font-variation-settings: "wdth" 110;
   letter-spacing: -0.026em;
 }
 
@@ -954,7 +982,6 @@ a:not(.link):not(.skip-link):hover {
 .work-finding-text {
   margin-top: 8px;
   font-size: 1.1875rem;
-  font-variation-settings: "wdth" 104;
   letter-spacing: -0.012em;
   line-height: 1.42;
   text-wrap: pretty;
@@ -1024,7 +1051,6 @@ a:not(.link):not(.skip-link):hover {
 
 .work-stack {
   display: flex;
-  font-variation-settings: "wdth" 85;
   flex-wrap: wrap;
   gap: 4px 10px;
   margin-top: 20px;
@@ -1073,7 +1099,6 @@ a:not(.link):not(.skip-link):hover {
 
 .reflist-title {
   font-size: 1.0625rem;
-  font-variation-settings: "wdth" 106;
   font-weight: 600;
   letter-spacing: -0.016em;
 }
@@ -1188,7 +1213,6 @@ a:not(.link):not(.skip-link):hover {
 
 .cap-domain {
   font-size: 1.1875rem;
-  font-variation-settings: "wdth" 108;
   font-weight: 600;
   letter-spacing: -0.018em;
 }
@@ -1201,7 +1225,6 @@ a:not(.link):not(.skip-link):hover {
 
 .cap-tech {
   display: flex;
-  font-variation-settings: "wdth" 85;
   flex-wrap: wrap;
   gap: 4px 10px;
   color: var(--ink-3);
@@ -1246,7 +1269,6 @@ a:not(.link):not(.skip-link):hover {
   gap: 8px;
   font-family: var(--font-figure);
   font-size: 0.75rem;
-  font-variation-settings: "wdth" 85;
 }
 
 .seam-path span {
@@ -1351,7 +1373,6 @@ a:not(.link):not(.skip-link):hover {
 .close-title {
   max-width: 18ch;
   font-size: clamp(2rem, 4.4vw, 3.5rem);
-  font-variation-settings: "wdth" 112;
   letter-spacing: -0.03em;
 }
 
@@ -1374,7 +1395,6 @@ a:not(.link):not(.skip-link):hover {
   border-bottom: 2px solid var(--mark-ink);
   font-family: var(--font-display);
   font-size: clamp(1.0625rem, 2vw, 1.5rem);
-  font-variation-settings: "wdth" 104;
   font-weight: 600;
   letter-spacing: -0.02em;
   padding-bottom: 3px;
@@ -1497,7 +1517,6 @@ a:not(.link):not(.skip-link):hover {
 .case-title {
   margin-top: clamp(20px, 3vw, 32px);
   font-size: clamp(2.25rem, 5.4vw, 4.25rem);
-  font-variation-settings: "wdth" 116;
   letter-spacing: -0.032em;
   line-height: 0.99;
 }
@@ -1531,7 +1550,6 @@ a:not(.link):not(.skip-link):hover {
 
 .decision-title {
   font-size: 1.0625rem;
-  font-variation-settings: "wdth" 106;
   font-weight: 600;
   letter-spacing: -0.016em;
 }
@@ -1776,7 +1794,6 @@ a:not(.link):not(.skip-link):hover {
 
 .next-doc-title {
   font-size: clamp(1.75rem, 3.4vw, 2.75rem);
-  font-variation-settings: "wdth" 112;
   font-weight: 600;
   letter-spacing: -0.028em;
 }
@@ -1811,7 +1828,6 @@ a:not(.link):not(.skip-link):hover {
 
 .resume-title {
   font-size: clamp(2rem, 4.4vw, 3.5rem);
-  font-variation-settings: "wdth" 116;
   letter-spacing: -0.03em;
 }
 
@@ -2058,7 +2074,6 @@ a:not(.link):not(.skip-link):hover {
   border-bottom: 1px solid var(--rule);
   font-family: var(--font-display);
   font-size: 1.25rem;
-  font-variation-settings: "wdth" 106;
   font-weight: 600;
   letter-spacing: -0.02em;
 }
@@ -2097,7 +2112,6 @@ a:not(.link):not(.skip-link):hover {
 .not-found-title {
   margin-top: 14px;
   font-size: clamp(2rem, 5vw, 3.5rem);
-  font-variation-settings: "wdth" 114;
   letter-spacing: -0.03em;
 }
 

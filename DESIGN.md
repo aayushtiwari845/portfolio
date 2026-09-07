@@ -222,7 +222,7 @@ The build refuses the dark-terminal accent portfolio and the centered full-bleed
 - One amber that owns whole regions and is never a mark on a word
 - Archivo's width axis used functionally: expanded titles, normal argument, condensed labels
 - Martian Mono for every figure, label, date, and measurement — data only
-- Hairline rules and space instead of containers; zero corner radius on content
+- Hairline rules and space instead of containers; zero corner radius on content, one radius token for the reading panel
 - One motion grammar, one easing curve, everything readable before JS
 
 ## Colors
@@ -315,7 +315,9 @@ Two exceptions exist, both confined to floating browser chrome and neither avail
 
 ## Shapes
 
-Zero radius everywhere on content. Buttons, dialogs, the mobile sheet, the amber fields, and every figure cell are square-cornered. Only three curves exist in the entire build and all three are non-rectangular by nature: the scrollbar thumb (`99px`), the footer signal dot (`50%`), and the round line caps on figure connectors.
+Zero radius on content. Buttons, dialogs, the mobile sheet, the amber fields, and every figure cell are square-cornered. Three of the curves that do exist are non-rectangular by nature: the scrollbar thumb (`99px`), the footer signal dot (`50%`), and the round line caps on figure connectors.
+
+There is one rectangular exception, and only one: `--radius-panel` (`20px`) on the reading panel that carries a case study or the résumé. Those pages sit over a rendered scene rather than over paper, and a hard-cornered slab of text on a starfield reads as a crop rather than as a document resting on the view. The radius belongs to the panel alone — never to content inside it, never to a figure, never to a control.
 
 Form language is ruled and tabular. Content is defined by the lines around and between it, not by an enclosure: rows are bounded top and bottom by hairlines, columns are set by grid, and links are marked by a 1px underline that is the affordance itself. Captions and detail notes attach to their subject with a real 14–16px leader line drawn from the left margin. Scope notes attach with a `rule-strong` left stem.
 
@@ -402,7 +404,7 @@ The header, footer, skip link and close field are removed and the body reverts t
 
 ### Don't:
 - **Don't** put content in a card, a bordered box, or a filled panel. Ruled cells inside a diagram are the sole exemption.
-- **Don't** use a corner radius on anything rectangular — content, dialog, or figure `rect`. The `rx: 0; ry: 0` guard is there to catch it.
+- **Don't** use a corner radius on anything rectangular except the reading panel, which uses `--radius-panel`. Content, dialogs and figure `rect`s stay square; the `rx: 0; ry: 0` guard is there to catch it.
 - **Don't** use amber as a text colour, chip, badge, icon tint, border, or underline, and don't let a third amber region appear on a page.
 - **Don't** put amber, or any off-palette hue, inside a figure.
 - **Don't** add a shadow, glow, or gradient to a content surface; `--shadow-lift` belongs to the modal dialog alone.

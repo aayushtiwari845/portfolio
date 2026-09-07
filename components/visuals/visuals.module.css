@@ -40,7 +40,6 @@
   /* These figures were drawn against a narrower mono. Condensing on the
    * width axis restores the metrics they were laid out for, rather than
    * re-tuning several dozen individual font sizes. */
-  font-variation-settings: "wdth" 79;
 }
 
 .desktopCanvas text {
