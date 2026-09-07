@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import { length } from "./math";
 import {
-  arcPoints,
   bodyPosition,
   monthsBetween,
   orbitFor,
@@ -139,29 +138,16 @@ describe("bodyPosition", () => {
   });
 });
 
-describe("ringPoints and arcPoints", () => {
+describe("ringPoints", () => {
   const orbit = orbitFor("2026-06", "2026-08", window, 0.35);
 
   it("returns segments + 1 points", () => {
     expect(ringPoints(orbit, 64)).toHaveLength(65);
-    expect(arcPoints(orbit, 32)).toHaveLength(33);
   });
 
-  it("closes the full ring but not the partial arc", () => {
+  it("closes the ring on itself", () => {
     const ring = ringPoints(orbit, 64);
     expect(ring[64][0]).toBeCloseTo(ring[0][0], 10);
     expect(ring[64][2]).toBeCloseTo(ring[0][2], 10);
-
-    const arc = arcPoints(orbit, 32);
-    expect(length([arc[32][0] - arc[0][0], 0, arc[32][2] - arc[0][2]])).toBeGreaterThan(0.1);
-  });
-
-  it("starts the arc where the engagement starts", () => {
-    const arc = arcPoints(orbit, 32);
-    const expected = positionOnOrbit(orbit, orbit.startAngle);
-
-    expected.forEach((value, index) => {
-      expect(arc[0][index]).toBeCloseTo(value, 10);
-    });
   });
 });

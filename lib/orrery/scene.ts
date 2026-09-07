@@ -15,9 +15,10 @@ import {
   roles,
   type PlanetSurface,
 } from "@/data/orrery";
-import { arcPoints, positionOnOrbit, ringPoints } from "./orbit";
+import { positionOnOrbit, ringPoints } from "./orbit";
 import { add, cross, normalize, scale, type Vec3 } from "./math";
 import type { CameraPose } from "./camera";
+import { portfolio } from "@/data/portfolio";
 
 export type BodyKind = "star" | "role" | "project" | "moon";
 
@@ -99,7 +100,7 @@ export interface SceneRing {
  */
 export interface SceneTarget {
   readonly id: string;
-  readonly kind: "role" | "project";
+  readonly kind: "star" | "role" | "project";
   readonly label: string;
   readonly detail: string;
   /** Present for projects, which have a case study to open. */
@@ -166,18 +167,17 @@ export const COMPACT_SCENE: SceneOptions = {
 };
 
 const STAR_RADIUS = 2.05;
-const ROLE_RADIUS = 0.46;
+const ROLE_RADIUS_MIN = 0.46;
+const ROLE_RADIUS_MAX = 0.98;
 const PROJECT_RADIUS_MIN = 0.72;
 const PROJECT_RADIUS_MAX = 1.42;
 const MOON_RADIUS = 0.125;
 const RING_SEGMENTS = 96;
-const ARC_SEGMENTS = 48;
 const STARFIELD_INNER = 60;
 const STARFIELD_OUTER = 130;
 
 /** The star and the neutral bodies. Projects carry their own domain hue. */
-const STAR_COLOR: readonly [Vec3, Vec3] = [[1, 0.82, 0.29], [0.94, 0.75, 0.23]];
-const ROLE_COLOR: readonly [Vec3, Vec3] = [[0.78, 0.79, 0.84], [0.36, 0.38, 0.43]];
+const STAR_COLOR: readonly [Vec3, Vec3] = [[1, 0.78, 0.22], [0.9, 0.66, 0.1]];
 const MOON_COLOR: readonly [Vec3, Vec3] = [[0.52, 0.54, 0.6], [0.62, 0.63, 0.67]];
 
 /** Mulberry32: small, fast, and good enough for a sky. */
@@ -368,6 +368,16 @@ export const ESTABLISHING: CameraPose = {
   target: [0, 0, 0],
 };
 
+/**
+ * The star, close. A named pose rather than a `frameBody` call, because the
+ * star sits at the origin and normalising a zero vector has no direction to
+ * give back.
+ */
+const STAR_POSE: CameraPose = {
+  eye: [0, 3.4, 9.5],
+  target: [0, 0, 0],
+};
+
 export function buildScene(options: SceneOptions = DESKTOP_SCENE): Scene {
   const bodies: SceneBody[] = [{
     id: "star",
@@ -381,28 +391,61 @@ export function buildScene(options: SceneOptions = DESKTOP_SCENE): Scene {
     seed: 0,
   }];
 
+  // Orbits only. Engagement duration used to be drawn as a bright arc over each
+  // ring; it read as a smear rather than as a measurement and has been dropped.
+  // Chronology is still carried, by radius.
   const rings: SceneRing[] = [
-    { points: ringPoints(programmeOrbit, RING_SEGMENTS), emphasis: 0 },
-    { points: arcPoints(programmeOrbit, ARC_SEGMENTS), emphasis: 1 },
+    { points: ringPoints(programmeOrbit, RING_SEGMENTS), emphasis: 1 },
   ];
 
-  const targets: SceneTarget[] = [];
+  const targets: SceneTarget[] = [{
+    // The star is the author, and the one body in the scene that is a person
+    // rather than a thing. It goes to the résumé.
+    id: "star",
+    kind: "star",
+    label: portfolio.identity.displayName,
+    detail: "Read the résumé",
+    href: "/resume",
+    sectionId: "background",
+    position: [0, 0, 0],
+    radius: STAR_RADIUS,
+  }];
 
   roles.forEach((role) => {
+    const radius = ROLE_RADIUS_MIN
+      + role.appearance.prominence * (ROLE_RADIUS_MAX - ROLE_RADIUS_MIN);
+
     bodies.push({
       id: role.id,
       kind: "role",
       position: role.position,
-      radius: ROLE_RADIUS,
+      radius,
       filled: true,
-      surface: SURFACE.rocky,
-      colorObservation: ROLE_COLOR[0],
-      colorSchematic: ROLE_COLOR[1],
+      surface: surfaceCode(role.appearance.surface),
+      colorObservation: hexToVec3(role.appearance.observation),
+      colorSchematic: hexToVec3(role.appearance.schematic),
       seed: hashSeed(role.id) % 997,
     });
 
     rings.push({ points: ringPoints(role.orbit, RING_SEGMENTS), emphasis: 0 });
-    rings.push({ points: arcPoints(role.orbit, ARC_SEGMENTS), emphasis: 1 });
+
+    // The skills the engagement was built on, orbiting the place it happened.
+    if (options.includeMoons) {
+      moonOrbits(radius, role.moons.length).forEach((orbit, index) => {
+        bodies.push({
+          id: `${role.id}-moon-${index}`,
+          kind: "moon",
+          position: role.position,
+          radius: MOON_RADIUS,
+          filled: true,
+          surface: SURFACE.plain,
+          colorObservation: MOON_COLOR[0],
+          colorSchematic: MOON_COLOR[1],
+          seed: index,
+          orbit,
+        });
+      });
+    }
 
     targets.push({
       id: role.id,
@@ -411,7 +454,7 @@ export function buildScene(options: SceneOptions = DESKTOP_SCENE): Scene {
       detail: role.period,
       sectionId: "experience",
       position: role.position,
-      radius: ROLE_RADIUS,
+      radius,
     });
   });
 
@@ -481,8 +524,9 @@ export function buildScene(options: SceneOptions = DESKTOP_SCENE): Scene {
 
   const waypoints: CameraPose[] = [
     ESTABLISHING,
-    { eye: [0, 3.4, 9.5], target: [0, 0, 0] },
-    ...targets.map((target) => frameBody(target.position, target.radius)),
+    ...targets.map((target) => (
+      target.kind === "star" ? STAR_POSE : frameBody(target.position, target.radius)
+    )),
     ESTABLISHING,
   ];
 
@@ -517,15 +561,13 @@ export function buildScene(options: SceneOptions = DESKTOP_SCENE): Scene {
         options.seed ^ hashSeed(project.slug),
       );
 
-      // The waypoint list is [establishing, star, ...targets, establishing],
-      // so a target at index n is reached at waypoint n + 2.
       const targetIndex = targets.findIndex((entry) => entry.id === project.slug);
 
       evidenceRanges.push({
         slug: project.slug,
         first: evidenceCursor,
         count: record.count,
-        waypoint: targetIndex + 2,
+        waypoint: targetIndex + 1,
         caption: record.caption,
       });
 
@@ -566,19 +608,21 @@ export const sceneTargets: readonly SceneTarget[] = buildScene(COMPACT_SCENE).ta
 /**
  * Body id to camera waypoint.
  *
- * The waypoint list is [establishing, star, ...targets, establishing], so a
- * target at index n is framed at waypoint n + 2. The homepage stamps these onto
+ * The waypoint list is [establishing, ...targets, establishing], so a target at
+ * index n is framed at waypoint n + 1. The star is targets[0], which puts it on
+ * the stop the tour already travelled through, leaving every role and project
+ * waypoint exactly where it was. The homepage stamps these onto
  * its scroll stops, which is what stops the camera drifting out of step with
  * the section being read — the two now derive from the same list rather than
  * from a scroll fraction that assumed every section was the same height.
  */
 export const waypointForTarget: Readonly<Record<string, number>> = Object.fromEntries(
-  sceneTargets.map((target, index) => [target.id, index + 2]),
+  sceneTargets.map((target, index) => [target.id, index + 1]),
 );
 
 /** The wide shot the tour opens and closes on. */
 export const ESTABLISHING_WAYPOINT = 0;
-export const CLOSING_WAYPOINT = sceneTargets.length + 2;
+export const CLOSING_WAYPOINT = sceneTargets.length + 1;
 
 /** Which side the reading column takes at a given stop. */
 export function sideForWaypoint(waypoint: number): "left" | "right" {

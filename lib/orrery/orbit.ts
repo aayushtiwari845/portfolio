@@ -134,17 +134,3 @@ export function ringPoints(orbit: Orbit, segments: number): Vec3[] {
 
   return points;
 }
-
-/**
- * `segments + 1` points tracing only the engagement window, for the bright arc
- * drawn over the ring.
- */
-export function arcPoints(orbit: Orbit, segments: number): Vec3[] {
-  const points: Vec3[] = [];
-
-  for (let i = 0; i <= segments; i += 1) {
-    points.push(positionOnOrbit(orbit, orbit.startAngle + (i / segments) * orbit.arcAngle));
-  }
-
-  return points;
-}

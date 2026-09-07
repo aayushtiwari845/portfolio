@@ -88,17 +88,20 @@ function hashUnit(id: string): number {
 /**
  * How each planet looks, and why.
  *
- * Hue is the project's **domain**, taken from `domain` in data/portfolio.ts, so
- * a colour in the scene and the same colour on the page always mean the same
- * thing. Two values are carried because the two themes are two different
- * grounds: the vibrant one glows against deep space, the darker one has to hold
- * contrast against white paper.
+ * Every visual property here now has a source in data/portfolio.ts. That was
+ * not true when this file was written: hue carried the domain, but surface and
+ * rings were decoration, which made the scene look like it was saying something
+ * it was not. The legend below is stated to the reader in `ORRERY_CAPTION`.
  *
- * Surface is editorial. It is not encoding anything — it exists so that five
- * planets are five recognisable objects rather than five identical spheres, and
- * pretending otherwise would be the same mistake as deriving size from metrics.
- * The one surface that *does* carry meaning is `wireframe`, which belongs to
- * the project with no measurements at all.
+ *   hue      the project's `domain`
+ *   surface  its `status`, categorised into four levels of maturity
+ *   rings    an `ownershipNote` — work that is not solely the author's
+ *   moons    one per entry in its real `stack`
+ *   unfilled no `metrics` at all
+ *
+ * Two hues per project because the two themes are two different grounds: the
+ * vibrant one glows against deep space, the darker one has to hold contrast
+ * against white paper.
  */
 export type PlanetSurface = "banded" | "rocky" | "icy" | "wireframe";
 
@@ -107,8 +110,12 @@ export interface PlanetAppearance {
   readonly domain: string;
   readonly observation: string;
   readonly schematic: string;
+  /**
+   * Maturity, categorised from `status`. The status text each level was read
+   * from is quoted at the definition, so the categorisation can be checked.
+   */
   readonly surface: PlanetSurface;
-  /** A ring system. Editorial: it belongs to the largest body in the belt. */
+  /** True where the project carries an ownership note. Not an award. */
   readonly ringed: boolean;
 }
 
@@ -117,13 +124,16 @@ export const planetAppearance: Record<ProjectSlug, PlanetAppearance> = {
     domain: "Observability / Distributed Systems",
     observation: "#35d6d0",
     schematic: "#0c8d88",
+    // "Feature-complete local system and hosted-demo template" — the most
+    // developed of the five, and the only one at this level.
     surface: "banded",
-    ringed: true,
+    ringed: false,
   },
   conclave: {
     domain: "Applied AI / Multi-Agent Systems",
     observation: "#9b6cf0",
     schematic: "#6b3fd4",
+    // "Research prototype"
     surface: "rocky",
     ringed: false,
   },
@@ -131,15 +141,19 @@ export const planetAppearance: Record<ProjectSlug, PlanetAppearance> = {
     domain: "Streaming Data / Machine Learning",
     observation: "#ff6b5a",
     schematic: "#cf3a26",
-    surface: "banded",
-    ringed: false,
+    // "Academic prototype with a simulated streaming benchmark"
+    surface: "rocky",
+    // The only project with an ownership note: an academic collaboration on a
+    // repository owned by someone else. The ring marks shared work, and it is
+    // the reason this is the one body in the belt that carries one.
+    ringed: true,
   },
   civiclens: {
     domain: "Civic Technology / Data Archival",
     observation: "#3fc98a",
     schematic: "#12855a",
-    // Unfilled, because the project records no measurements. The one surface
-    // in this table that states a fact rather than a preference.
+    // "Deployed static prototype" — but it records no measurements at all, and
+    // that takes precedence over maturity. Unfilled is the honest surface.
     surface: "wireframe",
     ringed: false,
   },
@@ -147,8 +161,51 @@ export const planetAppearance: Record<ProjectSlug, PlanetAppearance> = {
     domain: "Data Analytics / Applied Statistics",
     observation: "#6d8dff",
     schematic: "#3352cc",
+    // "Reproducible exploratory analysis"
     surface: "icy",
     ringed: false,
+  },
+};
+
+/**
+ * How each role looks.
+ *
+ * Roles are a different class of body from projects — the places rather than
+ * the things — so they take a separate, metallic family of hues instead of
+ * borrowing the five domain colours. Reading a steel body as "observability"
+ * because it happens to be blue would be worse than reading nothing.
+ *
+ * ORDINAL. Size and surface here are an editorial ranking, not a measurement,
+ * exactly as project size is. Barclays is the largest and the only banded body
+ * among the three because it is the most substantial engagement; that is a
+ * judgement, and the caption says so rather than dressing it as data.
+ */
+export interface RoleAppearance {
+  readonly observation: string;
+  readonly schematic: string;
+  readonly surface: PlanetSurface;
+  /** ORDINAL, 0–1. */
+  readonly prominence: number;
+}
+
+export const roleAppearance: Record<string, RoleAppearance> = {
+  "barclays-technology-developer": {
+    observation: "#8fb3d9",
+    schematic: "#3f6a99",
+    surface: "banded",
+    prominence: 1,
+  },
+  "makeflow-backend-developer": {
+    observation: "#d9a86b",
+    schematic: "#9c6f2c",
+    surface: "rocky",
+    prominence: 0.62,
+  },
+  "segmentriq-data-analytics": {
+    observation: "#86bfae",
+    schematic: "#2f7f6b",
+    surface: "icy",
+    prominence: 0.56,
   },
 };
 
@@ -160,6 +217,9 @@ export interface OrreryRole {
   readonly period: string;
   readonly orbit: Orbit;
   readonly position: Vec3;
+  /** One moon per entry, the same rule the projects follow. */
+  readonly moons: readonly string[];
+  readonly appearance: RoleAppearance;
 }
 
 export interface OrreryProject {
@@ -205,6 +265,8 @@ export const roles: readonly OrreryRole[] = portfolio.experiences
       period: experience.period,
       orbit,
       position: bodyPosition(orbit),
+      moons: experience.stack,
+      appearance: roleAppearance[experience.id],
     };
   });
 // Deliberately NOT re-sorted. The order here becomes the camera's tour order
@@ -266,7 +328,7 @@ export const evidence: Readonly<Partial<Record<ProjectSlug, OrreryEvidence>>> = 
   "real-time-fraud-detection": {
     count: 284807,
     highlighted: 492,
-    caption: "284,807 transactions. 492 of them fraudulent — every amber point.",
+    caption: "284,807 transactions. Every amber point is one of the 492 frauds.",
   },
   // "A generated 180-incident laboratory dataset"
   tracepilot: {
@@ -296,8 +358,10 @@ export const evidence: Readonly<Partial<Record<ProjectSlug, OrreryEvidence>>> = 
  * The figure caption. Rendered with the orrery, in both views.
  */
 export const ORRERY_CAPTION =
-  "Orbit radius is months elapsed since the degree programme began, and arc "
-  + "length is each engagement's duration; both are measured. Body size is an "
-  + "ordinal ranking of prominence, not a measured magnitude — the project "
-  + "metrics are not commensurable with one another. CivicLens is drawn "
-  + "unfilled because it records no measurements at all.";
+  "Orbit radius is months elapsed since the degree programme began; each body "
+  + "carries one moon per entry in its real stack. A planet's hue is its "
+  + "domain, its surface is how far the work got, and a ring marks work that "
+  + "is not solely mine. CivicLens is drawn unfilled because it records no "
+  + "measurements at all. Body size is an ordinal ranking of prominence, not a "
+  + "measured magnitude. The project metrics are not commensurable with "
+  + "one another.";

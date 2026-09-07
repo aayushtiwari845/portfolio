@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { projectBodies, roles } from "@/data/orrery";
-import { projects } from "@/data/portfolio";
+import { portfolio, projects } from "@/data/portfolio";
 import {
   COMPACT_SCENE,
   DESKTOP_SCENE,
@@ -79,14 +79,50 @@ describe("bodies", () => {
     expect(new Set(surfaces).size).toBeGreaterThan(1);
   });
 
-  it("gives the ringed planet its ring system in its own hue", () => {
+  it("rings exactly the projects whose work is not solely the author's", () => {
+    // The ring is a statement about ownership, not a decoration and not an
+    // award: it belongs to the one project carrying an ownershipNote.
+    const collaborative = projects
+      .filter((project) => "ownershipNote" in project && project.ownershipNote)
+      .map((project) => project.slug);
+
+    expect(collaborative).toEqual(["real-time-fraud-detection"]);
+
+    const ringed = projectBodies
+      .filter((body) => body.appearance.ringed)
+      .map((body) => body.slug);
+
+    expect(ringed).toEqual(collaborative);
+  });
+
+  it("paints the ring system in its own planet's hue", () => {
     const tinted = scene.rings.filter((ring) => ring.colorObservation !== undefined);
-    const tracepilot = scene.bodies.find((body) => body.id === "tracepilot");
+    const fraud = scene.bodies.find((body) => body.id === "real-time-fraud-detection");
 
     expect(tinted.length).toBeGreaterThan(0);
     tinted.forEach((ring) => {
-      expect(ring.colorObservation).toEqual(tracepilot?.colorObservation);
+      expect(ring.colorObservation).toEqual(fraud?.colorObservation);
     });
+  });
+
+  it("draws a surface that matches the project's recorded maturity", () => {
+    // banded = feature-complete, rocky = prototype, icy = analysis,
+    // wireframe = nothing measured. Checked against the real status strings.
+    const expected: Record<string, string> = {
+      tracepilot: "banded",
+      conclave: "rocky",
+      "real-time-fraud-detection": "rocky",
+      civiclens: "wireframe",
+      "indian-ipo-analytics": "icy",
+    };
+
+    projectBodies.forEach((body) => {
+      expect(body.appearance.surface).toBe(expected[body.slug]);
+    });
+
+    // The one that is not a maturity judgement at all: no metrics wins.
+    const civiclens = projects.find((project) => project.slug === "civiclens");
+    expect(civiclens?.metrics).toHaveLength(0);
   });
 
   it("produces only finite coordinates", () => {
@@ -94,6 +130,59 @@ describe("bodies", () => {
       body.position.forEach((value) => expect(Number.isFinite(value)).toBe(true));
       expect(body.radius).toBeGreaterThan(0);
     });
+  });
+});
+
+describe("role planets", () => {
+  it("gives each role one moon per skill in its real stack", () => {
+    roles.forEach((role) => {
+      const moons = scene.bodies.filter(
+        (body) => body.kind === "moon" && body.id.startsWith(`${role.id}-moon-`),
+      );
+
+      expect(moons).toHaveLength(role.moons.length);
+      expect(role.moons.length).toBeGreaterThan(0);
+    });
+  });
+
+  it("keeps the total moon count low enough to stay legible", () => {
+    // Three roles and five projects, every stack entry a moon. If this ever
+    // climbs far past this the scene stops reading as a system.
+    const moons = scene.bodies.filter((body) => body.kind === "moon");
+    expect(moons.length).toBeLessThan(120);
+  });
+
+  it("gives roles a hue family of their own, apart from the domain hues", () => {
+    const roleHues = new Set(
+      scene.bodies
+        .filter((body) => body.kind === "role")
+        .map((body) => body.colorObservation.join(",")),
+    );
+    const projectHues = new Set(
+      scene.bodies
+        .filter((body) => body.kind === "project")
+        .map((body) => body.colorObservation.join(",")),
+    );
+
+    // Distinct from each other, and no role borrows a project's domain colour.
+    expect(roleHues.size).toBe(3);
+    roleHues.forEach((hue) => expect(projectHues.has(hue)).toBe(false));
+  });
+
+  it("makes the standout role the largest of the three, and the only banded one", () => {
+    const roleBodies = scene.bodies.filter((body) => body.kind === "role");
+    const barclays = roleBodies.find((body) => body.id.startsWith("barclays"));
+    const others = roleBodies.filter((body) => !body.id.startsWith("barclays"));
+
+    others.forEach((body) => {
+      expect(barclays?.radius).toBeGreaterThan(body.radius);
+      expect(body.surface).not.toBe(SURFACE.banded);
+    });
+
+    expect(barclays?.surface).toBe(SURFACE.banded);
+    // Subtle, not loud: under half again the size of the smallest.
+    const smallest = Math.min(...others.map((body) => body.radius));
+    expect((barclays?.radius ?? 0) / smallest).toBeLessThan(1.5);
   });
 });
 
@@ -149,8 +238,9 @@ describe("moon orbits", () => {
 });
 
 describe("targets", () => {
-  it("caps focusable targets at the eight that carry content", () => {
-    expect(scene.targets).toHaveLength(8);
+  it("caps focusable targets at the nine that carry content", () => {
+    // The star, three roles and five projects. Deliberately not the ~90 moons.
+    expect(scene.targets).toHaveLength(9);
 
     // The scene carries ~70 moons; none of them may become a tab stop.
     const moonIds = new Set(
@@ -160,35 +250,48 @@ describe("targets", () => {
     scene.targets.forEach((target) => expect(moonIds.has(target.id)).toBe(false));
   });
 
-  it("lists roles chronologically before projects, matching reading order", () => {
-    expect(scene.targets.slice(0, 3).map((target) => target.id))
+  it("leads with the star, then roles, then projects, matching reading order", () => {
+    expect(scene.targets[0].id).toBe("star");
+    expect(scene.targets.slice(1, 4).map((target) => target.id))
       .toEqual(roles.map((role) => role.id));
-    expect(scene.targets.slice(3).map((target) => target.id))
+    expect(scene.targets.slice(4).map((target) => target.id))
       .toEqual(projectBodies.map((project) => project.slug));
   });
 
-  it("gives every project target a case-study href and roles none", () => {
+  it("sends the star to the résumé", () => {
+    const star = scene.targets[0];
+    expect(star.href).toBe("/resume");
+    expect(star.label).toBe(portfolio.identity.displayName);
+  });
+
+  it("routes each target where its content actually lives", () => {
     scene.targets.forEach((target) => {
       if (target.kind === "project") {
         expect(target.href).toBe(`/projects/${target.id}`);
+      } else if (target.kind === "star") {
+        expect(target.href).toBe("/resume");
       } else {
+        // Roles have no page of their own; they scroll to their section.
         expect(target.href).toBeUndefined();
+        expect(target.sectionId).toBe("experience");
       }
     });
   });
 
   it("points every target at a real section of the document", () => {
     scene.targets.forEach((target) => {
-      expect(["experience", "work"]).toContain(target.sectionId);
+      expect(["background", "experience", "work"]).toContain(target.sectionId);
     });
   });
 });
 
 describe("rings", () => {
-  it("draws a faint ring and a bright arc for the programme and each role", () => {
+  it("draws no engagement arcs", () => {
+    // Duration used to be drawn as a bright arc over each orbit. It read as a
+    // smear rather than a measurement, so radius carries chronology alone now.
     const emphasised = scene.rings.filter((ring) => ring.emphasis === 1);
-    // The programme plus three roles carry an engagement arc; projects do not.
-    expect(emphasised).toHaveLength(4);
+    expect(emphasised).toHaveLength(1);
+    expect(emphasised[0].points).toHaveLength(97);
   });
 
   it("never emits an empty ring", () => {
@@ -234,8 +337,8 @@ describe("scene options", () => {
     expect(compact.bodies.some((body) => body.kind === "moon")).toBe(false);
   });
 
-  it("keeps all eight targets on compact screens", () => {
-    expect(buildScene(COMPACT_SCENE).targets).toHaveLength(8);
+  it("keeps all nine targets on compact screens", () => {
+    expect(buildScene(COMPACT_SCENE).targets).toHaveLength(9);
   });
 
   it("carries the figure caption into the scene", () => {
@@ -294,9 +397,9 @@ describe("evidence clouds", () => {
 
   it("points every range at the waypoint that frames its body", () => {
     scene.evidenceRanges.forEach((range) => {
-      // Waypoints are [establishing, star, ...targets, establishing].
+      // Waypoints are [establishing, ...targets, establishing].
       const targetIndex = scene.targets.findIndex((target) => target.id === range.slug);
-      expect(range.waypoint).toBe(targetIndex + 2);
+      expect(range.waypoint).toBe(targetIndex + 1);
       expect(scene.waypoints[range.waypoint]).toBeDefined();
     });
   });
