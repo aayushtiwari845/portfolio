@@ -1,0 +1,590 @@
+/* ==========================================================================
+   THE ORRERY
+   --------------------------------------------------------------------------
+   Every rule in this file is scoped under [data-view="orrery"] or targets an
+   element that exists only for the orrery. Nothing here modifies a selector in
+   globals.css.
+
+   That is deliberate. The document layout and the orrery layout are two
+   different layout systems over one DOM, and the way this design fails is by
+   trying to make a single stylesheet serve both. So globals.css keeps owning
+   the document, unedited, and this file adds the second reading on top.
+
+   The dark theme is the observation; the light theme is the schematic. The
+   canvas draws both, so most of what follows is chrome, not scene.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   The stage
+   -------------------------------------------------------------------------- */
+
+.orrery-stage {
+  display: none;
+}
+
+[data-view="orrery"] .orrery-stage {
+  position: fixed;
+  z-index: 0;
+  display: block;
+  inset: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Atmosphere
+
+   Two things in one layer, over the canvas and under the reading column:
+
+   - A vignette, so the frame has weight and the eye is pulled inward.
+   - Colour spill. `--spill-rgb` is set from the body the camera has settled on,
+     so the whole page takes a wash of that project's domain hue: cyan through
+     TracePilot, coral through the fraud pipeline. The hue stops being a
+     property of one sphere and becomes the mood of that whole section.
+   -------------------------------------------------------------------------- */
+
+:root {
+  --spill-rgb: 217 158 0;
+  --vignette: rgb(20 22 28 / 0.1);
+}
+
+:root[data-theme="dark"] {
+  --spill-rgb: 255 210 74;
+  --vignette: rgb(0 0 0 / 0.55);
+}
+
+[data-view="orrery"] .orrery-stage::before,
+.orrery-backdrop::before {
+  position: absolute;
+  z-index: 1;
+  background:
+    radial-gradient(
+      115% 85% at 50% 42%,
+      rgb(var(--spill-rgb) / 0.12) 0%,
+      rgb(var(--spill-rgb) / 0.04) 32%,
+      transparent 62%
+    ),
+    radial-gradient(125% 125% at 50% 50%, transparent 38%, var(--vignette) 100%);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  /* Long, because it should never look like it is reacting to the scroll. */
+  transition: background 1200ms var(--lift);
+}
+
+.orrery-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Inert: every interaction is routed through the anchors layered over it. */
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Bodies as links
+
+   Each target is a zero-size point placed by the renderer at the projected
+   position of its body. Its children hang off that point, so the anchor needs
+   no width of its own and the transform written every frame is a pure
+   translate — never a layout-affecting property.
+   -------------------------------------------------------------------------- */
+
+.orrery-targets {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+}
+
+.orrery-target {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: auto;
+}
+
+.orrery-target[data-visible="false"] {
+  visibility: hidden;
+}
+
+/* A touch target never smaller than 44px, whatever the body is doing. */
+.orrery-target__ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: max(44px, calc(var(--target-radius, 14px) * 2.5));
+  height: max(44px, calc(var(--target-radius, 14px) * 2.5));
+  border: 1px solid transparent;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: border-color 260ms var(--lift), background-color 260ms var(--lift);
+}
+
+.orrery-target:hover .orrery-target__ring,
+.orrery-target:focus-visible .orrery-target__ring {
+  border-color: var(--mark);
+  background: color-mix(in srgb, var(--mark) 10%, transparent);
+}
+
+/*
+ * Eight bodies orbiting in perspective will inevitably pass in front of one
+ * another, so only the name is always drawn. The second line appears on hover
+ * or focus, which keeps the resting scene legible instead of stacking two lines
+ * of text at every body at once.
+ */
+.orrery-target__label {
+  position: absolute;
+  top: 0;
+  left: max(26px, calc(var(--target-radius, 14px) * 1.4));
+  transform: translateY(-50%);
+  white-space: nowrap;
+  opacity: 0.58;
+  transition: opacity 260ms var(--lift);
+}
+
+.orrery-target:hover .orrery-target__label,
+.orrery-target:focus-visible .orrery-target__label {
+  opacity: 1;
+}
+
+.orrery-target__name {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+}
+
+/*
+ * Taken out of flow rather than collapsed with max-height. Animating a layout
+ * property here would force layout on every hover, and every hover happens over
+ * a canvas that is drawing at 60fps — the one place on this site where layout
+ * thrash is least affordable. Absolutely positioned, only opacity moves, and
+ * revealing the line never reflows the name above it.
+ */
+.orrery-target__detail {
+  position: absolute;
+  top: calc(100% + 0.15em);
+  left: 0;
+  color: var(--ink-3);
+  font-family: var(--font-figure);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  text-transform: uppercase;
+  transition: opacity 200ms var(--lift);
+}
+
+.orrery-target[data-flip="true"] .orrery-target__detail {
+  right: 0;
+  left: auto;
+}
+
+.orrery-target:hover .orrery-target__detail,
+.orrery-target:focus-visible .orrery-target__detail {
+  opacity: 1;
+}
+
+/* Behind the reading column: the label would sit on top of the prose, so it is
+   withdrawn. Focus and hover always bring it back — a reader tabbing through
+   the system must be able to see what they have landed on, wherever it is. */
+.orrery-target[data-occluded="true"] .orrery-target__label {
+  opacity: 0;
+}
+
+.orrery-target[data-occluded="true"]:hover .orrery-target__label,
+.orrery-target[data-occluded="true"]:focus-visible .orrery-target__label {
+  opacity: 1;
+}
+
+/* Close to the right edge the label reads back toward the middle instead of
+   running off the screen. */
+.orrery-target[data-flip="true"] .orrery-target__label {
+  right: max(26px, calc(var(--target-radius, 14px) * 1.4));
+  left: auto;
+  text-align: right;
+}
+
+/* The focus ring has to survive being drawn over the star's own glow, which is
+   the brightest region on the canvas. */
+.orrery-target:focus-visible {
+  outline: none;
+}
+
+.orrery-target:focus-visible .orrery-target__ring {
+  outline: 2px solid var(--mark);
+  outline-offset: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   The document, read over the scene
+
+   The scene owns the whole viewport. Reading matter rides in a column down the
+   left, and each section takes a viewport of its own so that scrolling moves
+   the camera one stop at a time.
+
+   Separation is a gradient, not a box. The document this replaces had a rule
+   that nothing is ever enclosed in a bordered container, and putting eight
+   translucent cards over a starfield would have broken it for no gain.
+   -------------------------------------------------------------------------- */
+
+[data-view="orrery"] body {
+  background: transparent;
+}
+
+/*
+ * The scrim fades to a transparent *stock*, never to the `transparent` keyword.
+ *
+ * `transparent` is rgba(0, 0, 0, 0) — transparent *black* — so a gradient that
+ * fades to it drags every midtone toward black on the way. Over a starfield
+ * that reads as the whole scene being dimmed, which is exactly what happened
+ * the first time this was written.
+ */
+:root[data-view="orrery"] {
+  --scrim-rgb: 251 250 247;
+}
+
+:root[data-view="orrery"][data-theme="dark"] {
+  --scrim-rgb: 16 20 32;
+}
+
+[data-view="orrery"] .orrery-stage::after {
+  position: absolute;
+  z-index: 1;
+  background: linear-gradient(
+    to right,
+    rgb(var(--scrim-rgb) / 1) 0%,
+    rgb(var(--scrim-rgb) / 0.9) 18%,
+    rgb(var(--scrim-rgb) / 0.42) 34%,
+    rgb(var(--scrim-rgb) / 0) 50%
+  );
+  content: "";
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Below the reading column the scene sits behind the text, so the scrim runs
+   down the page instead of across it. */
+@media (width < 1000px) {
+  [data-view="orrery"] .orrery-stage::after {
+    background: linear-gradient(
+      to bottom,
+      rgb(var(--scrim-rgb) / 0.35) 0%,
+      rgb(var(--scrim-rgb) / 0.82) 40%,
+      rgb(var(--scrim-rgb) / 0.94) 100%
+    );
+  }
+}
+
+[data-view="orrery"] .page-shell,
+[data-view="orrery"] .close-field,
+[data-view="orrery"] .site-footer {
+  position: relative;
+  z-index: 2;
+}
+
+/* One stop per viewport: this is what turns scrolling into the tour. */
+[data-view="orrery"] .titleblock {
+  min-height: 100vh;
+  padding-block: 20vh;
+  border-top: none;
+}
+
+[data-view="orrery"] .doc-section {
+  padding-block: 8vh;
+  /* A hairline rule floating in space reads as a seam, not a separation. */
+  border-top: none;
+}
+
+@media (width >= 1000px) {
+  /*
+   * The reading column alternates sides as the tour advances, and the scene
+   * slides the other way to meet it. Both are driven by the same waypoint, so
+   * the planet on screen is always the one the text beside it describes.
+   */
+  [data-view="orrery"] .page-shell {
+    width: min(100% - (var(--gutter) * 2), 1440px);
+    margin-inline: auto;
+  }
+
+  [data-view="orrery"] .doc-section {
+    display: block;
+  }
+
+  [data-view="orrery"] [data-orrery-side] {
+    width: min(56ch, 43vw);
+  }
+
+  [data-view="orrery"] [data-orrery-side="left"] {
+    margin-right: auto;
+    margin-left: 0;
+  }
+
+  [data-view="orrery"] [data-orrery-side="right"] {
+    margin-right: 0;
+    margin-left: auto;
+    text-align: left;
+  }
+
+  /* Each body gets a viewport of its own, so the camera has time to arrive. */
+  [data-view="orrery"] .entry[data-orrery-waypoint],
+  [data-view="orrery"] .work-entry[data-orrery-waypoint] {
+    min-height: 84vh;
+    align-content: center;
+  }
+
+  /* The reference list rows are short. Without a stop of their own the camera
+     crossed two waypoints in under two hundred pixels. */
+  [data-view="orrery"] .reflist > [data-orrery-waypoint] {
+    min-height: 62vh;
+    align-content: center;
+  }
+
+  /* The label rail sits inline above its section rather than in a side column
+     that no longer exists. */
+  [data-view="orrery"] .doc-rail {
+    position: static;
+    display: flex;
+    margin-bottom: 10px;
+  }
+
+  [data-view="orrery"] .doc-rail-label {
+    margin-top: 0;
+  }
+
+  /* The title block's two-column meta table needs width it no longer has. */
+  [data-view="orrery"] .titleblock-grid {
+    display: block;
+  }
+
+  [data-view="orrery"] .titleblock-meta {
+    margin-top: clamp(28px, 4vw, 44px);
+  }
+
+  /* The figure inside a work entry competes with the planet it describes. */
+  [data-view="orrery"] .work-figure {
+    display: none;
+  }
+
+  [data-view="orrery"] .work-grid {
+    display: block;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   The figure caption
+
+   Rule 3 of the design system this replaces: every figure states what it
+   measures and what it does not. The orrery is a figure. It sits bottom-right,
+   under the scene rather than over the reading column.
+   -------------------------------------------------------------------------- */
+
+.orrery-caption {
+  position: absolute;
+  right: clamp(16px, 3vw, 40px);
+  bottom: clamp(16px, 3vw, 32px);
+  z-index: 2;
+  max-width: min(46ch, 40vw);
+  color: var(--ink-3);
+  font-family: var(--font-figure);
+  font-size: 0.625rem;
+  line-height: 1.7;
+  letter-spacing: 0.04em;
+  text-align: right;
+  text-wrap: pretty;
+  transition: color 300ms var(--lift);
+}
+
+/* A focused body's caption is a claim about that project, so it carries more
+   weight than the standing disclaimer it replaces. */
+.orrery-caption[data-focused="true"] {
+  color: var(--ink-2);
+}
+
+.orrery-caption::before {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--ink-3);
+  content: "FIGURE 0 — THE ORRERY";
+  font-size: 0.5625rem;
+  letter-spacing: 0.14em;
+  opacity: 0.7;
+}
+
+@media (width < 1000px) {
+  .orrery-caption {
+    max-width: none;
+    left: clamp(16px, 3vw, 40px);
+  }
+}
+
+/* Nothing to caption when the scene is not on screen. */
+[data-view="document"] .orrery-caption {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   Reading documents — case studies and the résumé
+
+   A centred column on a glass panel, over a single still frame of the orrery
+   parked on the body the page is about.
+
+   The old design system forbade enclosing anything in a box. That rule is
+   deliberately broken here and nowhere else: text set directly on a starfield
+   is not readable at fifteen paragraphs, and a panel is the honest way to say
+   "this is a document resting on the scene" rather than floating in it.
+   -------------------------------------------------------------------------- */
+
+:root {
+  --glass: rgb(251 250 247 / 0.86);
+  --glass-rim: rgb(20 22 28 / 0.1);
+  --glass-shadow: 0 30px 90px -46px rgb(20 22 28 / 0.35);
+}
+
+:root[data-theme="dark"] {
+  --glass: rgb(23 28 44 / 0.62);
+  --glass-rim: rgb(244 246 250 / 0.12);
+  --glass-shadow: 0 30px 90px -40px rgb(0 0 0 / 0.75);
+}
+
+.orrery-backdrop {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+}
+
+.orrery-backdrop__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 900ms var(--lift);
+}
+
+.orrery-backdrop__canvas[data-ready="true"] {
+  opacity: 1;
+}
+
+.case-shell {
+  position: relative;
+  z-index: 1;
+  width: min(100% - (var(--gutter) * 2), 1180px);
+  margin-inline: auto;
+  margin-block: clamp(20px, 5vh, 64px);
+  padding: clamp(28px, 5vw, 64px) clamp(20px, 4vw, 56px);
+  border: 1px solid var(--glass-rim);
+  border-radius: var(--radius-panel);
+  /* Opaque enough to read against on its own, so a browser without
+     backdrop-filter still gets a perfectly good document. */
+  background: var(--glass);
+  box-shadow: var(--glass-shadow);
+}
+
+@supports (backdrop-filter: blur(1px)) {
+  .case-shell {
+    backdrop-filter: blur(24px) saturate(150%);
+  }
+}
+
+/*
+ * The panel is wide; the prose inside it is not. Line length is a reading
+ * constraint, not a layout one, so widening the glass must not widen the
+ * measure with it.
+ */
+.case-shell p,
+.case-shell li {
+  max-width: 72ch;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .case-shell {
+    backdrop-filter: none;
+    background: var(--stock);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Header
+
+   In orrery mode the header stops being a sticky, backdrop-filtered bar.
+   backdrop-filter sampling a live WebGL canvas forces a compositor readback on
+   every frame, which is enough to halve the frame rate on mobile Safari.
+   -------------------------------------------------------------------------- */
+
+[data-view="orrery"] .site-header-wrap {
+  position: fixed;
+  right: 0;
+  left: 0;
+  backdrop-filter: none;
+  background: linear-gradient(
+    to bottom,
+    var(--stock) 0%,
+    color-mix(in srgb, var(--stock) 88%, transparent) 68%,
+    transparent 100%
+  );
+}
+
+/* --------------------------------------------------------------------------
+   The view toggle
+   -------------------------------------------------------------------------- */
+
+.mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--rule);
+  background: none;
+  color: var(--ink-2);
+  cursor: pointer;
+  font: inherit;
+  font-family: var(--font-figure);
+  font-size: 0.625rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  transition: color 200ms var(--lift), border-color 200ms var(--lift);
+}
+
+.mode-toggle:hover {
+  border-color: var(--rule-strong);
+  color: var(--ink);
+}
+
+.mode-toggle__track {
+  display: inline-flex;
+  align-items: center;
+}
+
+.mode-toggle__icon {
+  display: none;
+}
+
+.mode-toggle[data-view="document"] .mode-toggle__icon--orrery,
+.mode-toggle[data-view="orrery"] .mode-toggle__icon--document {
+  display: block;
+}
+
+/* No orrery to switch to: a control that cannot work should not be offered. */
+[data-orrery="unavailable"] .mode-toggle {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .mode-toggle__label {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion
+
+   The orrery is not withdrawn here. Reduced motion means no motion, not no
+   graphics — the renderer draws a single static frame instead of running a
+   loop, so the scene is still present and still readable.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .orrery-target__ring,
+  .orrery-target__label {
+    transition: none;
+  }
+}
