@@ -157,8 +157,6 @@ export function OrreryStage() {
             // unreadable and collides with the prose. Past this edge the label
             // is dropped until the body comes back out.
             const columnEdge = stageWidth >= 1000 ? stageWidth * 0.46 : 0;
-            // Near the right edge a label would run off screen instead.
-            const flipEdge = stageWidth - 220;
 
             targets.forEach((target) => {
               const node = container.querySelector<HTMLElement>(
@@ -182,8 +180,10 @@ export function OrreryStage() {
               // transform only: never left/top, which would force layout.
               node.style.transform = `translate3d(${target.x}px, ${target.y}px, 0)`;
               node.style.setProperty("--target-radius", `${target.radius}px`);
-              node.dataset.occluded = target.x < columnEdge ? "true" : "false";
-              node.dataset.flip = target.x > flipEdge ? "true" : "false";
+              // The star is never withdrawn: it carries the author's name and
+              // is the way to the résumé, so it has to stay reachable.
+              const occluded = target.id !== "star" && target.x < columnEdge;
+              node.dataset.occluded = occluded ? "true" : "false";
             });
           },
 

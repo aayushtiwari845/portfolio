@@ -127,18 +127,27 @@
 }
 
 /*
- * Eight bodies orbiting in perspective will inevitably pass in front of one
- * another, so only the name is always drawn. The second line appears on hover
- * or focus, which keeps the resting scene legible instead of stacking two lines
- * of text at every body at once.
+ * Labels sit centred beneath their body, not off to one side.
+ *
+ * Hanging them to the left meant a name could be a long way from the thing it
+ * named, and at the star, whose disc is large, the author's own name ended up
+ * adrift in the middle of the corona. Centred and below, a label reads as
+ * belonging to the body above it at any size.
+ *
+ * Only the name is drawn at rest; the second line appears on hover or focus.
+ * Nine bodies orbiting in perspective will pass in front of one another, and
+ * two permanent lines of text at every one of them is unreadable.
  */
 .orrery-target__label {
   position: absolute;
-  top: 0;
-  left: max(26px, calc(var(--target-radius, 14px) * 1.4));
-  transform: translateY(-50%);
-  white-space: nowrap;
-  opacity: 0.58;
+  top: max(26px, calc(var(--target-radius, 14px) * 1.12 + 14px));
+  left: 50%;
+  width: max-content;
+  max-width: 20ch;
+  transform: translateX(-50%);
+  text-align: center;
+  text-wrap: balance;
+  opacity: 0.82;
   transition: opacity 260ms var(--lift);
 }
 
@@ -148,34 +157,27 @@
 }
 
 .orrery-target__name {
+  display: block;
+  color: var(--ink);
   font-family: var(--font-display);
-  font-size: 0.8125rem;
-  letter-spacing: 0.01em;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  /* The scene behind a label can be anything from empty space to a lit limb. */
+  text-shadow: 0 1px 14px rgb(var(--scrim-rgb) / 0.95);
 }
 
-/*
- * Taken out of flow rather than collapsed with max-height. Animating a layout
- * property here would force layout on every hover, and every hover happens over
- * a canvas that is drawing at 60fps — the one place on this site where layout
- * thrash is least affordable. Absolutely positioned, only opacity moves, and
- * revealing the line never reflows the name above it.
- */
 .orrery-target__detail {
-  position: absolute;
-  top: calc(100% + 0.15em);
-  left: 0;
-  color: var(--ink-3);
+  display: block;
+  margin-top: 0.3em;
+  color: var(--ink-2);
   font-family: var(--font-figure);
   font-size: 0.625rem;
   letter-spacing: 0.08em;
   opacity: 0;
+  text-shadow: 0 1px 12px rgb(var(--scrim-rgb) / 0.95);
   text-transform: uppercase;
   transition: opacity 200ms var(--lift);
-}
-
-.orrery-target[data-flip="true"] .orrery-target__detail {
-  right: 0;
-  left: auto;
 }
 
 .orrery-target:hover .orrery-target__detail,
@@ -183,9 +185,26 @@
   opacity: 1;
 }
 
-/* Behind the reading column: the label would sit on top of the prose, so it is
-   withdrawn. Focus and hover always bring it back — a reader tabbing through
-   the system must be able to see what they have landed on, wherever it is. */
+/* The star is the author, and the way to the résumé. It carries their name, so
+   it is set larger than the bodies around it and never withdrawn. */
+.orrery-target[data-orrery-target="star"] .orrery-target__label {
+  max-width: 24ch;
+  opacity: 1;
+}
+
+.orrery-target[data-orrery-target="star"] .orrery-target__name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.orrery-target[data-orrery-target="star"] .orrery-target__detail {
+  opacity: 0.75;
+}
+
+/* Behind the reading column a label would sit on top of the prose, so it is
+   withdrawn. Focus and hover always bring it back: a reader tabbing through the
+   system has to be able to see what they have landed on, wherever it is. */
 .orrery-target[data-occluded="true"] .orrery-target__label {
   opacity: 0;
 }
@@ -193,14 +212,6 @@
 .orrery-target[data-occluded="true"]:hover .orrery-target__label,
 .orrery-target[data-occluded="true"]:focus-visible .orrery-target__label {
   opacity: 1;
-}
-
-/* Close to the right edge the label reads back toward the middle instead of
-   running off the screen. */
-.orrery-target[data-flip="true"] .orrery-target__label {
-  right: max(26px, calc(var(--target-radius, 14px) * 1.4));
-  left: auto;
-  text-align: right;
 }
 
 /* The focus ring has to survive being drawn over the star's own glow, which is
@@ -403,7 +414,7 @@
   display: block;
   margin-bottom: 6px;
   color: var(--ink-3);
-  content: "FIGURE 0 — THE ORRERY";
+  content: "FIGURE 0 · THE ORRERY";
   font-size: 0.5625rem;
   letter-spacing: 0.14em;
   opacity: 0.7;

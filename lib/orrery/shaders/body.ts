@@ -172,7 +172,7 @@ void main() {
     // The analytic halo, in place of a bloom pass. Its inner region is occluded
     // by the body's own depth write, so the core is never washed out.
     float falloff = pow(1.0 - d, 3.5);
-    float strength = isStar ? 1.0 : 0.6;
+    float strength = isStar ? 1.55 : 0.6;
     // The schematic has no glow: a technical drawing does not bloom.
     outColor = vec4(vColor * falloff * strength * uIgnition * (1.0 - uSchematic), 1.0);
     return;
@@ -192,27 +192,14 @@ void main() {
     return;
   }
 
-  if (isStar) {
-    // Emissive: the star is the light source, so nothing lights it.
-    float core = 1.0 - smoothstep(0.55, 1.0, d);
-    // The corona breathes, slowly and by very little. A star that is perfectly
-    // static reads as a decal.
-    float pulse = 0.86 + 0.14 * sin(uTime * 0.55);
-    float corona = pow(1.0 - d, 2.2) * pulse;
-    vec3 lit = vColor * (core + corona * 0.72);
-    outColor = vec4(mix(lit, vColor, uSchematic), alpha);
-    return;
-  }
-
-  // Fake the sphere normal from the billboard coordinate, then light it from
-  // the star at the origin.
+  // Fake the sphere normal from the billboard coordinate. The star needs it for
+  // its granulation, and every other body needs it for lighting.
   float z = sqrt(max(0.0, 1.0 - r2));
   vec3 normal = normalize(uRight * vCorner.x + uUp * vCorner.y + uForward * z);
-  vec3 toStar = normalize(-vCenter);
-  // The planet turns under fixed lighting: the surface is sampled from a
-  // normal spun about the world Y axis, while the lambert term keeps using the
-  // real one. Procedural surfaces make rotation free — there is nothing to
-  // re-upload, only a different place to sample.
+
+  // The planet turns under fixed lighting: the surface is sampled from a normal
+  // spun about the world Y axis, while the lambert term keeps using the real
+  // one. Procedural surfaces make rotation free.
   float spin = uTime * (0.035 + fract(vSeed * 0.017) * 0.03);
   float sinSpin = sin(spin);
   float cosSpin = cos(spin);
@@ -221,6 +208,36 @@ void main() {
     normal.y,
     normal.x * sinSpin + normal.z * cosSpin
   );
+
+  if (isStar) {
+    // Emissive, and graded by temperature rather than filled with one colour.
+    // A single flat amber disc was the problem: real stars are white-hot in the
+    // middle and fall through yellow to orange at the limb, and that gradient
+    // is most of what makes one look like it is emitting rather than painted.
+    vec3 hot = mix(vColor, vec3(1.0), 0.78);
+    vec3 mid = vColor;
+    vec3 limbColor = vColor * vec3(1.0, 0.6, 0.24);
+
+    vec3 surface = mix(hot, mid, smoothstep(0.0, 0.52, d));
+    surface = mix(surface, limbColor, smoothstep(0.46, 1.0, d));
+
+    // Granulation, turning slowly with the star, so the disc is not a smooth
+    // gradient. Subtle: this should read as texture, never as noise.
+    float cells = noise3(spun * 7.0) * 0.5 + noise3(spun * 16.0) * 0.5;
+    surface *= 0.93 + cells * 0.16;
+
+    // Breathes, slowly and by very little. A perfectly static star is a decal.
+    float pulse = 0.9 + 0.1 * sin(uTime * 0.55);
+
+    // Limb brightening, then an overall overdrive so the middle clips to white.
+    surface += limbColor * smoothstep(0.82, 1.0, d) * 0.45 * pulse;
+    surface *= (1.32 + 0.12 * pulse);
+
+    outColor = vec4(mix(surface, vColor, uSchematic), alpha);
+    return;
+  }
+
+  vec3 toStar = normalize(-vCenter);
   vec3 base = surfaceOf(vSurface, spun, vColor, vSeed);
 
   // A soft terminator. A bare dot() edge reads as a cut; this reads as air.
