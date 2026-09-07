@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Reveal } from "@/components/motion/reveal";
+import { OrreryBackdrop } from "@/components/orrery/orrery-backdrop";
 import { ExternalLink } from "@/components/ui/external-link";
 import { ProjectVisual } from "@/components/work/project-visual";
 import { portfolio } from "@/data/portfolio";
@@ -99,7 +100,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <>
-      <main className="page-shell" id="main-content">
+      <OrreryBackdrop slug={project.slug} />
+      <main className="case-shell" id="main-content">
         <div className="case-titleblock">
           <Link className="case-breadcrumb" href="/#work">
             <ArrowLeft aria-hidden="true" size={13} /> §2 Selected work

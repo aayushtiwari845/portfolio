@@ -19,7 +19,7 @@ export default function ResumePage() {
 
   return (
     <main className="resume-page" id="main-content">
-      <div className="page-shell">
+      <div className="case-shell">
         <Link className="case-breadcrumb resume-back" href="/">
           <ArrowLeft aria-hidden="true" size={14} /> Return to portfolio
         </Link>
