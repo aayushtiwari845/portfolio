@@ -271,7 +271,7 @@ This replaces a single-family system built on Archivo's width axis. Neither of t
 - **Body** (400, 1.125rem, LH 1.68, measure 66ch): Running argument. Prose sits at Ink Secondary; `strong` returns to full Ink at 600.
 - **Body Small** (400, 0.9375rem, LH 1.5–1.6): List items, evidence labels, secondary descriptions.
 - **Body Label** (500, 0.875rem): A body name in the orrery, set beneath the planet it belongs to.
-- **Star Label** (600, 1.125rem, tracking −0.01em): The author's name on the star. One step above every other label in the scene, because it is the only body that is a person and the only one that leads to the résumé.
+- **Star Label / Focused Label** (600, 1.125rem, tracking −0.01em): The author's name on the star, which is the only body that is a person and the only one that leads to the résumé. A body label rises from Body Label to this step while the camera is settled on it, so the body being described is also the one you can read.
 - **Label** (mono, 500, 0.6875rem, tracking 0.06em, uppercase): Field names, rail labels, nav links, breadcrumbs, running heads.
 - **Label Micro** (mono, 0.625rem, tracking 0.06em, uppercase): Metadata field names, the figure caption, the view toggle.
 - **Data** (mono, 0.8125rem, tabular figures, tracking −0.02em): Dates, identifiers, `§` references, clock.
