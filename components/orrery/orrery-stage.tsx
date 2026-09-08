@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { readMotionEnvironment } from "@/lib/motion";
 import { THEME_CHANGE_EVENT } from "@/components/theme/theme";
 import { COMPACT_SCENE, DESKTOP_SCENE, buildScene, sideForWaypoint } from "@/lib/orrery/scene";
+import { labelIsBlocked, type Rect } from "@/lib/orrery/labels";
 import { ORRERY_CAPTION, planetAppearance } from "@/data/orrery";
 import type { ProjectSlug } from "@/data/portfolio";
 import { applyView, getStoredView, setOrreryCapable } from "./mode";
@@ -59,6 +60,37 @@ export function OrreryStage() {
     // Where each target sat last frame, so sub-pixel jitter does not cause a
     // style write on every single frame.
     const lastPositions = new Map<string, { x: number; y: number }>();
+
+    /**
+     * The caption's box, in stage coordinates.
+     *
+     * The caption is the one piece of prose sitting *inside* the scene rather
+     * than beside it, and body names were being painted straight across it: the
+     * fraud pipeline's name landed on top of the sentence explaining what the
+     * orrery measures. Cached, because reading a rect per frame forces layout;
+     * re-measured on resize and whenever the caption's text changes, which are
+     * the only two things that move it.
+     */
+    let captionBox: Rect | null = null;
+
+    const measureCaption = () => {
+      const node = captionRef.current;
+      const container = rootRef.current;
+      if (!node || !container) {
+        captionBox = null;
+        return;
+      }
+
+      const stage = container.getBoundingClientRect();
+      const box = node.getBoundingClientRect();
+      captionBox = {
+        left: box.left - stage.left,
+        top: box.top - stage.top,
+        right: box.right - stage.left,
+        bottom: box.bottom - stage.top,
+      };
+    };
+
 
     const fallBackToDocument = () => {
       root.dataset.orrery = "unavailable";
@@ -125,6 +157,7 @@ export function OrreryStage() {
     };
 
     measureStops();
+    measureCaption();
 
     // A five-inch screen cannot legibly carry eight orbits, seventy moons and a
     // starfield, so it gets the eight bodies and nothing else.
@@ -192,7 +225,11 @@ export function OrreryStage() {
               // "Aayush Tiwari / READ THE RÉSUMÉ" was drawn on top of the body
               // copy whenever the camera passed the inner orbits. The body
               // stays clickable while its name stands down.
-              node.dataset.occluded = target.x < columnEdge ? "true" : "false";
+              node.dataset.occluded
+                = target.x < columnEdge
+                || labelIsBlocked(target.x, target.labelY, [captionBox])
+                  ? "true"
+                  : "false";
               // A nearer planet is sitting where this name would be drawn.
               node.dataset.covered = target.covered ? "true" : "false";
               node.dataset.focused = target.focus > 0.5 ? "true" : "false";
@@ -246,6 +283,10 @@ export function OrreryStage() {
             // which are merely ordinal.
             node.textContent = caption ?? ORRERY_CAPTION;
             node.dataset.focused = caption ? "true" : "false";
+
+            // A different caption is a different number of lines, so the box
+            // the labels have to keep clear of has just moved.
+            measureCaption();
           },
 
           onLost: fallBackToDocument,
@@ -259,16 +300,21 @@ export function OrreryStage() {
     window.addEventListener(THEME_CHANGE_EVENT, handleThemeChange);
 
     // Fonts swapping in and images loading both move the stops.
+    const remeasure = () => {
+      measureStops();
+      measureCaption();
+    };
+
     const documentObserver = typeof ResizeObserver === "undefined"
       ? null
-      : new ResizeObserver(measureStops);
+      : new ResizeObserver(remeasure);
     documentObserver?.observe(document.body);
-    window.addEventListener("resize", measureStops);
+    window.addEventListener("resize", remeasure);
 
     return () => {
       disposed = true;
       window.removeEventListener(THEME_CHANGE_EVENT, handleThemeChange);
-      window.removeEventListener("resize", measureStops);
+      window.removeEventListener("resize", remeasure);
       documentObserver?.disconnect();
       handle?.destroy();
       handle = null;

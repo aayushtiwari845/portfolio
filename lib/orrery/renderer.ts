@@ -23,7 +23,7 @@ import { createStarfieldPass } from "./passes/starfield";
 import { createEvidencePass } from "./passes/evidence";
 import { focusAt } from "./focus";
 import type { FrameContext, RenderPass } from "./frame";
-import type { Scene } from "./scene";
+import { SURFACE, type Scene } from "./scene";
 
 const FIELD_OF_VIEW = Math.PI / 3.6;
 const NEAR = 0.35;
@@ -55,8 +55,15 @@ export interface ProjectedTarget {
   readonly x: number;
   readonly y: number;
   readonly radius: number;
+  /**
+   * Where the label's own top edge sits, which is the line that actually has to
+   * be readable. Reported rather than recomputed by the caller, so the covering
+   * test here and the page's own reserved regions cannot disagree about where a
+   * name is drawn.
+   */
+  readonly labelY: number;
   readonly visible: boolean;
-  /** A nearer body is covering where this label would sit. */
+  /** A body is covering where this label would sit. */
   readonly covered: boolean;
   /** How strongly the camera has settled on this body, 0 to 1. */
   readonly focus: number;
@@ -251,17 +258,26 @@ export function mount(canvas: HTMLCanvasElement, options: MountOptions): OrreryH
     // labels, so nothing on the page can disagree with the scene about where
     // anything is.
     const viewport = { width, height };
-    const screenBodies: { x: number; y: number; radius: number; depth: number }[] = [];
+    const screenBodies: {
+      id: string;
+      x: number;
+      y: number;
+      radius: number;
+      depth: number;
+      star: boolean;
+    }[] = [];
 
     scene.bodies.forEach((body) => {
       const point = projectToScreen(viewProjection, centreOf(body, elapsed), viewport);
       if (!point) return;
 
       screenBodies.push({
+        id: body.id,
         x: point.x,
         y: point.y,
         radius: projectedRadius(projection, body.radius, point.depth, height),
         depth: point.depth,
+        star: body.surface === SURFACE.star,
       });
     });
 
@@ -269,26 +285,44 @@ export function mount(canvas: HTMLCanvasElement, options: MountOptions): OrreryH
       const point = projectToScreen(viewProjection, target.position, viewport);
 
       if (!point) {
-        return { id: target.id, x: 0, y: 0, radius: 0, visible: false, covered: false, focus: 0 };
+        return {
+          id: target.id,
+          x: 0,
+          y: 0,
+          radius: 0,
+          labelY: 0,
+          visible: false,
+          covered: false,
+          focus: 0,
+        };
       }
 
       const radius = projectedRadius(projection, target.radius, point.depth, height);
       // Where the label sits, which is what actually has to be readable.
       const labelY = point.y + Math.max(26, radius * 1.12 + 14);
 
-      // Hidden when a nearer body covers the label. Only bodies large enough to
-      // matter count, so a moon drifting past does not blink a name in and out.
-      const covered = screenBodies.some((other) => (
-        other.depth < point.depth - 0.3
-        && other.radius > 7
-        && Math.hypot(other.x - point.x, other.y - labelY) < other.radius * 0.95
-      ));
+      // Hidden when a body covers the label. Only bodies large enough to matter
+      // count, so a moon drifting past does not blink a name in and out.
+      const covered = screenBodies.some((other) => {
+        if (other.id === target.id || other.radius <= 7) return false;
+
+        // The star hides a name from either side. Every other body has to be in
+        // front to count, because that is what "hidden behind it" means. The
+        // star is different: it is the brightest thing in the scene and its
+        // corona carries well past the disc, so a name laid over it is
+        // unreadable whether the body sits in front of the star or behind it.
+        if (!other.star && other.depth >= point.depth - 0.3) return false;
+
+        const reach = other.radius * (other.star ? 1.45 : 0.95);
+        return Math.hypot(other.x - point.x, other.y - labelY) < reach;
+      });
 
       return {
         id: target.id,
         x: point.x,
         y: point.y,
         radius,
+        labelY,
         visible: true,
         covered,
         focus: focus.slug === target.id ? focus.strength : 0,
