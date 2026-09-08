@@ -188,10 +188,11 @@ export function OrreryStage() {
               // transform only: never left/top, which would force layout.
               node.style.transform = `translate3d(${target.x}px, ${target.y}px, 0)`;
               node.style.setProperty("--target-radius", `${target.radius}px`);
-              // The star is never withdrawn: it carries the author's name and
-              // is the way to the résumé, so it has to stay reachable.
-              const occluded = target.id !== "star" && target.x < columnEdge;
-              node.dataset.occluded = occluded ? "true" : "false";
+              // No exemption for the star. Keeping its name pinned meant
+              // "Aayush Tiwari / READ THE RÉSUMÉ" was drawn on top of the body
+              // copy whenever the camera passed the inner orbits. The body
+              // stays clickable while its name stands down.
+              node.dataset.occluded = target.x < columnEdge ? "true" : "false";
               // A nearer planet is sitting where this name would be drawn.
               node.dataset.covered = target.covered ? "true" : "false";
               node.dataset.focused = target.focus > 0.5 ? "true" : "false";

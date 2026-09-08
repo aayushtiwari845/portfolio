@@ -38,7 +38,7 @@ const IDLE_SPIN = 0.021;
  * system simply sits to the right of the text instead of behind it.
  */
 const WIDE_VIEWPORT = 1000;
-const LENS_SHIFT = 0.17;
+const LENS_SHIFT = 0.24;
 
 
 export interface ProjectedMoon {

@@ -598,6 +598,27 @@
 }
 
 /* --------------------------------------------------------------------------
+   Company marks
+
+   Set inline with the company name, at cap height, so the name still leads and
+   the mark reads as identification rather than as branding. Companies without a
+   mark on file simply show their name.
+   -------------------------------------------------------------------------- */
+
+.company-mark {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 0.45em;
+  vertical-align: -0.14em;
+}
+
+.company-mark svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+}
+
+/* --------------------------------------------------------------------------
    Header
 
    In orrery mode the header stops being a sticky, backdrop-filtered bar.

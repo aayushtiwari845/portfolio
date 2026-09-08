@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { SectionLink } from "@/components/layout/section-link";
 import { Reveal } from "@/components/motion/reveal";
+import { CompanyMark } from "@/components/ui/company-mark";
 import { CopyEmail } from "@/components/ui/copy-email";
 import { ExternalLink } from "@/components/ui/external-link";
 import { ProjectVisual } from "@/components/work/project-visual";
@@ -218,7 +219,10 @@ export function ExperienceSection() {
           >
             <div>
               <p className="entry-when figure-value">{experience.period}</p>
-              <h3 className="entry-org">{experience.company}</h3>
+              <h3 className="entry-org">
+                <CompanyMark company={experience.id} />
+                {experience.company}
+              </h3>
               <p className="entry-role">{experience.role}</p>
             </div>
             <div>

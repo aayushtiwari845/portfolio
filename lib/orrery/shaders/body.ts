@@ -171,8 +171,11 @@ void main() {
   if (uGlowPass > 0.5) {
     // The analytic halo, in place of a bloom pass. Its inner region is occluded
     // by the body's own depth write, so the core is never washed out.
-    float falloff = pow(1.0 - d, 3.5);
-    float strength = isStar ? 1.55 : 0.6;
+    // The star's corona falls off far more steeply than a planet's halo. At the
+    // planets' exponent it reached most of a viewport across and drowned the
+    // text beside it whenever the camera passed near an inner orbit.
+    float falloff = pow(1.0 - d, isStar ? 6.0 : 3.5);
+    float strength = isStar ? 2.6 : 0.6;
     // The schematic has no glow: a technical drawing does not bloom.
     outColor = vec4(vColor * falloff * strength * uIgnition * (1.0 - uSchematic), 1.0);
     return;

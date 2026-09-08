@@ -174,7 +174,7 @@ export const COMPACT_SCENE: SceneOptions = {
   seed: 0x5eed,
 };
 
-const STAR_RADIUS = 2.05;
+const STAR_RADIUS = 1.78;
 const ROLE_RADIUS_MIN = 0.46;
 const ROLE_RADIUS_MAX = 0.98;
 const PROJECT_RADIUS_MIN = 0.72;
@@ -339,7 +339,9 @@ function frameBody(position: Vec3, radius: number): CameraPose {
 
   return {
     eye: add(
-      add(scale(outward, Math.max(0, radius * -1.6) + distance * 0.35), position),
+      // Mostly tangential, so the star sits off to one side of the frame rather
+      // than directly behind the body being framed.
+      add(scale(outward, distance * 0.3), position),
       add(scale(tangent, distance), [0, radius * 3.4 + 1.6, 0]),
     ),
     target: position,
