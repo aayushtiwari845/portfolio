@@ -214,6 +214,90 @@
   opacity: 1;
 }
 
+/*
+ * A nearer planet is sitting where this name would be drawn.
+ *
+ * The scene is in perspective, so a body at the back will regularly pass behind
+ * one at the front, and its label was being painted straight over the nearer
+ * planet as though nothing were in the way. The renderer projects every body
+ * each frame and reports which labels are covered; those withdraw until they
+ * are clear again.
+ */
+.orrery-target[data-covered="true"] .orrery-target__label {
+  opacity: 0;
+}
+
+/*
+ * When the camera settles on a body, every other name stands down. Nine labels
+ * competing while the text beside the scene describes exactly one of them was
+ * the thing that made it hard to tell which body you were being told about.
+ *
+ * The attribute is written on the stage, which is what the renderer holds a
+ * reference to.
+ */
+.orrery-stage[data-focusing="true"] .orrery-target:not([data-focused="true"]) .orrery-target__label {
+  opacity: 0.14;
+}
+
+.orrery-stage[data-focusing="true"] .orrery-target[data-focused="true"] .orrery-target__name {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.orrery-stage[data-focusing="true"] .orrery-target[data-focused="true"] .orrery-target__detail {
+  opacity: 0.8;
+}
+
+/*
+ * Hover and focus always win. Deliberately over-specified rather than marked
+ * important: the dimming and covering rules above both carry an attribute
+ * selector, so a plain `:hover` rule would lose to them on specificity and a
+ * reader tabbing through the scene would land on a body they cannot read.
+ */
+.orrery-stage .orrery-targets .orrery-target:hover .orrery-target__label,
+.orrery-stage .orrery-targets .orrery-target:focus-visible .orrery-target__label,
+.orrery-stage .orrery-targets .orrery-target:hover .orrery-target__detail,
+.orrery-stage .orrery-targets .orrery-target:focus-visible .orrery-target__detail {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Moons
+
+   Only the focused body's are named, and only six of them. Six is a legend;
+   forty-eight, which is what naming every moon in the scene would mean, is
+   noise. The names are aria-hidden because the panel beside the scene already
+   lists the same technologies as text.
+   -------------------------------------------------------------------------- */
+
+.orrery-moons {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+}
+
+.orrery-moon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--ink-2);
+  font-family: var(--font-figure);
+  font-size: 0.5625rem;
+  letter-spacing: 0.09em;
+  opacity: 0;
+  text-shadow: 0 1px 10px rgb(var(--scrim-rgb) / 0.95);
+  text-transform: uppercase;
+  transition: opacity 420ms var(--lift);
+  white-space: nowrap;
+  /* Offset from the moon itself so the name clears the sphere. */
+  translate: 10px -50%;
+}
+
+.orrery-moon[data-visible="true"] {
+  opacity: 0.85;
+}
+
 /* The focus ring has to survive being drawn over the star's own glow, which is
    the brightest region on the canvas. */
 .orrery-target:focus-visible {

@@ -41,6 +41,14 @@ const WIDE_VIEWPORT = 1000;
 const LENS_SHIFT = 0.17;
 
 
+export interface ProjectedMoon {
+  /** The technology this moon stands for. */
+  readonly label: string;
+  readonly x: number;
+  readonly y: number;
+  readonly visible: boolean;
+}
+
 export interface ProjectedTarget {
   readonly id: string;
   /** CSS pixels from the canvas top-left corner. */
@@ -48,6 +56,10 @@ export interface ProjectedTarget {
   readonly y: number;
   readonly radius: number;
   readonly visible: boolean;
+  /** A nearer body is covering where this label would sit. */
+  readonly covered: boolean;
+  /** How strongly the camera has settled on this body, 0 to 1. */
+  readonly focus: number;
 }
 
 export interface MountOptions {
@@ -69,6 +81,11 @@ export interface MountOptions {
   getLensSide(): number;
   /** Called every frame with where each focusable body now is on screen. */
   onProject(targets: readonly ProjectedTarget[]): void;
+  /**
+   * The moons of whichever body the camera has settled on, named. Only the
+   * focused body's are sent: six labels is a legend, forty-eight is a mess.
+   */
+  onMoons(moons: readonly ProjectedMoon[]): void;
   /** A context was created and the first frame drew. */
   onReady(): void;
   /** The orrery cannot continue; the page should fall back to the document. */
@@ -143,6 +160,24 @@ export function mount(canvas: HTMLCanvasElement, options: MountOptions): OrreryH
     return { eye: [x * cos + z * sin, y, z * cos - x * sin], target: pose.target };
   }
 
+  /**
+   * A body's centre this frame. Moons carry their parent's centre plus an
+   * orbit, and travel it on the GPU; this repeats that arithmetic on the CPU so
+   * a moon can be labelled and can occlude a label. The two must agree, so if
+   * the vertex shader's orbit changes, this changes with it.
+   */
+  function centreOf(body: Scene["bodies"][number], elapsed: number): Vec3 {
+    if (!body.orbit) return body.position;
+
+    const angle = body.orbit.phase + elapsed * body.orbit.speed;
+
+    return [
+      body.position[0] + Math.cos(angle) * body.orbit.radius,
+      body.position[1] + Math.sin(angle * 2) * body.orbit.lift,
+      body.position[2] + Math.sin(angle) * body.orbit.radius,
+    ];
+  }
+
   function drawFrame(now: number) {
     if (!gl || disposed || passes.length === 0) return;
 
@@ -179,7 +214,7 @@ export function mount(canvas: HTMLCanvasElement, options: MountOptions): OrreryH
     const forward: Vec3 = normalize(subtract(pose.eye, pose.target));
 
     const focus = focusAt(
-      scene.evidenceRanges,
+      scene.focusStops,
       scene.waypoints.length,
       options.getProgress(),
     );
@@ -211,23 +246,76 @@ export function mount(canvas: HTMLCanvasElement, options: MountOptions): OrreryH
 
     passes.forEach((pass) => pass.draw(gl, frame));
 
-    // One projection serves both the scene and the DOM hit targets layered over
-    // it, so a body and its button can never disagree about where it is.
+    // Every body projected once. The same numbers place the DOM hit targets,
+    // decide which labels a nearer planet is covering, and position the moon
+    // labels, so nothing on the page can disagree with the scene about where
+    // anything is.
+    const viewport = { width, height };
+    const screenBodies: { x: number; y: number; radius: number; depth: number }[] = [];
+
+    scene.bodies.forEach((body) => {
+      const point = projectToScreen(viewProjection, centreOf(body, elapsed), viewport);
+      if (!point) return;
+
+      screenBodies.push({
+        x: point.x,
+        y: point.y,
+        radius: projectedRadius(projection, body.radius, point.depth, height),
+        depth: point.depth,
+      });
+    });
+
     options.onProject(scene.targets.map((target) => {
-      const point = projectToScreen(viewProjection, target.position, { width, height });
+      const point = projectToScreen(viewProjection, target.position, viewport);
 
       if (!point) {
-        return { id: target.id, x: 0, y: 0, radius: 0, visible: false };
+        return { id: target.id, x: 0, y: 0, radius: 0, visible: false, covered: false, focus: 0 };
       }
+
+      const radius = projectedRadius(projection, target.radius, point.depth, height);
+      // Where the label sits, which is what actually has to be readable.
+      const labelY = point.y + Math.max(26, radius * 1.12 + 14);
+
+      // Hidden when a nearer body covers the label. Only bodies large enough to
+      // matter count, so a moon drifting past does not blink a name in and out.
+      const covered = screenBodies.some((other) => (
+        other.depth < point.depth - 0.3
+        && other.radius > 7
+        && Math.hypot(other.x - point.x, other.y - labelY) < other.radius * 0.95
+      ));
 
       return {
         id: target.id,
         x: point.x,
         y: point.y,
-        radius: projectedRadius(projection, target.radius, point.depth, height),
+        radius,
         visible: true,
+        covered,
+        focus: focus.slug === target.id ? focus.strength : 0,
       };
     }));
+
+    // Only the focused body's moons are named.
+    const moons: ProjectedMoon[] = [];
+
+    if (focus.slug && focus.strength > 0.4) {
+      (scene.moonLabels[focus.slug] ?? []).forEach((label, index) => {
+        const body = scene.bodies.find(
+          (candidate) => candidate.id === `${focus.slug}-moon-${index}`,
+        );
+        if (!body) return;
+
+        const point = projectToScreen(viewProjection, centreOf(body, elapsed), viewport);
+        moons.push({
+          label,
+          x: point?.x ?? 0,
+          y: point?.y ?? 0,
+          visible: Boolean(point),
+        });
+      });
+    }
+
+    options.onMoons(moons);
   }
 
   function loop(now: number) {

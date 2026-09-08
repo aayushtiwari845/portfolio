@@ -359,7 +359,8 @@ export const evidence: Readonly<Partial<Record<ProjectSlug, OrreryEvidence>>> = 
  */
 export const ORRERY_CAPTION =
   "Orbit radius is months elapsed since the degree programme began; each body "
-  + "carries one moon per entry in its real stack. A planet's hue is its "
+  + "carries a moon for up to six of the technologies it was built with. A "
+  + "planet's hue is its "
   + "domain, its surface is how far the work got, and a ring marks work that "
   + "is not solely mine. CivicLens is drawn unfilled because it records no "
   + "measurements at all. Body size is an ordinal ranking of prominence, not a "

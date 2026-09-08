@@ -37,6 +37,7 @@ export function OrreryStage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const captionRef = useRef<HTMLParagraphElement>(null);
+  const moonsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -158,6 +159,13 @@ export function OrreryStage() {
             // is dropped until the body comes back out.
             const columnEdge = stageWidth >= 1000 ? stageWidth * 0.46 : 0;
 
+            // Once the camera settles on a body, the rest stand down: eight
+            // other names competing with the one being described is the mess
+            // this is here to avoid.
+            container.dataset.focusing = targets.some((target) => target.focus > 0.5)
+              ? "true"
+              : "false";
+
             targets.forEach((target) => {
               const node = container.querySelector<HTMLElement>(
                 `[data-orrery-target="${target.id}"]`,
@@ -184,6 +192,9 @@ export function OrreryStage() {
               // is the way to the résumé, so it has to stay reachable.
               const occluded = target.id !== "star" && target.x < columnEdge;
               node.dataset.occluded = occluded ? "true" : "false";
+              // A nearer planet is sitting where this name would be drawn.
+              node.dataset.covered = target.covered ? "true" : "false";
+              node.dataset.focused = target.focus > 0.5 ? "true" : "false";
             });
           },
 
@@ -194,6 +205,25 @@ export function OrreryStage() {
             // A reader who explicitly chose the document keeps it.
             if (getStoredView() !== "document") {
               applyView("orrery", { persist: false });
+            }
+          },
+
+          onMoons: (moons) => {
+            const slots = moonsRef.current?.children;
+            if (!slots) return;
+
+            for (let index = 0; index < slots.length; index += 1) {
+              const slot = slots[index] as HTMLElement;
+              const moon = moons[index];
+
+              if (!moon || !moon.visible) {
+                slot.dataset.visible = "false";
+                continue;
+              }
+
+              slot.dataset.visible = "true";
+              if (slot.textContent !== moon.label) slot.textContent = moon.label;
+              slot.style.transform = `translate3d(${moon.x}px, ${moon.y}px, 0)`;
             }
           },
 
@@ -255,6 +285,17 @@ export function OrreryStage() {
       */}
       <canvas aria-hidden="true" className="orrery-canvas" ref={canvasRef} />
       <OrreryTargets />
+
+      {/*
+        The focused body's moons, named. aria-hidden because these are the same
+        technologies the panel beside the scene already lists as text: a screen
+        reader should hear that list once, not twice.
+      */}
+      <div aria-hidden="true" className="orrery-moons" ref={moonsRef}>
+        {Array.from({ length: 6 }, (_, index) => (
+          <span className="orrery-moon" data-visible="false" key={index} />
+        ))}
+      </div>
 
       {/*
         Rule 3 of this design system, carried over: every figure states what it

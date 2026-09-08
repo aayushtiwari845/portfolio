@@ -21,15 +21,37 @@ describe("bodies", () => {
     expect(count("project")).toBe(5);
   });
 
-  it("gives every project exactly one moon per real stack entry", () => {
+  it("caps moons at six and takes them from the head of the real stack", () => {
+    // Thirteen moons around one planet read as debris and none of them could be
+    // named. Six is few enough that each can carry its own label when focused.
     projectBodies.forEach((project) => {
       const moons = scene.bodies.filter(
         (body) => body.kind === "moon" && body.id.startsWith(`${project.slug}-moon-`),
       );
       const source = projects.find((candidate) => candidate.slug === project.slug);
+      const stack = source?.stack ?? [];
 
-      expect(moons).toHaveLength(source?.stack.length ?? -1);
+      expect(moons).toHaveLength(Math.min(6, stack.length));
+      expect(scene.moonLabels[project.slug]).toEqual(stack.slice(0, 6));
     });
+  });
+
+  it("names a moon for every moon it draws", () => {
+    Object.entries(scene.moonLabels).forEach(([parent, labels]) => {
+      const moons = scene.bodies.filter(
+        (body) => body.kind === "moon" && body.id.startsWith(`${parent}-moon-`),
+      );
+
+      expect(moons).toHaveLength(labels.length);
+      labels.forEach((label) => expect(label.length).toBeGreaterThan(0));
+    });
+  });
+
+  it("keeps the whole scene under fifty moons", () => {
+    // Six each across nine bodies is the ceiling; past that the scene stops
+    // reading as a system and starts reading as static.
+    const moons = scene.bodies.filter((body) => body.kind === "moon");
+    expect(moons.length).toBeLessThanOrEqual(48);
   });
 
   it("gives every body a unique id", () => {
@@ -134,14 +156,14 @@ describe("bodies", () => {
 });
 
 describe("role planets", () => {
-  it("gives each role one moon per skill in its real stack", () => {
+  it("gives each role a moon per skill, up to the cap", () => {
     roles.forEach((role) => {
       const moons = scene.bodies.filter(
         (body) => body.kind === "moon" && body.id.startsWith(`${role.id}-moon-`),
       );
 
-      expect(moons).toHaveLength(role.moons.length);
-      expect(role.moons.length).toBeGreaterThan(0);
+      expect(moons).toHaveLength(Math.min(6, role.moons.length));
+      expect(moons.length).toBeGreaterThan(0);
     });
   });
 
@@ -286,12 +308,17 @@ describe("targets", () => {
 });
 
 describe("rings", () => {
-  it("draws no engagement arcs", () => {
-    // Duration used to be drawn as a bright arc over each orbit. It read as a
-    // smear rather than a measurement, so radius carries chronology alone now.
-    const emphasised = scene.rings.filter((ring) => ring.emphasis === 1);
-    expect(emphasised).toHaveLength(1);
-    expect(emphasised[0].points).toHaveLength(97);
+  it("draws every orbit as a closed ring, with no emphasised arc", () => {
+    // Duration used to be drawn as a bright arc over each orbit, and the
+    // programme ring in full ink, which put a hard black ellipse around the
+    // star. Every ring is now the same faint weight.
+    scene.rings.forEach((ring) => {
+      expect(ring.points.length).toBeGreaterThan(2);
+      const first = ring.points[0];
+      const last = ring.points[ring.points.length - 1];
+      expect(last[0]).toBeCloseTo(first[0], 6);
+      expect(last[2]).toBeCloseTo(first[2], 6);
+    });
   });
 
   it("never emits an empty ring", () => {

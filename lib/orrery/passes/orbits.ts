@@ -22,16 +22,14 @@ import type { Vec3 } from "../math";
 interface RingRange {
   readonly first: number;
   readonly count: number;
-  readonly emphasis: number;
   /** A planetary ring carries its planet's hue instead of the palette's. */
   readonly colorObservation?: Vec3;
   readonly colorSchematic?: Vec3;
 }
 
-const FAINT_OPACITY = 0.5;
-const BRIGHT_OPACITY = 1;
+const ORBIT_OPACITY = 0.5;
 /** Hairlines on paper need more weight than glowing lines in space. */
-const SCHEMATIC_FAINT_OPACITY = 0.75;
+const SCHEMATIC_ORBIT_OPACITY = 0.62;
 
 export function createOrbitsPass(
   gl: WebGL2RenderingContext,
@@ -49,7 +47,6 @@ export function createOrbitsPass(
     ranges.push({
       first: cursor,
       count: ring.points.length,
-      emphasis: ring.emphasis,
       colorObservation: ring.colorObservation,
       colorSchematic: ring.colorSchematic,
     });
@@ -93,18 +90,12 @@ export function createOrbitsPass(
 
       const schematic = frame.palette.schematic > 0.5;
 
+      const opacity = schematic ? SCHEMATIC_ORBIT_OPACITY : ORBIT_OPACITY;
+
       ranges.forEach((range) => {
-        const bright = range.emphasis > 0.5;
         const own = schematic ? range.colorSchematic : range.colorObservation;
-        context.uniform3fv(
-          uniforms.uColor,
-          own ?? (bright ? frame.palette.ringBright : frame.palette.ring),
-        );
-        const faint = schematic ? SCHEMATIC_FAINT_OPACITY : FAINT_OPACITY;
-        context.uniform1f(
-          uniforms.uOpacity,
-          (bright ? BRIGHT_OPACITY : faint) * frame.ignition,
-        );
+        context.uniform3fv(uniforms.uColor, own ?? frame.palette.ring);
+        context.uniform1f(uniforms.uOpacity, opacity * frame.ignition);
         context.drawArrays(context.LINE_STRIP, range.first, range.count);
       });
 

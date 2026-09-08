@@ -75,6 +75,7 @@ export function OrreryBackdrop({ slug }: OrreryBackdropProps) {
           getLensSide: () => 0,
           // No hit targets on a case study; the body is scenery, not navigation.
           onProject: () => undefined,
+          onMoons: () => undefined,
           onFocus: () => undefined,
           onReady: () => {
             canvas.dataset.ready = "true";

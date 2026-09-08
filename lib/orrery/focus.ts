@@ -6,7 +6,7 @@
  * it wrong means either the clouds never appear or several appear at once.
  */
 
-import type { EvidenceRange } from "./scene";
+import type { FocusStop } from "./scene";
 
 export interface FocusState {
   /** The id of the body in view, or null while travelling between stops. */
@@ -30,20 +30,20 @@ export const FOCUS_RANGE = 0.85;
  * against each range's stop.
  */
 export function focusAt(
-  ranges: readonly EvidenceRange[],
+  stops: readonly FocusStop[],
   waypointCount: number,
   progress: number,
 ): FocusState {
-  if (ranges.length === 0 || waypointCount < 2) return NO_FOCUS;
+  if (stops.length === 0 || waypointCount < 2) return NO_FOCUS;
 
   const clamped = progress <= 0 ? 0 : progress >= 1 ? 1 : progress;
   const scaled = clamped * (waypointCount - 1);
 
   let best = NO_FOCUS;
 
-  ranges.forEach((range) => {
-    const strength = Math.max(0, 1 - Math.abs(scaled - range.waypoint) / FOCUS_RANGE);
-    if (strength > best.strength) best = { slug: range.slug, strength };
+  stops.forEach((stop) => {
+    const strength = Math.max(0, 1 - Math.abs(scaled - stop.waypoint) / FOCUS_RANGE);
+    if (strength > best.strength) best = { slug: stop.slug, strength };
   });
 
   return best;

@@ -86,8 +86,6 @@ export interface MoonOrbit {
 
 export interface SceneRing {
   readonly points: readonly Vec3[];
-  /** 0 for the faint complete orbit, 1 for the bright engagement arc. */
-  readonly emphasis: number;
   /** A planetary ring paints in its planet's hue rather than the palette's. */
   readonly colorObservation?: Vec3;
   readonly colorSchematic?: Vec3;
@@ -119,6 +117,10 @@ export interface Scene {
   readonly evidenceCloud: Float32Array<ArrayBuffer>;
   readonly evidenceRanges: readonly EvidenceRange[];
   readonly targets: readonly SceneTarget[];
+  /** Skill names for each body's moons, in orbit order, keyed by body id. */
+  readonly moonLabels: Readonly<Record<string, readonly string[]>>;
+  /** Every stop the camera can settle on, for focus. */
+  readonly focusStops: readonly FocusStop[];
   /**
    * The camera path the scroll tour travels: an establishing shot, then each
    * body in reading order, then a final wide shot. Scroll interpolates along
@@ -140,6 +142,12 @@ export interface SceneOptions {
    */
   readonly includeEvidence: boolean;
   readonly seed: number;
+}
+
+/** A body the camera can settle on. */
+export interface FocusStop {
+  readonly slug: string;
+  readonly waypoint: number;
 }
 
 /** Where one project's records sit inside the shared evidence buffer. */
@@ -172,6 +180,13 @@ const ROLE_RADIUS_MAX = 0.98;
 const PROJECT_RADIUS_MIN = 0.72;
 const PROJECT_RADIUS_MAX = 1.42;
 const MOON_RADIUS = 0.125;
+/**
+ * Thirteen moons around one planet read as debris, not as a stack, and none of
+ * them could be named without burying the scene in text. Six is enough to say
+ * "this was built with things" and few enough that each one can carry its own
+ * label when the camera settles on it. The caption states the cap.
+ */
+const MAX_MOONS = 6;
 const RING_SEGMENTS = 96;
 const STARFIELD_INNER = 60;
 const STARFIELD_OUTER = 130;
@@ -317,11 +332,10 @@ function writeEvidenceCloud(
 function frameBody(position: Vec3, radius: number): CameraPose {
   const outward = normalize(position);
   const tangent = normalize(cross(position, [0, 1, 0]));
-  // A floor as well as a scale. The role bodies are small, and framing them
-  // purely by their own radius put the camera close enough that a neighbouring
-  // glow filled the screen; every stop needs enough distance to show the body
-  // in its system rather than as an abstract wash of colour.
-  const distance = Math.max(9.5, radius * 5.5 + 2.4);
+  // Close enough that the body dominates its stop. Framed further out, every
+  // stop looked like the same wide shot of the whole system and there was no
+  // way to tell which body the text beside it was describing.
+  const distance = Math.max(6.5, radius * 3.8 + 1.8);
 
   return {
     eye: add(
@@ -391,13 +405,13 @@ export function buildScene(options: SceneOptions = DESKTOP_SCENE): Scene {
     seed: 0,
   }];
 
-  // Orbits only. Engagement duration used to be drawn as a bright arc over each
-  // ring; it read as a smear rather than as a measurement and has been dropped.
-  // Chronology is still carried, by radius.
+  // Orbits only, and all of them faint. The programme ring used to be drawn in
+  // full ink, which put a hard black ellipse around the star.
   const rings: SceneRing[] = [
-    { points: ringPoints(programmeOrbit, RING_SEGMENTS), emphasis: 1 },
+    { points: ringPoints(programmeOrbit, RING_SEGMENTS) },
   ];
 
+  const moonLabels: Record<string, readonly string[]> = {};
   const targets: SceneTarget[] = [{
     // The star is the author, and the one body in the scene that is a person
     // rather than a thing. It goes to the résumé.
@@ -427,11 +441,14 @@ export function buildScene(options: SceneOptions = DESKTOP_SCENE): Scene {
       seed: hashSeed(role.id) % 997,
     });
 
-    rings.push({ points: ringPoints(role.orbit, RING_SEGMENTS), emphasis: 0 });
+    rings.push({ points: ringPoints(role.orbit, RING_SEGMENTS) });
 
     // The skills the engagement was built on, orbiting the place it happened.
+    const roleMoons = role.moons.slice(0, MAX_MOONS);
+    moonLabels[role.id] = roleMoons;
+
     if (options.includeMoons) {
-      moonOrbits(radius, role.moons.length).forEach((orbit, index) => {
+      moonOrbits(radius, roleMoons.length).forEach((orbit, index) => {
         bodies.push({
           id: `${role.id}-moon-${index}`,
           kind: "moon",
@@ -477,7 +494,7 @@ export function buildScene(options: SceneOptions = DESKTOP_SCENE): Scene {
       seed: hashSeed(project.slug) % 997,
     });
 
-    rings.push({ points: ringPoints(project.orbit, RING_SEGMENTS), emphasis: 0 });
+    rings.push({ points: ringPoints(project.orbit, RING_SEGMENTS) });
 
     // A ring system, drawn as concentric tilted loops around the planet in its
     // own hue. Cheap: it reuses the orbit pass rather than needing geometry.
@@ -485,15 +502,17 @@ export function buildScene(options: SceneOptions = DESKTOP_SCENE): Scene {
       planetRings(project.position, radius).forEach((points) => {
         rings.push({
           points,
-          emphasis: 0,
           colorObservation: observation,
           colorSchematic: schematic,
         });
       });
     }
 
+    const projectMoons = project.moons.slice(0, MAX_MOONS);
+    moonLabels[project.slug] = projectMoons;
+
     if (options.includeMoons) {
-      moonOrbits(radius, project.moons.length).forEach((orbit, index) => {
+      moonOrbits(radius, projectMoons.length).forEach((orbit, index) => {
         bodies.push({
           id: `${project.slug}-moon-${index}`,
           kind: "moon",
@@ -582,6 +601,11 @@ export function buildScene(options: SceneOptions = DESKTOP_SCENE): Scene {
     evidenceCloud,
     evidenceRanges,
     targets,
+    moonLabels,
+    focusStops: targets.map((target, index) => ({
+      slug: target.id,
+      waypoint: index + 1,
+    })),
     waypoints,
     caption: ORRERY_CAPTION,
   };

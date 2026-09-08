@@ -18,7 +18,6 @@ export interface Palette {
   readonly record: Vec3;
   readonly ink: Vec3;
   readonly ring: Vec3;
-  readonly ringBright: Vec3;
   readonly star: Vec3;
   readonly background: Vec3;
   /** 0 renders the observation, 1 the schematic. */
@@ -38,7 +37,6 @@ export const OBSERVATION: Palette = {
   record: rgb(0x8b95ab),
   ink: rgb(0xf4f6fa),
   ring: rgb(0x3a4152),
-  ringBright: rgb(0xffd24a),
   star: rgb(0xffd24a),
   background: rgb(0x101420),
   schematic: 0,
@@ -49,7 +47,6 @@ export const SCHEMATIC: Palette = {
   record: rgb(0x676e7d),
   ink: rgb(0x14161c),
   ring: rgb(0xbdb9ad),
-  ringBright: rgb(0x14161c),
   star: rgb(0xd99e00),
   background: rgb(0xfbfaf7),
   schematic: 1,

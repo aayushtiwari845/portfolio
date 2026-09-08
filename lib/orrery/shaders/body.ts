@@ -188,7 +188,7 @@ void main() {
   if (vFilled < 0.5) {
     float ring = smoothstep(0.78, 0.86, d) - smoothstep(0.95, 1.0, d);
     if (ring <= 0.002) discard;
-    outColor = vec4(mix(vColor, uInk, uSchematic), ring * uIgnition);
+    outColor = vec4(vColor * (1.0 - uSchematic * 0.22), ring * uIgnition);
     return;
   }
 
@@ -248,8 +248,8 @@ void main() {
   float rim = pow(1.0 - abs(dot(normal, uForward)), 3.2);
   lit += base * rim * lambert * 0.55;
 
-  float edge = smoothstep(0.86, 0.99, d);
-  vec3 drawn = mix(lit, mix(base, uInk, edge), uSchematic);
+  float edge = smoothstep(0.72, 1.0, d);
+  vec3 drawn = mix(lit, base * (1.0 - edge * 0.34), uSchematic);
 
   outColor = vec4(drawn, alpha);
 }
