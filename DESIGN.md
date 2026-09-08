@@ -111,6 +111,11 @@ typography:
     lineHeight: 1.7
     letterSpacing: "0.06em"
     note: "Metadata field names, the orrery caption, the view toggle."
+  scene-annotation:
+    fontFamily: "JetBrains Mono, ui-monospace, SFMono-Regular, Consolas, monospace"
+    fontSize: "0.5625rem"
+    letterSpacing: "0.09em - 0.14em"
+    note: "The smallest step in the system, and the only one below label-micro. Scene annotation only: a moon's name, and the FIGURE 0 label over the orrery caption. Never used in document chrome."
   data:
     fontFamily: "JetBrains Mono, ui-monospace, SFMono-Regular, Consolas, monospace"
     fontSize: "0.8125rem"
@@ -298,6 +303,7 @@ This replaces a single-family system built on Archivo's width axis. Neither of t
 - **Star Label / Focused Label** (600, 1.125rem, tracking −0.01em): The author's name on the star, which is the only body that is a person and the only one that leads to the résumé. A body label rises from Body Label to this step while the camera is settled on it, so the body being described is also the one you can read.
 - **Label** (mono, 500, 0.6875rem, tracking 0.06em, uppercase): Field names, rail labels, nav links, breadcrumbs, running heads.
 - **Label Micro** (mono, 0.625rem, tracking 0.06em, uppercase): Metadata field names, the figure caption, the view toggle.
+- **Scene Annotation** (mono, 0.5625rem, tracking 0.09–0.14em, uppercase): The smallest step in the system. Two uses only, both annotating the scene rather than the document: a moon's name beside the moon, and the `FIGURE 0 · THE ORRERY` label above the caption. Both sit over a rendered ground with a scrim shadow behind them, which is why they can go a step below Label Micro and stay legible; nothing in document chrome may.
 - **Data** (mono, 0.8125rem, tabular figures, tracking −0.02em): Dates, identifiers, `§` references, clock.
 - **Measurement** (mono, 500, `clamp(1.375rem, 2.6vw, 1.875rem)`, tabular, tracking −0.04em): The single large number in each evidence row.
 - **Figure Glyph** (mono, 650, 8.5–10.5px): All type inside SVG figures, sized in px against the coordinate system the diagrams were drawn in.
@@ -309,6 +315,8 @@ This replaces a single-family system built on Archivo's width axis. Neither of t
 **The Three-Faces-One-Job-Each Rule.** Headings are Space Grotesk, argument is Inter Tight, data is JetBrains Mono. A face never crosses into another's role to add variety; if something needs to stand apart, it moves on the size or ink ramp instead.
 
 **The Ninety-Percent-Ink Rule.** Headings and emphasis take full Ink; running prose takes Ink Secondary; annotation takes Ink Muted. Three ink values do all the emphasis work, so nothing needs a colour to stand out. Every step clears WCAG AA against its ground, and the first two clear AAA.
+
+**The Scene-Annotation-Only Rule.** The 0.5625rem step exists because the scene needs to name up to six moons around one planet without the names becoming the planet. It is legible there because every one of them carries a scrim shadow over a rendered ground. Nothing in the document may reach for it: on paper or on flat ground, Label Micro is the floor.
 
 **The Label-Sits-Under-Its-Body Rule.** Every label in the orrery is centred beneath the body it names, never beside it. Off to one side a name drifts away from the thing it names as the scene rotates, and at the star, whose disc is large, it ends up adrift in the corona.
 
