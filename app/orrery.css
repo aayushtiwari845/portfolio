@@ -615,30 +615,46 @@
 .company-mark svg,
 .company-mark img {
   display: block;
-  width: 1em;
-  height: 1em;
+  width: 1.3em;
+  height: 1.3em;
 }
 
 /*
  * A mark supplied as line art on an opaque white ground.
  *
- * Multiply drops white to nothing against a light page, which is the whole
- * trick on the schematic. The observation needs the opposite: inverting turns
- * the white ground black and screen then drops black instead, and the hue
- * rotation puts the line art back near the colour it started from, since
- * inverting a blue gives a yellow.
+ * The blend removes the ground: multiply drops white to nothing against a light
+ * page, and on the dark theme inverting turns that ground black so screen drops
+ * it instead, with the hue rotation putting the line art back near the colour it
+ * started from, since inverting a blue gives a yellow.
+ *
+ * The brightness step is doing something less obvious and more important. This
+ * artwork is hairline strokes in a 200px image, and drawing it at mark size
+ * averages them into the white ground before any blending happens: measured, at
+ * 20px only 1% of pixels were even slightly dark and the darkest sat at
+ * luminance 186 against a white of 255. The strokes were essentially gone, which
+ * no blend mode can recover.
+ *
+ * `invert brightness invert` is a levels adjustment that puts the ink back.
+ * Inverting sends the ground to 0 and the ink to 69; brightness scales both, so
+ * the ground is unmoved at 0 while the ink lifts; inverting back lands it near
+ * 89, which is about where the ink sits in the source. Plain contrast cannot do
+ * this, because the surviving ink is *above* mid grey after downscaling and
+ * contrast would push it further toward white.
  */
 .company-mark__keyed {
+  filter: invert(1) brightness(2.4) saturate(1.4) invert(1);
   mix-blend-mode: multiply;
 }
 
 :root[data-theme="dark"] .company-mark__keyed {
-  filter: invert(1) hue-rotate(180deg) saturate(1.15) brightness(1.1);
+  /* Same lift, but stopping before the second invert: the ground is already
+     black here, which is what screen needs. */
+  filter: invert(1) brightness(2.4) saturate(1.5) hue-rotate(180deg);
   mix-blend-mode: screen;
 }
 
-/* Blend modes need something to blend with; a forced-colours or
-   reduced-transparency context gets the plain asset instead. */
+/* Blend modes need something to blend with; a reduced-transparency context gets
+   the plain asset instead. */
 @media (prefers-reduced-transparency: reduce) {
   .company-mark__keyed {
     filter: none;

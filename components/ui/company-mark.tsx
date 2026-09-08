@@ -74,9 +74,9 @@ function SegmentriqMark() {
       alt=""
       aria-hidden="true"
       className="company-mark__keyed"
-      height={20}
+      height={40}
       src="/logos/segmentriq.jpg"
-      width={20}
+      width={40}
     />
   );
 }
