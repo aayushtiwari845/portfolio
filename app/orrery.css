@@ -504,16 +504,47 @@
   opacity: 0.7;
 }
 
+/*
+ * The narrow layout has no margin to put any of this in.
+ *
+ * Below 1000px the reading column runs the full width and the scene sits
+ * directly behind it, so a body's name is drawn on top of the prose wherever
+ * the body happens to be. Worse, each name carries a 44px tap target, which
+ * left invisible circles floating over the copy that navigated away when
+ * tapped. The scene keeps its bodies and becomes atmosphere; navigation is the
+ * document, which is all there.
+ */
 @media (width < 1000px) {
-  .orrery-caption {
-    max-width: none;
-    left: clamp(16px, 3vw, 40px);
+  [data-view="orrery"] .orrery-targets,
+  [data-view="orrery"] .orrery-moons,
+  [data-view="orrery"] .orrery-caption {
+    display: none;
   }
 }
 
 /* Nothing to caption when the scene is not on screen. */
 [data-view="document"] .orrery-caption {
   display: none;
+}
+
+/* The caption's narrow-layout counterpart, set in the document rather than
+   over it. Exactly one of the two is ever on screen. */
+.orrery-caption-inline {
+  display: none;
+}
+
+@media (width < 1000px) {
+  [data-view="orrery"] .orrery-caption-inline {
+    display: block;
+    max-width: 62ch;
+    margin-top: clamp(28px, 6vw, 44px);
+    color: var(--ink-3);
+    font-family: var(--font-figure);
+    font-size: 0.625rem;
+    line-height: 1.7;
+    letter-spacing: 0.04em;
+    text-wrap: pretty;
+  }
 }
 
 /* --------------------------------------------------------------------------

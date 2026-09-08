@@ -13,6 +13,7 @@ import {
   sideForWaypoint,
   waypointForTarget,
 } from "@/lib/orrery/scene";
+import { ORRERY_CAPTION } from "@/data/orrery";
 import {
   homepageProjectEvidence,
   homepageProjectSlugs,
@@ -193,6 +194,17 @@ export function TitleBlock() {
             ))}
           </nav>
         </Reveal>
+
+        {/*
+          The scene's caption, for the narrow layout only.
+
+          Every figure on this site states what it measures and what it does
+          not, and the orrery is a figure. On a wide viewport the stage carries
+          its own caption in the margin beside the scene. There is no margin on
+          a phone, so it is set here instead of floated over the prose. CSS
+          shows exactly one of the two.
+        */}
+        <p className="orrery-caption-inline">{ORRERY_CAPTION}</p>
     </section>
   );
 }
