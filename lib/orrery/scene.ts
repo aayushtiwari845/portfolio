@@ -361,6 +361,21 @@ export function backdropPose(slug: string): CameraPose | null {
   const target = sceneTargets.find((entry) => entry.id === slug);
   if (!target) return null;
 
+  // The star sits at the origin, where "outward" and "tangent" are both the
+  // zero vector and normalising either gives NaN: the pose comes out as three
+  // NaNs and the backdrop renders nothing at all. It also wants a different
+  // framing from a planet, because there is no outside of the star to stand in
+  // and nothing else to light. So it is posed by hand: pulled back until the
+  // disc reads as a disc, and looked at from slightly above so the star sits
+  // low in frame and glows along the bottom edge of the panel instead of
+  // filling the whole page behind it.
+  if (target.position[0] === 0 && target.position[1] === 0 && target.position[2] === 0) {
+    return {
+      eye: [0, target.radius * 1.24, target.radius * 3.6],
+      target: [0, target.radius * 1.07, 0],
+    };
+  }
+
   const outward = normalize(target.position);
   const tangent = normalize(cross(target.position, [0, 1, 0]));
   // Close enough that the planet fills the frame. The reading panel sits over

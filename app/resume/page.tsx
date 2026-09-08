@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
+import { OrreryBackdrop } from "@/components/orrery/orrery-backdrop";
 import { ExternalLink } from "@/components/ui/external-link";
 import { portfolio, projects } from "@/data/portfolio";
 import { getResumeDownload } from "@/lib/resume";
@@ -19,6 +20,10 @@ export default function ResumePage() {
 
   return (
     <main className="resume-page" id="main-content">
+      {/* Parked on the star, which is where the orrery sends people who click
+          it. The résumé is the one document that is about the author rather
+          than about a project, so it gets the author's own body behind it. */}
+      <OrreryBackdrop slug="star" />
       <div className="case-shell">
         <Link className="case-breadcrumb resume-back" href="/">
           <ArrowLeft aria-hidden="true" size={14} /> Return to portfolio

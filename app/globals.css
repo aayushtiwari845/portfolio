@@ -2094,13 +2094,8 @@ a:not(.link):not(.skip-link):hover {
    Not found
    -------------------------------------------------------------------------- */
 
-.not-found-page {
-  display: grid;
-  align-content: center;
-  justify-items: start;
-  min-height: 62vh;
-  padding-block: 80px;
-}
+/* The box is in orrery.css beside the other panel rules, because the page is
+   set on the same glass panel the case studies use. Only its type is here. */
 
 .not-found-code {
   color: var(--ink-3);

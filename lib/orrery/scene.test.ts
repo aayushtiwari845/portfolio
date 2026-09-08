@@ -6,6 +6,7 @@ import {
   COMPACT_SCENE,
   DESKTOP_SCENE,
   SURFACE,
+  backdropPose,
   buildScene,
   buildStarfield,
 } from "./scene";
@@ -470,5 +471,32 @@ describe("evidence clouds", () => {
     }
 
     expect(rebuiltChecksum).toBe(checksum);
+  });
+});
+
+describe("backdropPose", () => {
+  it("returns null for a slug that is not a body", () => {
+    expect(backdropPose("no-such-body")).toBeNull();
+  });
+
+  it("gives the star a finite pose despite it sitting at the origin", () => {
+    // Normalising the origin is NaN, which used to make every component of the
+    // star's pose NaN and left the résumé backdrop blank with no error.
+    const pose = backdropPose("star");
+
+    expect(pose).not.toBeNull();
+    pose?.eye.forEach((value) => expect(Number.isFinite(value)).toBe(true));
+    pose?.target.forEach((value) => expect(Number.isFinite(value)).toBe(true));
+  });
+
+  it("gives every project a finite pose", () => {
+    buildScene().targets
+      .filter((target) => target.kind === "project")
+      .forEach((target) => {
+        const pose = backdropPose(target.id);
+
+        expect(pose).not.toBeNull();
+        pose?.eye.forEach((value) => expect(Number.isFinite(value)).toBe(true));
+      });
   });
 });

@@ -598,6 +598,29 @@
 }
 
 /* --------------------------------------------------------------------------
+   Not found
+
+   The same panel as a case study, sized to its own short contents rather than
+   to fifteen paragraphs, and centred in the viewport instead of hanging from
+   the top. The globals rules still supply the type; only the box changes.
+   -------------------------------------------------------------------------- */
+
+.not-found-page {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  min-height: min(62vh, 520px);
+  margin-block: clamp(48px, 14vh, 140px);
+}
+
+.not-found-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin-top: 32px;
+}
+
+/* --------------------------------------------------------------------------
    Company marks
 
    Set inline with the company name, at cap height, so the name still leads and

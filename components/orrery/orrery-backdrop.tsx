@@ -13,8 +13,13 @@ import {
 } from "@/lib/orrery/scene";
 
 interface OrreryBackdropProps {
-  /** The project this page is about. Its body is what the camera frames. */
-  readonly slug: string;
+  /**
+   * The body this page is about, which is what the camera frames.
+   *
+   * Omitted on a page that is not about any one body, such as the 404, where
+   * the camera falls back to the establishing shot of the whole system.
+   */
+  readonly slug?: string;
 }
 
 /** Below this the scene drops its moons and its sky. */
@@ -52,8 +57,8 @@ export function OrreryBackdrop({ slug }: OrreryBackdropProps) {
     const compact = window.matchMedia(COMPACT_QUERY).matches;
     const scene = buildScene(compact ? COMPACT_SCENE : DESKTOP_SCENE);
 
-    const pose = backdropPose(slug);
-    const waypoint = waypointForTarget[slug];
+    const pose = slug === undefined ? null : backdropPose(slug);
+    const waypoint = slug === undefined ? undefined : waypointForTarget[slug];
     const progress = waypoint === undefined
       ? 0
       : waypoint / Math.max(1, scene.waypoints.length - 1);
@@ -70,6 +75,8 @@ export function OrreryBackdrop({ slug }: OrreryBackdropProps) {
           getTheme: () => root.dataset.theme ?? "light",
           getProgress: () => progress,
           // Parked, not travelling: close in on the body, star behind us.
+          // A null pose leaves the camera on the waypoint `progress` names,
+          // which for a page about no particular body is the establishing shot.
           getPose: () => pose,
           // Centred: the reading column sits over the middle of the scene.
           getLensSide: () => 0,
