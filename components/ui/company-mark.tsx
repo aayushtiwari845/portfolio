@@ -1,11 +1,11 @@
 /**
  * A company's mark, set beside its name in the experience list.
  *
- * Inlined rather than served from `public/`. `next/image` will not touch an SVG
- * without `dangerouslyAllowSVG` in the config, and a plain `<img>` trips
- * `@next/next/no-img-element`, which is fatal under `--max-warnings=0`. Inlining
- * costs a few hundred bytes, needs no config flag, and cannot become a broken
- * image at runtime.
+ * SVG marks are inlined rather than served from `public/`, because `next/image`
+ * will not touch an SVG without `dangerouslyAllowSVG` in the config and a plain
+ * `<img>` trips `@next/next/no-img-element`, which is fatal under
+ * `--max-warnings=0`. Raster marks go through `next/image` normally, where
+ * neither problem applies.
  *
  * Gradient ids are namespaced per mark. Two inline SVGs that both define `#A`
  * will silently share whichever the browser parsed last, and the second logo
@@ -15,6 +15,8 @@
  * where the work happened. `data/portfolio.ts` already carries the note that
  * none of it implies endorsement.
  */
+
+import Image from "next/image";
 
 interface CompanyMarkProps {
   /** Matches `Experience.id` in data/portfolio.ts. */
@@ -54,13 +56,65 @@ function BarclaysMark() {
   );
 }
 
+/**
+ * Segmentriq's mark arrived as a JPEG on a white ground, which would have been
+ * a white square on the dark theme. The white was keyed to alpha and the result
+ * written out as a 64px PNG: it is only ever drawn at 20px, so 64 is ample even
+ * at 2x, and it keeps the asset under 5KB.
+ */
+function SegmentriqMark() {
+  return (
+    <Image
+      alt=""
+      aria-hidden="true"
+      height={20}
+      src="/logos/segmentriq.png"
+      width={20}
+    />
+  );
+}
+
+/**
+ * Makeflow was a startup and has no mark of its own.
+ *
+ * This is deliberately generic rather than an invented logo: a plain
+ * node-and-edge glyph in the current ink, which reads as a placeholder next to
+ * two real marks instead of passing itself off as a brand the company never
+ * had. It carries no colour of its own, so it never competes with them.
+ */
+function GenericMark() {
+  return (
+    <svg
+      aria-hidden="true"
+      fill="none"
+      focusable="false"
+      height="20"
+      role="presentation"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeWidth="1.6"
+      viewBox="0 0 24 24"
+      width="20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="5.5" cy="18.5" r="2.4" />
+      <circle cx="12" cy="12" r="2.4" />
+      <circle cx="18.5" cy="5.5" r="2.4" />
+      <path d="M7.5 16.5 L10 14" />
+      <path d="M14 10 L16.5 7.5" />
+    </svg>
+  );
+}
+
 const marks: Readonly<Record<string, () => React.JSX.Element>> = {
   "barclays-technology-developer": BarclaysMark,
+  "segmentriq-data-analytics": SegmentriqMark,
+  "makeflow-backend-developer": GenericMark,
 };
 
 /**
- * Renders nothing when a company has no mark on file, so the entry falls back
- * to its name alone rather than to a gap or a placeholder.
+ * Renders nothing for a company with no entry at all, so a new role added to
+ * the data falls back to its name rather than to a gap.
  */
 export function CompanyMark({ company }: CompanyMarkProps) {
   const Mark = marks[company];
