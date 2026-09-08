@@ -1,150 +1,144 @@
 ---
 name: Aayush Tiwari — Portfolio
-description: A working engineering design document, set as a website.
+description: A career rendered as an orrery, over a document that survives without it.
 colors:
-  stock: "#fcfbf8"
-  stock-2: "#f4f2ec"
-  stock-3: "#eae7de"
-  ink: "#1a1815"
-  ink-2: "#4c483f"
-  ink-3: "#767166"
-  rule: "rgba(26, 24, 21, 0.16)"
-  rule-strong: "rgba(26, 24, 21, 0.42)"
-  mark: "#efc93d"
-  mark-ink: "#1a1815"
-  print-stock: "#fff"
-  print-ink: "#000"
-  dark-stock: "#141416"
-  dark-stock-2: "#1b1b1e"
-  dark-stock-3: "#232327"
-  dark-ink: "#f0efea"
-  dark-ink-2: "#b0ada4"
-  dark-ink-3: "#8b867a"
-  dark-rule: "rgba(240, 239, 234, 0.17)"
-  dark-rule-strong: "rgba(240, 239, 234, 0.45)"
-  dark-mark: "#e0b92e"
-  dark-mark-ink: "#16150f"
+  stock: "#fbfaf7"
+  stock-2: "#f2f0ea"
+  stock-3: "#e7e4db"
+  ink: "#14161c"
+  ink-2: "#454b57"
+  ink-3: "#5b6272"
+  rule: "rgba(20, 22, 28, 0.14)"
+  rule-strong: "rgba(20, 22, 28, 0.4)"
+  mark: "#d99e00"
+  mark-ink: "#14161c"
+  hue-observability: "#0c8d88"
+  hue-ai: "#6b3fd4"
+  hue-streaming: "#cf3a26"
+  hue-civic: "#12855a"
+  hue-analytics: "#3352cc"
+  glass: "rgb(251 250 247 / 0.86)"
+  glass-rim: "rgb(20 22 28 / 0.1)"
+  dark-stock: "#101420"
+  dark-stock-2: "#171c2b"
+  dark-stock-3: "#202638"
+  dark-ink: "#f4f6fa"
+  dark-ink-2: "#ccd4e2"
+  dark-ink-3: "#9aa4ba"
+  dark-rule: "rgba(244, 246, 250, 0.17)"
+  dark-rule-strong: "rgba(244, 246, 250, 0.46)"
+  dark-mark: "#ffd24a"
+  dark-mark-ink: "#0a0c12"
+  dark-hue-observability: "#35d6d0"
+  dark-hue-ai: "#9b6cf0"
+  dark-hue-streaming: "#ff6b5a"
+  dark-hue-civic: "#3fc98a"
+  dark-hue-analytics: "#6d8dff"
+  dark-glass: "rgb(23 28 44 / 0.62)"
+  dark-glass-rim: "rgb(244 246 250 / 0.12)"
 typography:
   display:
-    fontFamily: "Archivo, Helvetica Neue, Arial, sans-serif"
+    fontFamily: "Space Grotesk, Helvetica Neue, Arial, sans-serif"
     fontSize: "clamp(2.25rem, 4.4vw, 3.625rem)"
     fontWeight: 600
     lineHeight: 1.0
     letterSpacing: "-0.03em"
-    fontVariation: "'wdth' 124"
   headline:
-    fontFamily: "Archivo, Helvetica Neue, Arial, sans-serif"
+    fontFamily: "Space Grotesk, Helvetica Neue, Arial, sans-serif"
     fontSize: "clamp(1.75rem, 3.2vw, 2.75rem)"
     fontWeight: 600
     lineHeight: 1.06
     letterSpacing: "-0.026em"
-    fontVariation: "'wdth' 108"
   title:
-    fontFamily: "Archivo, Helvetica Neue, Arial, sans-serif"
+    fontFamily: "Space Grotesk, Helvetica Neue, Arial, sans-serif"
     fontSize: "clamp(1.625rem, 2.8vw, 2.25rem)"
     fontWeight: 600
     lineHeight: 1.06
     letterSpacing: "-0.026em"
-    fontVariation: "'wdth' 110"
+  case-display:
+    fontFamily: "Space Grotesk, sans-serif"
+    fontSize: "clamp(2.25rem, 5.4vw, 4.25rem)"
+    fontWeight: 600
+    note: "Case-study title, one step above the homepage display."
+  section-display:
+    fontFamily: "Space Grotesk, sans-serif"
+    fontSize: "clamp(2rem, 4.4vw, 3.5rem)"
+    fontWeight: 600
+    note: "Close field, résumé title and the 404 heading."
   subtitle:
-    fontFamily: "Archivo, Helvetica Neue, Arial, sans-serif"
+    fontFamily: "Space Grotesk, Helvetica Neue, Arial, sans-serif"
     fontSize: "1.1875rem"
     fontWeight: 600
     lineHeight: 1.42
     letterSpacing: "-0.012em"
-    fontVariation: "'wdth' 104"
   body:
-    fontFamily: "Archivo, Helvetica Neue, Arial, sans-serif"
-    fontSize: "1.0625rem"
+    fontFamily: "Inter Tight, Helvetica Neue, Arial, sans-serif"
+    fontSize: "1.125rem"
     fontWeight: 400
-    lineHeight: 1.62
+    lineHeight: 1.68
     letterSpacing: "normal"
-    fontVariation: "'wdth' 100"
   body-small:
-    fontFamily: "Archivo, Helvetica Neue, Arial, sans-serif"
+    fontFamily: "Inter Tight, Helvetica Neue, Arial, sans-serif"
     fontSize: "0.9375rem"
     fontWeight: 400
     lineHeight: 1.55
-    letterSpacing: "normal"
+  body-compact:
+    fontFamily: "Inter Tight, sans-serif"
+    fontSize: "0.875rem"
+    note: "Tabular values, entry roles, reference-list copy."
+  body-label:
+    fontFamily: "Space Grotesk, sans-serif"
+    fontSize: "0.875rem"
+    fontWeight: 500
+    letterSpacing: "0.005em"
+    note: "A body's name in the orrery, centred beneath the body it names."
+  star-label:
+    fontFamily: "Space Grotesk, sans-serif"
+    fontSize: "1.125rem"
+    fontWeight: 600
+    letterSpacing: "-0.01em"
+    note: "The author's name on the star, and any body the camera has settled on."
   label:
-    fontFamily: "Martian Mono, ui-monospace, SFMono-Regular, Consolas, monospace"
+    fontFamily: "JetBrains Mono, ui-monospace, SFMono-Regular, Consolas, monospace"
     fontSize: "0.6875rem"
     fontWeight: 500
     lineHeight: 1.4
     letterSpacing: "0.06em"
   label-micro:
-    fontFamily: "Martian Mono, ui-monospace, SFMono-Regular, Consolas, monospace"
+    fontFamily: "JetBrains Mono, ui-monospace, SFMono-Regular, Consolas, monospace"
     fontSize: "0.625rem"
     fontWeight: 400
     lineHeight: 1.7
     letterSpacing: "0.06em"
-  data-lead:
-    fontFamily: "Martian Mono, ui-monospace, monospace"
-    fontSize: "0.75rem"
-    note: "Mono links and inline references — the most-used mono step on the site."
-  body-compact:
-    fontFamily: "Archivo, sans-serif"
-    fontSize: "0.875rem"
-    note: "Tabular values, entry roles, reference-list copy."
-  entry-title:
-    fontFamily: "Archivo, sans-serif"
-    fontSize: "1.25rem"
-    fontVariationSettings: "'wdth' 108"
-    note: "Experience entry organisation, and mobile navigation."
-  case-display:
-    fontFamily: "Archivo, sans-serif"
-    fontSize: "clamp(2.25rem, 5.4vw, 4.25rem)"
-    fontVariationSettings: "'wdth' 116"
-    note: "Case-study title — one step above the homepage display."
-  close-email:
-    fontFamily: "Archivo, sans-serif"
-    fontSize: "clamp(1.0625rem, 2vw, 1.5rem)"
-    note: "The email address in the close field; scales with the region it owns."
+    note: "Metadata field names, the orrery caption, the view toggle."
   data:
-    fontFamily: "Martian Mono, ui-monospace, SFMono-Regular, Consolas, monospace"
+    fontFamily: "JetBrains Mono, ui-monospace, SFMono-Regular, Consolas, monospace"
     fontSize: "0.8125rem"
     fontWeight: 400
     lineHeight: 1.5
     letterSpacing: "-0.02em"
     fontFeature: "'tnum' 1"
+  data-lead:
+    fontFamily: "JetBrains Mono, ui-monospace, monospace"
+    fontSize: "0.75rem"
+    note: "Mono links and inline references; the most-used mono step on the site."
   measurement:
-    fontFamily: "Martian Mono, ui-monospace, SFMono-Regular, Consolas, monospace"
+    fontFamily: "JetBrains Mono, ui-monospace, SFMono-Regular, Consolas, monospace"
     fontSize: "clamp(1.375rem, 2.6vw, 1.875rem)"
     fontWeight: 500
     lineHeight: 1.15
     letterSpacing: "-0.04em"
     fontFeature: "'tnum' 1"
-  section-display:
-    fontFamily: "Archivo, sans-serif"
-    fontSize: "clamp(2rem, 4.4vw, 3.5rem)"
-    fontVariationSettings: "'wdth' 112"
-    note: "Close field, resume title, and the 404. One step below the homepage display; the 2rem floor is the shared small end."
-  case-subtitle:
-    fontFamily: "Archivo, sans-serif"
-    fontSize: "clamp(1rem, 1.4vw, 1.1875rem)"
-    note: "Case-study standfirst under the title."
-  figure-caption-glyph:
-    fontFamily: "Martian Mono, ui-monospace, monospace"
-    fontSize: "9px"
-    note: "Figure caption and CID text inside diagrams."
-  figure-annotation:
-    fontFamily: "Martian Mono, ui-monospace, monospace"
-    fontSize: "8.5px"
-    note: "The smallest figure annotation: evidence citations and outcome flags."
-  figure-lead-value:
-    fontFamily: "Martian Mono, ui-monospace, monospace"
-    fontSize: "16px"
-    note: "A figure's own lead measurement — the one value it is built around."
   figure-glyph:
-    fontFamily: "Martian Mono, ui-monospace, monospace"
+    fontFamily: "JetBrains Mono, ui-monospace, monospace"
     fontSize: "10px"
     fontSizeRange: "8.5px - 16px"
-    rangeNote: "Labels run 8.5-10.5px; 12px and 16px are reserved for a figure's own lead value. All condensed to wdth 79."
+    rangeNote: "Labels run 8.5-10.5px; 12px and 16px are reserved for a figure's own lead value."
     fontWeight: 650
     letterSpacing: "0.03em"
-    fontVariation: "'wdth' 79"
 rounded:
   square: "0"
+  panel: "20px"
   pill: "99px"
   dot: "50%"
 spacing:
@@ -155,9 +149,10 @@ spacing:
   block: "clamp(28px, 3.4vw, 44px)"
   block-major: "clamp(38px, 5vw, 64px)"
   section: "clamp(56px, 8vw, 108px)"
-  measure: "68ch"
+  measure: "66ch"
   rail: "9.5rem"
   page: "min(100% - 48px, 1200px)"
+  panel: "min(100% - 48px, 1180px)"
 components:
   link-ruled:
     textColor: "{colors.ink}"
@@ -190,6 +185,18 @@ components:
     height: "30px"
   chrome-button-hover:
     textColor: "{colors.ink}"
+  reading-panel:
+    backgroundColor: "{colors.glass}"
+    borderColor: "{colors.glass-rim}"
+    rounded: "{rounded.panel}"
+    padding: "clamp(28px, 5vw, 64px) clamp(20px, 4vw, 56px)"
+    width: "{spacing.panel}"
+    backdropFilter: "blur(24px) saturate(150%)"
+  orrery-target:
+    textColor: "{colors.ink}"
+    typography: "{typography.body-label}"
+    rounded: "{rounded.dot}"
+    hitArea: "max(44px, calc(var(--target-radius) * 2.5))"
   command-dialog:
     backgroundColor: "{colors.stock}"
     textColor: "{colors.ink}"
@@ -209,49 +216,66 @@ components:
 
 ## Overview
 
-**Creative North Star: "The Engineering Design Doc"**
+**Creative North Star: "The Orrery"**
 
-This is a website set as the artifact its audience already trusts to judge thinking: a numbered, dated design document with a title block, an outline that is also the navigation, sections that argue, figures that state their own limits, and Non-goals and Alternatives Considered written down where a reader can check them. The page is document stock, not a canvas. Nothing floats, nothing is enclosed, nothing is decorated. Structure is carried entirely by white space, one hairline rule, and a working type-width axis.
+The homepage is a career rendered as a solar system, drawn in hand-written WebGL2 with no runtime dependencies, and scrolling flies the camera through it. An amber star at the centre is the author. Three inner bodies are the roles, placed by their real start dates. Five outer bodies are the projects, each carrying up to six moons that are the technologies it was actually built with.
 
-Density is high and evenly paced. Two reading speeds share one page: a tabular metadata block answers the scanner in a glance, and everything under it rewards the reader who continues. Restraint is the argument — the audience is judging engineering judgment, and ornament a working engineer would not ship reads as a lack of it. Light is the first-visit default, chosen for the screening-pass scene; dark is independently derived for a lit screen at night, not a mechanical inversion of the light theme.
+Every visual property answers to something in `data/portfolio.ts`. A body's hue is its domain. Its surface is how far the work got: banded for feature-complete, rocky for prototype, icy for analysis. A ring marks work that is not solely the author's. A body drawn as an unfilled outline records no measurements at all, and CivicLens is drawn that way because it has none. Body size is the one property that is not measured, and the caption on the scene says so: the project metrics are free text and not commensurable with one another, so a size derived from them would be an invented comparison.
 
-The build refuses the dark-terminal accent portfolio and the centered full-bleed hero. There are no cards, no boxes around content, no gradients, no glows, no rounded rectangles inside diagrams, and no imagery beyond three real product screenshots and five code-authored figures. There is no monogram: PRODUCT.md binds the identity to the name alone, so the favicon is the section mark `§` — the notation the document is already organized around.
+Underneath it, unchanged, is a complete numbered document. The server always renders that document; the client promotes the page to the orrery only after a real WebGL2 context exists. No JavaScript, no WebGL2, a lost context, a save-data hint, a reader who simply prefers reading: every one of those lands on the page the server already sent. The reader can also switch to it by hand and the choice is remembered.
+
+There are two renderings of one scene, and they are authored separately rather than inverted. Dark is **the observation**: deep space lifted off pure black and cast blue-violet, lit bodies, a corona on the star. Light is **the schematic**: paper, hairline orbits, the same geometry as an engineering line drawing. Case studies and the résumé sit on a glass panel over a single still frame of the scene, parked on the body the page is about.
 
 **Key Characteristics:**
-- Document stock and ink, warm-tinted, never neutral grey
-- One amber that owns whole regions and is never a mark on a word
+- One scene, two authored renderings; never a mechanical inversion
+- Colour carries meaning: five domain hues shared between the page and the planets, and one amber that owns whole regions
 - Three faces, each with one job: Space Grotesk for headings, Inter Tight for argument, JetBrains Mono for data
-- JetBrains Mono for every figure, label, date, and measurement. Data only, never atmosphere
-- Hairline rules and space instead of containers; zero corner radius on content, one radius token for the reading panel
-- One motion grammar, one easing curve, everything readable before JS
+- Hairline rules and space instead of containers; zero corner radius everywhere except the reading panel
+- Every hit target is a real focusable anchor placed from the same projection that draws the scene, so keyboard and screen-reader support come from the geometry rather than from a parallel implementation
+- Everything readable before JavaScript, and readable without it
 
 ## Colors
 
-A two-material palette: warm document stock and ink tinted to that paper, plus a single review-amber that behaves like a highlighted field, never like a highlighter.
+Three materials: a ground that is paper in one theme and deep space in the other, ink tuned to each, and one amber that behaves like a filled field rather than a highlighter. Alongside them sit five domain hues that are not decoration but notation.
 
 ### Primary
-- **Review Amber** (`{colors.mark}`, dark `{colors.dark-mark}`): The one chromatic material. It appears in exactly two places in the shipped build — the STATUS row of the title block, and the full-bleed close field at the foot of the page — plus the browser's own `::selection`. In both it is a filled region carrying `Mark Ink` type, never a text colour, chip, badge, or border. It never appears inside a figure.
-- **Mark Ink** (`{colors.mark-ink}`, dark `{colors.dark-mark-ink}`): The only text colour permitted on amber. Its 45–68% mixes give the amber field its secondary rules and muted labels.
+- **Star Amber** (`{colors.mark}`, dark `{colors.dark-mark}`): The one chromatic material of the document layer, and the colour of the star itself. On the page it appears in exactly two places: the STATUS row of the title block, and the full-bleed close field at the foot of the page, plus the browser's own `::selection`. In both it is a filled region carrying `Mark Ink` type, never a text colour, chip, badge, or border.
+- **Mark Ink** (`{colors.mark-ink}`, dark `{colors.dark-mark-ink}`): The only text colour permitted on amber.
+
+### Domain Hues
+Five hues, one per project domain, authored twice: darkened for paper, saturated for space.
+
+- **Observability** (`{colors.hue-observability}`, dark `{colors.dark-hue-observability}`)
+- **AI Systems** (`{colors.hue-ai}`, dark `{colors.dark-hue-ai}`)
+- **Streaming** (`{colors.hue-streaming}`, dark `{colors.dark-hue-streaming}`)
+- **Civic** (`{colors.hue-civic}`, dark `{colors.dark-hue-civic}`)
+- **Analytics** (`{colors.hue-analytics}`, dark `{colors.dark-hue-analytics}`)
+
+The roles take a separate, deliberately metallic family instead — steel, brass and verdigris — so that a role never reads as a sixth domain.
 
 ### Neutral
-- **Document Stock** (`{colors.stock}`, dark `{colors.dark-stock}`): The page. Warm-neutral paper, deliberately not cream.
-- **Stock Tint** (`{colors.stock-2}`, dark `{colors.dark-stock-2}`): The only "surface" in the system, and it is transient — the hover wash on outline and reference-list rows, and the selected row of the command palette. It never encloses static content.
-- **Stock Shade** (`{colors.stock-3}`, dark `{colors.dark-stock-3}`): Deepest neutral step, reserved for figure interior fills where a diagram needs a second value.
-- **Ink** (`{colors.ink}`, dark `{colors.dark-ink}`): Body ink, all headings, the section-count rule, the scroll-progress bar, the focus ring in light theme.
-- **Ink Secondary** (`{colors.ink-2}`, dark `{colors.dark-ink-2}`): Running prose and supporting copy — deliberately one step back from headings.
-- **Ink Muted** (`{colors.ink-3}`, dark `{colors.dark-ink-3}`): Labels, dates, captions, field names, scope notes. Everything that annotates rather than argues.
-- **Rule** (`{colors.rule}`, dark `{colors.dark-rule}`): The default hairline. Every separator on the site is one of these at 1px.
-- **Rule Strong** (`{colors.rule-strong}`, dark `{colors.dark-rule-strong}`): Link underlines, leader lines, scope-note stems, scrollbar thumb.
+- **Ground** (`{colors.stock}`, dark `{colors.dark-stock}`): The page. Warm paper in the schematic; in the observation a blue-violet near-black lifted several steps off pure black, because a true black makes a starfield read as dead pixels and gives the glass panel nothing to refract.
+- **Ground Tint** (`{colors.stock-2}`, dark `{colors.dark-stock-2}`): The only transient surface — the hover wash on outline and reference-list rows, and the selected row of the command palette. It never encloses static content.
+- **Ground Shade** (`{colors.stock-3}`, dark `{colors.dark-stock-3}`): Deepest neutral step, for figure interior fills.
+- **Ink** (`{colors.ink}`, dark `{colors.dark-ink}`): Body ink, all headings, the scroll-progress bar.
+- **Ink Secondary** (`{colors.ink-2}`, dark `{colors.dark-ink-2}`): Running prose, one step back from headings.
+- **Ink Muted** (`{colors.ink-3}`, dark `{colors.dark-ink-3}`): Labels, dates, captions, field names.
+- **Rule** (`{colors.rule}`, dark `{colors.dark-rule}`) and **Rule Strong** (`{colors.rule-strong}`, dark `{colors.dark-rule-strong}`): Every separator and link underline on the site.
+- **Glass** (`{colors.glass}`, dark `{colors.dark-glass}`) and **Glass Rim** (`{colors.glass-rim}`, dark `{colors.dark-glass-rim}`): The reading panel. Opaque enough to read against on its own, so a browser with no `backdrop-filter` still gets a perfectly good document.
 
 ### Named Rules
 
 **The Colour-Is-The-Sheet Rule.** Amber owns a whole region or it does not appear. It is never a text colour, a chip, an icon tint, a border, or an underline. If a value cannot be expressed by filling the entire row or the entire band, it is expressed in ink instead.
 
-**The Two-Regions Rule.** In a full page, amber may claim at most two regions: one field inside the title block and one full-bleed close. A third amber region means the palette has become an accent system, which is the thing this world rejects.
+**The Two-Regions Rule.** In a full page, amber may claim at most two regions: one field inside the title block and one full-bleed close. A third amber region means the palette has become an accent system.
 
-**The Independent-Dark Rule.** Dark is authored, not computed. Its stock is a cool near-black (`{colors.dark-stock}`) against warm-white ink, its rules sit one step brighter in relative terms than the light theme's, and its amber is darkened (`{colors.dark-mark}`) so a filled field does not glare. Never derive a dark value by inverting a light one.
+**The Hue-Means-Domain Rule.** The five domain hues are notation, not decoration. A hue on the page and the same hue in the scene always mean the same thing, and that thing is recorded in `data/portfolio.ts`. No element takes a domain hue because it looked better in it.
 
-**The Ink-Only Figure Rule.** Diagrams are drawn in the document's own ink, rule grey and muted grey. No off-palette hue, no fill washes beyond the stock steps, no glow. A figure that needs a second colour needs a second figure.
+**The Independent-Dark Rule.** Dark is authored, not computed. Its ground is a lifted blue-violet near-black, its rules sit one step brighter in relative terms, its amber is brightened rather than darkened because it is emitting rather than printed, and its domain hues are saturated rather than inverted. Never derive a dark value by inverting a light one.
+
+**The Scrim-Is-Not-Transparent-Black Rule.** Every scrim over the scene fades to `rgb(var(--scrim-rgb) / 0)`, never to the `transparent` keyword. `transparent` is transparent *black*, so a gradient to it drags every midtone underneath toward black and dims the whole scene. The theme-aware `--scrim-rgb` triple exists solely so this cannot be written by accident.
+
+**The Ink-Only Figure Rule.** SVG diagrams are drawn in the document's own ink, rule grey and muted grey. No off-palette hue, no fill washes beyond the ground steps, no glow. The scene is not a figure in this sense; it is the subject.
 
 ## Typography
 
@@ -305,6 +329,22 @@ Figures are ink line work: no fills beyond the two stock steps, stroke widths 0.
 **The Square-Corner Rule.** Radius is 0 unless the shape is inherently round. A rounded rectangle anywhere — content, dialog, figure — reads as a card and breaks the world.
 
 ## Components
+
+### The Orrery (signature)
+- **Character:** The scene is the argument, not the wallpaper. Every property a viewer can see answers to a field in `data/portfolio.ts`, and the one that does not is named in the caption.
+- **Encoding:** Orbit radius is months elapsed since the degree programme began. Hue is domain. Surface is status: banded for feature-complete, rocky for prototype, icy for analysis. A ring marks work that is not solely the author's. Moons are the first six entries of the real stack, named. An unfilled outline means no measurements exist.
+- **Rendering:** Instanced billboard quads, not point sprites. `gl_PointSize` is capped as low as 255 on some drivers, a point is clipped on its centre so a large star vanishes when its centre leaves frame, the size is in device pixels, and `gl_PointCoord` is y-down. Only the starfield uses points, where none of that matters. Glow is analytic — a second draw over the same instance buffer — rather than a bloom pass with its own framebuffers, resize path and restore path.
+- **One program, two themes:** A single `uSchematic` uniform branches between the observation and the schematic. Two shader sets would be eight programs, each an untested runtime failure.
+- **Input:** The canvas is `pointer-events: none`. Every hit target is a real anchor positioned from the same CPU projection that draws the frame, so keyboard navigation, focus rings and screen-reader labels are the platform's rather than reimplemented. Targets are capped at the nine bodies that carry content; the seventy-odd moons are not focusable, because eighty tab stops over a canvas is an accessibility failure and the stack is already text in the panel.
+- **Labels:** Centred beneath the body, name only at rest. A label withdraws when a body covers it, when it would sit over the reading column, when it would land on the caption, and when the camera has settled on a different body. Hover and focus always bring it back, deliberately over-specified so a reader tabbing through the scene can never land on something they cannot read.
+- **Below 1000px:** The overlay is removed entirely and the scene becomes atmosphere behind the text. The reading column is the full width there, so a label would print across the prose and its 44px hit area would float invisibly over the copy.
+- **Caption:** The orrery is a figure, so it carries a caption naming what it measures and what it does not. Floated beside the scene on a wide viewport, set in the title block on a narrow one. Exactly one of the two is on screen at any width.
+
+### Reading Panel
+- **Character:** A document resting on the view. The old system forbade enclosing anything in a box; this is the single deliberate exception, because fifteen paragraphs set directly on a starfield are not readable and a panel is the honest way to say what is happening.
+- **Style:** `{spacing.panel}` wide, `{rounded.panel}` radius, 1px glass rim, `backdrop-filter: blur(24px) saturate(150%)` where supported. The background is opaque enough to read against on its own, so the blur is an enhancement rather than a requirement, and `prefers-reduced-transparency` drops it for the solid ground.
+- **Measure:** The panel is wide; the prose inside it is not. Paragraphs and list items stay at 72ch. Line length is a reading constraint, not a layout one.
+- **Backdrop:** One still frame, drawn once and then stopped. Sampling a live WebGL canvas through a `backdrop-filter` every frame forces a compositor readback that can halve the frame rate on mobile Safari; over a still canvas it costs nothing. A case study is also for reading, and the camera has no business moving under a page of validation numbers.
 
 ### Links
 - **Character:** The rule is the affordance. There are no buttons masquerading as links anywhere on this site, and the primary call to action sits inline in the title block as a ruled link.
@@ -372,9 +412,10 @@ The header, footer, skip link and close field are removed and the body reverts t
 - **Do** reserve JetBrains Mono for dates, identifiers, `§` references, measurements and field names, with tabular figures on.
 - **Do** let amber own a whole row or a whole band, with Mark Ink type on it, and nothing else.
 - **Do** give every figure a caption naming what it measures and what it does not, tied on with a real leader line.
-- **Do** keep running prose inside `68ch` and use the narrower per-role caps (56/54/52/46/22/18ch) where the build already sets them.
+- **Do** keep running prose inside `66ch` on the document, `72ch` inside the reading panel, and use the narrower per-role caps (56/54/52/46/22/18ch) where the build already sets them.
 - **Do** author dark-theme values independently and verify contrast in both themes.
-- **Do** ship everything visible in the server-rendered HTML and let motion be an enhancement that a reduced-motion or save-data reader never sees.
+- **Do** ship everything visible in the server-rendered HTML. The orrery is a promotion the client applies once a real WebGL2 context exists, never a prerequisite for reading the page.
+- **Do** treat reduced motion as no *motion*, not no *graphics*: the scene draws a single static frame with the camera cut rather than eased. Only a save-data hint forces the document.
 - **Do** keep every decision's cost visible next to the decision, at full Ink.
 
 ### Don't:
@@ -382,10 +423,12 @@ The header, footer, skip link and close field are removed and the body reverts t
 - **Don't** use a corner radius on anything rectangular except the reading panel, which uses `--radius-panel`. Content, dialogs and figure `rect`s stay square; the `rx: 0; ry: 0` guard is there to catch it.
 - **Don't** use amber as a text colour, chip, badge, icon tint, border, or underline, and don't let a third amber region appear on a page.
 - **Don't** put amber, or any off-palette hue, inside a figure.
-- **Don't** add a shadow, glow, or gradient to a content surface; `--shadow-lift` belongs to the modal dialog alone.
+- **Don't** add a shadow, glow, or gradient to a content surface. `--shadow-lift` belongs to the modal dialog, `--glass-shadow` to the reading panel, and glow to the scene alone; a glow on a heading or a rule is the accent system this world rejects.
 - **Don't** introduce a second easing curve, a hover flourish, or a per-element entrance animation. There is one curve and one authored moment.
 - **Don't** style a link as a filled button; the underline is the affordance.
 - **Don't** set a sentence in mono, or reach for mono because a topic is technical.
-- **Don't** add a monogram, logotype, or brand device. The name set in Space Grotesk and the `§` mark are the whole identity.
+- **Don't** add a monogram, logotype, or brand device. The name set in Space Grotesk and the `§` mark are the whole identity. Company marks beside a role are identification, set at cap height so the name still leads, and are not part of it.
 - **Don't** override `--v-*` tokens on an ancestor and expect figures to change; they are declared on `.visual` itself.
 - **Don't** derive a dark-theme value by inverting a light-theme value.
+- **Don't** fade a scrim to the `transparent` keyword; that is transparent black and it drags the whole scene toward black. Fade to `rgb(var(--scrim-rgb) / 0)`.
+- **Don't** give the scene a visual property that no field in `data/portfolio.ts` supports. If a property has to be hand-authored, the caption says so, as it does for body size.

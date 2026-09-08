@@ -1,21 +1,27 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   THE DESIGN DOC
+   THE DOCUMENT LAYER
    --------------------------------------------------------------------------
-   This site is set as an engineering design document: a title block, a
-   numbered outline that is also the navigation, and sections that argue.
+   The scene lives in orrery.css. This file is the document underneath it: a
+   title block, a numbered outline that is also the navigation, and sections
+   that argue. It is what the server renders, what a reader without WebGL2
+   gets, and what a reader who prefers a page can choose.
 
    Four rules govern everything below.
 
    1. No cards. Nothing is enclosed in a bordered box. Separation is white
-      space and one hairline rule.
+      space and one hairline rule. The reading panel in orrery.css is the one
+      deliberate exception, and it is the only thing with a corner radius.
    2. Colour is the sheet, never the mark. The mark colour owns whole
       regions; it is never a text colour, a chip, or a border.
    3. Every figure carries a caption saying what it measures and what it
-      does not. Captions attach with a real leader line.
-   4. Width is a working axis. Archivo runs expanded in the title block,
-      normal in running text, condensed in the label rail.
+      does not. Captions attach with a real leader line. The orrery is a
+      figure and carries one too.
+   4. Three faces, one job each. Space Grotesk sets headings, Inter Tight
+      runs the argument, JetBrains Mono is data and never a sentence. This
+      replaced a single-family system on Archivo's width axis; neither new
+      face has a width axis, so no `wdth` declaration survives.
    ========================================================================== */
 
 :root {
