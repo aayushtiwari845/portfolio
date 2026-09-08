@@ -612,10 +612,38 @@
   vertical-align: -0.14em;
 }
 
-.company-mark svg {
+.company-mark svg,
+.company-mark img {
   display: block;
   width: 1em;
   height: 1em;
+}
+
+/*
+ * A mark supplied as line art on an opaque white ground.
+ *
+ * Multiply drops white to nothing against a light page, which is the whole
+ * trick on the schematic. The observation needs the opposite: inverting turns
+ * the white ground black and screen then drops black instead, and the hue
+ * rotation puts the line art back near the colour it started from, since
+ * inverting a blue gives a yellow.
+ */
+.company-mark__keyed {
+  mix-blend-mode: multiply;
+}
+
+:root[data-theme="dark"] .company-mark__keyed {
+  filter: invert(1) hue-rotate(180deg) saturate(1.15) brightness(1.1);
+  mix-blend-mode: screen;
+}
+
+/* Blend modes need something to blend with; a forced-colours or
+   reduced-transparency context gets the plain asset instead. */
+@media (prefers-reduced-transparency: reduce) {
+  .company-mark__keyed {
+    filter: none;
+    mix-blend-mode: normal;
+  }
 }
 
 /* --------------------------------------------------------------------------

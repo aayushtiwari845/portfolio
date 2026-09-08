@@ -57,18 +57,25 @@ function BarclaysMark() {
 }
 
 /**
- * Segmentriq's mark arrived as a JPEG on a white ground, which would have been
- * a white square on the dark theme. The white was keyed to alpha and the result
- * written out as a 64px PNG: it is only ever drawn at 20px, so 64 is ample even
- * at 2x, and it keeps the asset under 5KB.
+ * Segmentriq's mark arrived as a JPEG: line art on an opaque white ground,
+ * which on the dark theme would be a white square with a logo sitting in it.
+ *
+ * The white is removed at render time by CSS rather than baked out into a
+ * transparent PNG. There is no image tooling available here to do the keying
+ * offline, and moving the converted bytes by hand corrupted the file twice, in
+ * ways a chunk-structure check did not catch the first time. Blending is
+ * exact, needs no conversion step, and keeps the original asset byte for byte.
+ *
+ * See `.company-mark__keyed` in orrery.css for how each theme does it.
  */
 function SegmentriqMark() {
   return (
     <Image
       alt=""
       aria-hidden="true"
+      className="company-mark__keyed"
       height={20}
-      src="/logos/segmentriq.png"
+      src="/logos/segmentriq.jpg"
       width={20}
     />
   );
