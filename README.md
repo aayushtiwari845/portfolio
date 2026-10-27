@@ -11,7 +11,7 @@ The durable visual decisions live in [`DESIGN.md`](DESIGN.md); the product truth
 - Next.js App Router, React, and strict TypeScript
 - Tailwind CSS v4 with a custom design-token layer
 - Space Grotesk, Inter Tight, and JetBrains Mono, self-hosted through `next/font`
-- Native CSS motion, a lightweight orbital sculpture, hand-authored SVG figures, and an optional WebGL Orrery
+- Native CSS motion, a scroll-driven SVG background, hand-authored project figures, and an optional WebGL Orrery
 - Radix primitives and `cmdk` for accessible interactive controls
 - Vitest and Testing Library for focused automated coverage
 - ESLint flat config and GitHub Actions for delivery checks
@@ -100,8 +100,8 @@ Keep these evidence boundaries intact when editing public copy or structured dat
 ## Performance and progressive enhancement
 
 - Core content is server-rendered and remains readable before client enhancement runs.
-- The first screen pairs readable introductory content with a small CSS orbital illustration; it downloads no textures or graphics runtime.
-- Reduced motion removes continuous motion. Both orbital views have pause controls, and offscreen or hidden visuals stop animating.
+- Document uses vector planes and connection paths behind the page; their composition follows scrolling without textures or a graphics runtime.
+- Reduced motion leaves the vector background static. Document has no autonomous animation loop; Orrery retains its pause control, and hidden visuals stop rendering.
 - Project figures remain hand-authored SVGs showing real pipelines. The optional WebGL scene loads only after the reader selects Orrery; it never promotes a visitor automatically.
 - CSS-native motion and the small custom renderer avoid a general-purpose animation runtime. The scene occupies a separate panel, so it cannot overlap reading content.
 

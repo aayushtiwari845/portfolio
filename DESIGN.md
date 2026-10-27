@@ -6,7 +6,7 @@ Updated 27 October 2026. This specification replaces the earlier full-screen, al
 
 Document is the landing presentation on every full page load, on mobile and desktop. Old local-storage view preferences do not change that. The reader can explicitly open Orrery, and that choice lasts through client navigation in the current document. Light and dark theme preferences remain independently persistent.
 
-The first screen answers who Aayush is, what he builds, and his availability. The headline, concise introduction, primary project link, and résumé link lead. A small orbital sculpture occupies a separate illustration area beside the introduction. Location, recent experience, and education are supporting information.
+The first screen answers who Aayush is, what he builds, and his availability. The headline, concise introduction, primary project link, and résumé link lead. A full-viewport SVG background uses wireframe planes and connections that evolve with reading position. The graphic stays behind the page and does not occupy a hero card. Location, recent experience, and education are supporting information.
 
 The homepage follows experience, selected projects, capabilities, background, and contact. Section labels and navigation use plain language. Project findings and their qualifications remain visible; detailed contributions, architecture diagrams, and trade-offs are expandable. Native details elements work without a client runtime.
 
@@ -31,7 +31,7 @@ Orrery-specific layout rules require the homepage stage to exist. Navigating to 
 
 ## Motion and rendering
 
-Document's orbital sculpture uses CSS gradients and perspective, with no graphics-library dependency. It has a pause control and stops when offscreen, the tab is hidden, reduced motion is requested, or data saving is active.
+Document's vector field is driven by scroll events, coalesced into one animation-frame update. Geometry changes between the introduction, experience, projects, capabilities, and background. There is no autonomous loop or decorative planet. Reduced motion, data saving, hidden tabs, and Orrery mode stop scroll updates; the document retains a static vector composition.
 
 The WebGL renderer loads only after the reader chooses Orrery. It pauses in Document mode, offscreen, and in hidden tabs. The scene has a separate Pause/Play motion control. Reduced motion renders static frames and removes transitions. Graphics failure returns the reader to Document.
 
@@ -44,6 +44,11 @@ Section entrances are short, subtle, and progressive: content is visible before 
 - `app/presentation.css`: current shared presentation and responsive refinements.
 - `app/orrery.css`: scene targets, scene panel, and Orrery-specific layout.
 - `components/orrery/`: explicit mode selection and scene lifecycle.
-- `components/visuals/cosmic-accent.tsx`: lightweight document illustration.
+- `app/document.css`: homepage Document-only chapter rhythm and soft surfaces.
+- `components/visuals/document-backdrop.tsx`: scroll-driven SVG background.
 
 Preserve the existing factual qualifications. The fraud pipeline is an academic collaboration measured in a simulated local benchmark; CivicLens is an archive utility and dashboard; the B.Tech is in progress; negative evaluation results stay attached to their claims.
+
+## Document section rhythm
+
+The Document homepage follows one visual style: chapter numbers in the margin, soft rounded reading surfaces, and a single chapter gap (88px desktop, 56px phone). Heading-to-content spacing is 28px desktop and 24px phone; adjacent entries use 20px. Full-width section rules, animated rule backgrounds, and repeated entry/disclosure borders are removed in this view. Metadata, projects, experience, capabilities, and contact share the same surface language. These rules are scoped to the homepage Document and do not restyle Orrery or project/resume routes.

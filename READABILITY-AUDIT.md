@@ -30,3 +30,9 @@ Cosmic imagery remains prominent but has dedicated space. The default document c
 Browser checks cover 320, 390, 768, 1024, 1280, and 1440px widths, both themes, both views, old stored view preferences, and JavaScript-disabled rendering. Additional checks cover expanded disclosures, keyboard mode selection, pause controls, reduced motion, mobile navigation, and project/résumé routes. Reports and screenshots for this working session are in the local `qa/` directory.
 
 Completed verification: 209 tests across 15 suites; TypeScript and ESLint passed; production build generated all 18 pages. Browser review passed 62 layout states and 40 interaction checks with no runtime errors. The final delivery message records publication state.
+
+## Document refinement after visual review
+
+The initial planet treatment did not match the intended Document background. It has been removed, including its component and animation styles. Document now uses an SVG field of wireframe volumes, layered planes, and connecting paths behind the entire page. Its composition and position change as the reader scrolls between chapters. Reduced motion and data saving retain a static field.
+
+The section-spacing problem came from compounded section padding, content margins, and entry padding, plus both border-based and animated background rules. The refined Document uses one chapter gap, 20px between entries, and one heading-to-content gap. Chapter numbers provide orientation, and consistent rounded surfaces group the reading content. Repeated horizontal section and entry dividers are removed. This refinement is scoped to Document.

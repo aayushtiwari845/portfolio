@@ -7,7 +7,6 @@ import { CompanyMark } from "@/components/ui/company-mark";
 import { CopyEmail } from "@/components/ui/copy-email";
 import { ExternalLink } from "@/components/ui/external-link";
 import { ProjectVisual } from "@/components/work/project-visual";
-import { CosmicAccent } from "@/components/visuals/cosmic-accent";
 import { ORRERY_CAPTION } from "@/data/orrery";
 import {
   CLOSING_WAYPOINT,
@@ -128,7 +127,6 @@ export function TitleBlock() {
           </Reveal>
 
           <div className="titleblock-aside">
-            <CosmicAccent />
             <Reveal delay={0.06}>
             <dl className="titleblock-meta">
               <div className="meta-row">

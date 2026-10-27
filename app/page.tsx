@@ -1,4 +1,5 @@
 import { OrreryStage } from "@/components/orrery/orrery-stage";
+import { DocumentBackdrop } from "@/components/visuals/document-backdrop";
 import {
   BackgroundSection,
   CapabilitiesSection,
@@ -44,8 +45,9 @@ const personJsonLd = {
 export default function Home() {
   return (
     <>
+      <DocumentBackdrop />
       <OrreryStage />
-      <main className="page-shell" id="main-content">
+      <main className="page-shell home-document" id="main-content">
         <TitleBlock />
         <ExperienceSection />
         <WorkSection />

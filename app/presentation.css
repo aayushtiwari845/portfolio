@@ -111,86 +111,6 @@ body { line-height: 1.72; }
 .meta-row dd { font-size: 0.9375rem; line-height: 1.6; }
 .meta-row dd .figure-value { font-family: var(--font-body); font-size: 0.875rem; color: var(--ink-3); }
 
-/* A quiet, dimensional orbital sculpture, isolated from the text. */
-.cosmic-accent {
-  position: relative;
-  height: clamp(240px, 24vw, 310px);
-  overflow: hidden;
-  border-radius: 20px;
-  background: radial-gradient(ellipse at 45% 40%, #26274e, #101425 68%, #0c101d);
-  isolation: isolate;
-}
-.cosmic-accent__universe {
-  position: absolute;
-  inset: 0;
-  perspective: 700px;
-  transform-style: preserve-3d;
-}
-.cosmic-accent__sphere {
-  position: absolute;
-  width: 43%;
-  aspect-ratio: 1;
-  top: 50%;
-  left: 50%;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  background:
-    radial-gradient(circle at 26% 22%, #dde3ff 0%, #9faff0 12%, #5765aa 35%, #272d57 60%, #11152b 82%);
-  box-shadow: inset -14px -12px 24px #070b20, inset 3px 3px 8px #d6dcff88, 0 0 54px #7275bf30;
-}
-.cosmic-accent__orbit {
-  position: absolute;
-  left: 11%;
-  top: 8%;
-  width: 78%;
-  height: 84%;
-  border: 1px solid #c9c9ff66;
-  border-radius: 50%;
-  transform: rotateZ(-28deg) rotateX(62deg);
-}
-.cosmic-accent__orbit--outer {
-  animation: orbit-drift 28s ease-in-out infinite alternate;
-  border-top-color: #e4e0ffbd;
-  box-shadow: 0 0 15px #9893ff0a;
-}
-.cosmic-accent__orbit--inner {
-  left: 19%; top: 15%; width: 62%; height: 70%;
-  transform: rotateZ(42deg) rotateX(58deg);
-  border-color: #d2ba8b55;
-}
-.cosmic-accent__satellite {
-  position: absolute;
-  left: 77%; top: 34%; width: 18px; height: 18px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 25% 20%, #ffe9be, #bd955c 42%, #3f3041 84%);
-  box-shadow: 0 0 18px #d4aa6a22;
-  animation: satellite-drift 16s ease-in-out infinite alternate;
-}
-.cosmic-accent__star { position: absolute; width: 2px; height: 2px; background: #dadfff; border-radius: 50%; }
-.cosmic-accent__star--one { top: 19%; left: 18%; box-shadow: 122px 12px #bec4e588, 44px 180px #bec4e5aa, 219px 126px #bec4e588; }
-.cosmic-accent__star--two { top: 78%; left: 76%; box-shadow: -236px -38px #bec4e588, 16px -180px #bec4e5aa; }
-.cosmic-accent__star--three { top: 68%; left: 18%; width: 3px; height: 3px; }
-.cosmic-accent__pause {
-  position: absolute; right: 12px; bottom: 10px;
-  padding: 8px 12px; min-height: 36px;
-  font-size: 0.75rem; color: #d7ddef;
-  border: 1px solid #d7ddef40; border-radius: 6px;
-  background: #101425cc; cursor: pointer;
-}
-.cosmic-accent__pause:focus-visible { outline-color: #fff; }
-.cosmic-accent[data-paused="true"] *, .cosmic-accent[data-visible="false"] *,
-.cosmic-accent[data-hidden="true"] *, [data-view="orrery"] .cosmic-accent * { animation-play-state: paused; }
-.cosmic-accent[data-motion="off"] * { animation: none; }
-.cosmic-accent[data-motion="off"] .cosmic-accent__pause { display: none; }
-@keyframes orbit-drift {
-  from { transform: rotateZ(-28deg) rotateX(62deg); }
-  to { transform: rotateZ(-12deg) rotateX(68deg); }
-}
-@keyframes satellite-drift {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-12px, 16px, 0); }
-}
-
 .contents {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -289,8 +209,6 @@ body { line-height: 1.72; }
   .titleblock-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; padding-block: 32px; }
   .titleblock-title { font-size: clamp(2.5rem, 8vw, 3.75rem); max-width: 18ch; }
   .titleblock-abstract { font-size: 1.0625rem; }
-  .cosmic-accent { height: 235px; }
-  .cosmic-accent__sphere { width: min(43%, 170px); }
   .titleblock-aside { display: grid; grid-template-columns: minmax(0, 1fr); }
   .contents { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 24px; }
   .contents-row { padding: 14px 8px; min-height: 52px; }
@@ -313,12 +231,11 @@ body { line-height: 1.72; }
   .titleblock-doctype .figure-value { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .cosmic-accent *, .cosmic-accent *::before { animation: none !important; }
-  .cosmic-accent__pause, .orrery-motion-toggle { display: none; }
+  .orrery-motion-toggle { display: none; }
   .titleblock-actions a:hover { transform: none; }
 }
 @media print {
-  .cosmic-accent, .orrery-stage, .orrery-backdrop, .mode-toggle { display: none !important; }
+  .orrery-stage, .orrery-backdrop, .mode-toggle { display: none !important; }
   .work-details > *, .cap-details > *, .entry-details > * { display: block !important; }
   details::details-content { content-visibility: visible; }
   .titleblock-grid { display: block; }
