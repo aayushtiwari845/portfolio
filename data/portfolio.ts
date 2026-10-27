@@ -172,9 +172,9 @@ export const portfolio = {
     timezone: "Asia/Kolkata",
     email: "aayushkumar345@gmail.com",
     descriptor: "Backend Systems / Data Infrastructure / Applied AI",
-    headline: "I build backend and data systems that keep AI behavior inspectable.",
+    headline: "Backend systems. Data pipelines. Applied AI.",
     introduction:
-      "Based in Mumbai, I build backend platforms, streaming pipelines, and applied AI systems with explicit operational boundaries.",
+      "I build the services and data pipelines behind AI products, with clear tests, measurable behavior, and decisions people can inspect.",
     availability: "Open to 2027 new-grad software engineering roles",
   },
   links: {
@@ -210,7 +210,7 @@ export const portfolio = {
       endDate: "2026-08",
       period: "June 2026 – August 2026",
       summary:
-        "Helped move a sanctions-screening platform from proof of concept toward a scalable, configuration-driven system spanning engineering design, processing workflows, and operational tooling.",
+        "Helped develop a sanctions-screening proof of concept into a configurable platform, covering processing pipelines, system design, and operational tools.",
       highlights: [
         "Participated in system-design proposals with engineering and project stakeholders, translating operational requirements into architecture and workflow.",
         "Built and iteratively evolved a Python, FastAPI, React, and TypeScript platform capable of processing files with 80M+ records across DEV, UAT, and pre-production environments.",
@@ -248,7 +248,7 @@ export const portfolio = {
       endDate: "2025-01",
       period: "December 2024 – January 2025",
       summary:
-        "Built SQL-based ETL and analytics workflows that consolidated operational data into a normalized warehouse and decision-ready Power BI reporting.",
+        "Brought operational data into a SQL warehouse and built Power BI reporting for revenue, churn, and sales-funnel analysis.",
       highlights: [
         "Integrated 5+ source systems into a normalized, fact-and-dimension data warehouse.",
         "Delivered 3+ Power BI dashboards with 15+ custom DAX measures for revenue, churn, and funnel analysis.",
@@ -360,7 +360,7 @@ export const portfolio = {
       title: "CONCLAVE",
       subtitle: "Multi-Agent LLM Decision System",
       summary:
-        "A research-oriented Indian mutual-fund ranking system that combines public data, role-specialised agents, deterministic consensus behavior, and evaluation tooling.",
+        "A research system that compares four specialised AI agents with simpler rules for ranking Indian mutual funds. Includes reproducible evaluation and an inspection dashboard.",
       repository: "https://github.com/aayushtiwari845/Consensus-AI",
       artifact: {
         src: "/project-artifacts/conclave-dashboard.png",
@@ -513,7 +513,7 @@ export const portfolio = {
       title: "TracePilot",
       subtitle: "Evidence-grounded incident investigation for distributed systems",
       summary:
-        "An incident-response platform that correlates metrics, logs, traces, topology, and change evidence into auditable root-cause rankings and evidence-cited diagnoses.",
+        "A local incident-investigation platform that brings metrics, logs, traces, service topology, and changes together to explain likely causes with supporting evidence.",
       repository: "https://github.com/aayushtiwari845/TracePilot",
       status: "Feature-complete local system and hosted-demo template",
       role:
@@ -649,7 +649,7 @@ export const portfolio = {
       title: "Real-Time Fraud Detection Pipeline",
       subtitle: "Streaming inference under severe class imbalance",
       summary:
-        "A collaborative Kafka and Spark Structured Streaming pipeline benchmarked for high-throughput fraud scoring with a compact feature set.",
+        "An academic collaboration using Kafka and Spark to score transaction streams. A simulated local benchmark tests whether fewer features can reduce inference cost.",
       repository: "https://github.com/aditya-ravi11/realtime-fraud-detection-qiea",
       artifact: {
         src: "/project-artifacts/fraud-streaming-latency.png",
@@ -909,7 +909,7 @@ export const portfolio = {
       title: "Indian IPO Analytics",
       subtitle: "NSE/BSE market data analysis and risk clustering",
       summary:
-        "An interactive analysis of Indian IPOs from 2019–2024 spanning enriched returns, regression, clustering, distribution analysis, and sector-level exploration.",
+        "A notebook and local dashboard exploring 63 Indian IPOs from 2019–2024, with return analysis, regression, and risk clustering.",
       repository: "https://github.com/aayushtiwari845/IPO-Analytics",
       artifact: {
         src: "/project-artifacts/ipo-analysis-overview.png",
@@ -1057,17 +1057,61 @@ export const portfolio = {
     description:
       "Portfolio of Aayush Tiwari, a software and AI engineer building backend systems, real-time data infrastructure, ML platforms, and applied AI products.",
     locale: "en_IN",
-    lastUpdated: "2026-09-03",
+    lastUpdated: "2026-10-26",
   },
   about:
-    "I gravitate toward systems where a model is only one component: evidence has to be collected, decisions replayed, and failure boundaries made explicit. That is why my projects pair AI experiments with baselines, tests, and visible limitations.",
+    "I am studying Artificial Intelligence & Data Science in Mumbai, with graduation expected in July 2027. My interests sit between backend engineering, data infrastructure, and applied AI.",
   contact: {
-    heading: "Building a backend, data, or applied-AI system?",
-    copy: "If the hard part is making it trustworthy, operable, or understandable, I would be glad to compare notes.",
+    heading: "Let’s build something people can rely on.",
+    copy: "I’m open to 2027 new-grad software engineering roles across backend systems, data infrastructure, and applied AI. Email me to start a conversation.",
   },
 } as const satisfies Portfolio;
 
 export const projects = portfolio.projects;
+
+/** Homepage copy stays alongside the facts it introduces. */
+export const homepageContent = {
+  experience: {
+    title: "Experience",
+    introduction: "Backend platforms, product workflows, and analytics infrastructure across three internships.",
+    detailsLabel: "Contributions and tools",
+  },
+  work: {
+    title: "Selected projects",
+    introduction: "What I built, what the evaluation showed, and the trade-offs behind each system. Open a case study for the full engineering story.",
+    detailsLabel: "Architecture & trade-offs",
+    moreLabel: "More projects",
+  },
+  capabilities: {
+    title: "What I work with",
+    introduction: "From the API a product calls to the data and models behind it.",
+    detailsLabel: "How these technologies work together",
+    domains: [
+      {
+        key: "systems",
+        title: "Backend systems",
+        description: "APIs, authentication, failure handling, and tools for operating services.",
+        technologies: ["FastAPI", "Spring Boot", "Node.js", "PostgreSQL", "Redis"],
+      },
+      {
+        key: "data",
+        title: "Data pipelines",
+        description: "Batch and streaming workflows with traceable data and measurable performance.",
+        technologies: ["Kafka", "Spark", "PySpark", "Pandas", "Warehousing"],
+      },
+      {
+        key: "intelligence",
+        title: "Applied AI",
+        description: "ML and language-model workflows tested against simpler baselines.",
+        technologies: ["PyTorch", "TensorFlow", "MLflow", "Spark MLlib", "LLM systems"],
+      },
+    ],
+  },
+  background: {
+    title: "A little more about me",
+    approach: "I’m interested in what makes a system useful beyond its demo: how it handles failure, how its decisions can be reviewed, and whether a simpler approach works better. My projects make those questions visible through tests, baselines, and honest limitations.",
+  },
+} as const;
 
 /**
  * Homepage-only editorial order. Canonical project order remains `projects`,

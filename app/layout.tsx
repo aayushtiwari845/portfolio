@@ -15,6 +15,7 @@ import { portfolio } from "@/data/portfolio";
 import "./globals.css";
 import "./motion-effects.css";
 import "./orrery.css";
+import "./presentation.css";
 
 // Three faces, each with one job, chosen for a dark spatial interface rather
 // than for a paper document.

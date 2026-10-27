@@ -1,75 +1,27 @@
-/* ==========================================================================
-   THE ORRERY
-   --------------------------------------------------------------------------
-   Every rule in this file is scoped under [data-view="orrery"] or targets an
-   element that exists only for the orrery. Nothing here modifies a selector in
-   globals.css.
-
-   That is deliberate. The document layout and the orrery layout are two
-   different layout systems over one DOM, and the way this design fails is by
-   trying to make a single stylesheet serve both. So globals.css keeps owning
-   the document, unedited, and this file adds the second reading on top.
-
-   The dark theme is the observation; the light theme is the schematic. The
-   canvas draws both, so most of what follows is chrome, not scene.
-   ========================================================================== */
-
-/* --------------------------------------------------------------------------
-   The stage
-   -------------------------------------------------------------------------- */
-
-.orrery-stage {
-  display: none;
-}
-
-[data-view="orrery"] .orrery-stage {
-  position: fixed;
-  z-index: 0;
+/* The scene has its own bounded viewport. Text never sits beneath the canvas. */
+:root { --spill-rgb: 217 158 0; --scrim-rgb: 251 250 247; }
+:root[data-theme="dark"] { --spill-rgb: 255 210 74; --scrim-rgb: 16 20 32; }
+.orrery-stage { display: none; }
+[data-view="orrery"] body:has(.orrery-stage) .orrery-stage {
+  position: relative;
   display: block;
-  inset: 0;
+  width: var(--page);
+  height: clamp(260px, 45svh, 420px);
+  margin: 24px auto 0;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--rule);
+  border-radius: 24px;
+  background: var(--stock-2);
 }
-
-/* --------------------------------------------------------------------------
-   Atmosphere
-
-   Two things in one layer, over the canvas and under the reading column:
-
-   - A vignette, so the frame has weight and the eye is pulled inward.
-   - Colour spill. `--spill-rgb` is set from the body the camera has settled on,
-     so the whole page takes a wash of that project's domain hue: cyan through
-     TracePilot, coral through the fraud pipeline. The hue stops being a
-     property of one sphere and becomes the mood of that whole section.
-   -------------------------------------------------------------------------- */
-
-:root {
-  --spill-rgb: 217 158 0;
-  --vignette: rgb(20 22 28 / 0.1);
-}
-
-:root[data-theme="dark"] {
-  --spill-rgb: 255 210 74;
-  --vignette: rgb(0 0 0 / 0.55);
-}
-
-[data-view="orrery"] .orrery-stage::before,
-.orrery-backdrop::before {
+.orrery-stage::before, .orrery-backdrop::before {
   position: absolute;
   z-index: 1;
-  background:
-    radial-gradient(
-      115% 85% at 50% 42%,
-      rgb(var(--spill-rgb) / 0.12) 0%,
-      rgb(var(--spill-rgb) / 0.04) 32%,
-      transparent 62%
-    ),
-    radial-gradient(125% 125% at 50% 50%, transparent 38%, var(--vignette) 100%);
-  content: "";
   inset: 0;
+  content: "";
   pointer-events: none;
-  /* Long, because it should never look like it is reacting to the scroll. */
-  transition: background 1200ms var(--lift);
+  background: radial-gradient(ellipse at center, rgb(var(--spill-rgb) / 0.07), transparent 72%);
 }
-
 .orrery-canvas {
   display: block;
   width: 100%;
@@ -309,255 +261,6 @@
   outline-offset: 3px;
 }
 
-/* --------------------------------------------------------------------------
-   The document, read over the scene
-
-   The scene owns the whole viewport. Reading matter rides in a column down the
-   left, and each section takes a viewport of its own so that scrolling moves
-   the camera one stop at a time.
-
-   Separation is a gradient, not a box. The document this replaces had a rule
-   that nothing is ever enclosed in a bordered container, and putting eight
-   translucent cards over a starfield would have broken it for no gain.
-   -------------------------------------------------------------------------- */
-
-[data-view="orrery"] body {
-  background: transparent;
-}
-
-/*
- * The scrim fades to a transparent *stock*, never to the `transparent` keyword.
- *
- * `transparent` is rgba(0, 0, 0, 0) — transparent *black* — so a gradient that
- * fades to it drags every midtone toward black on the way. Over a starfield
- * that reads as the whole scene being dimmed, which is exactly what happened
- * the first time this was written.
- */
-:root[data-view="orrery"] {
-  --scrim-rgb: 251 250 247;
-}
-
-:root[data-view="orrery"][data-theme="dark"] {
-  --scrim-rgb: 16 20 32;
-}
-
-[data-view="orrery"] .orrery-stage::after {
-  position: absolute;
-  z-index: 1;
-  background: linear-gradient(
-    to right,
-    rgb(var(--scrim-rgb) / 1) 0%,
-    rgb(var(--scrim-rgb) / 0.9) 18%,
-    rgb(var(--scrim-rgb) / 0.42) 34%,
-    rgb(var(--scrim-rgb) / 0) 50%
-  );
-  content: "";
-  inset: 0;
-  pointer-events: none;
-}
-
-/* Below the reading column the scene sits behind the text, so the scrim runs
-   down the page instead of across it. */
-@media (width < 1000px) {
-  [data-view="orrery"] .orrery-stage::after {
-    background: linear-gradient(
-      to bottom,
-      rgb(var(--scrim-rgb) / 0.35) 0%,
-      rgb(var(--scrim-rgb) / 0.82) 40%,
-      rgb(var(--scrim-rgb) / 0.94) 100%
-    );
-  }
-}
-
-[data-view="orrery"] .page-shell,
-[data-view="orrery"] .close-field,
-[data-view="orrery"] .site-footer {
-  position: relative;
-  z-index: 2;
-}
-
-/* One stop per viewport: this is what turns scrolling into the tour. */
-[data-view="orrery"] .titleblock {
-  min-height: 100vh;
-  padding-block: 20vh;
-  border-top: none;
-}
-
-[data-view="orrery"] .doc-section {
-  padding-block: 8vh;
-  /* A hairline rule floating in space reads as a seam, not a separation. */
-  border-top: none;
-}
-
-@media (width >= 1000px) {
-  /*
-   * The reading column alternates sides as the tour advances, and the scene
-   * slides the other way to meet it. Both are driven by the same waypoint, so
-   * the planet on screen is always the one the text beside it describes.
-   */
-  [data-view="orrery"] .page-shell {
-    width: min(100% - (var(--gutter) * 2), 1440px);
-    margin-inline: auto;
-  }
-
-  [data-view="orrery"] .doc-section {
-    display: block;
-  }
-
-  [data-view="orrery"] [data-orrery-side] {
-    width: min(56ch, 43vw);
-  }
-
-  [data-view="orrery"] [data-orrery-side="left"] {
-    margin-right: auto;
-    margin-left: 0;
-  }
-
-  [data-view="orrery"] [data-orrery-side="right"] {
-    margin-right: 0;
-    margin-left: auto;
-    text-align: left;
-  }
-
-  /* Each body gets a viewport of its own, so the camera has time to arrive. */
-  [data-view="orrery"] .entry[data-orrery-waypoint],
-  [data-view="orrery"] .work-entry[data-orrery-waypoint] {
-    min-height: 84vh;
-    align-content: center;
-  }
-
-  /* The reference list rows are short. Without a stop of their own the camera
-     crossed two waypoints in under two hundred pixels. */
-  [data-view="orrery"] .reflist > [data-orrery-waypoint] {
-    min-height: 62vh;
-    align-content: center;
-  }
-
-  /* The label rail sits inline above its section rather than in a side column
-     that no longer exists. */
-  [data-view="orrery"] .doc-rail {
-    position: static;
-    display: flex;
-    margin-bottom: 10px;
-  }
-
-  [data-view="orrery"] .doc-rail-label {
-    margin-top: 0;
-  }
-
-  /* The title block's two-column meta table needs width it no longer has. */
-  [data-view="orrery"] .titleblock-grid {
-    display: block;
-  }
-
-  [data-view="orrery"] .titleblock-meta {
-    margin-top: clamp(28px, 4vw, 44px);
-  }
-
-  /* The figure inside a work entry competes with the planet it describes. */
-  [data-view="orrery"] .work-figure {
-    display: none;
-  }
-
-  [data-view="orrery"] .work-grid {
-    display: block;
-  }
-}
-
-/* --------------------------------------------------------------------------
-   The figure caption
-
-   Rule 3 of the design system this replaces: every figure states what it
-   measures and what it does not. The orrery is a figure. It sits bottom-right,
-   under the scene rather than over the reading column.
-   -------------------------------------------------------------------------- */
-
-.orrery-caption {
-  position: absolute;
-  right: clamp(16px, 3vw, 40px);
-  bottom: clamp(16px, 3vw, 32px);
-  z-index: 2;
-  max-width: min(46ch, 40vw);
-  color: var(--ink-3);
-  font-family: var(--font-figure);
-  font-size: 0.625rem;
-  line-height: 1.7;
-  letter-spacing: 0.04em;
-  text-align: right;
-  text-wrap: pretty;
-  transition: color 300ms var(--lift);
-}
-
-/* A focused body's caption is a claim about that project, so it carries more
-   weight than the standing disclaimer it replaces. */
-.orrery-caption[data-focused="true"] {
-  color: var(--ink-2);
-}
-
-.orrery-caption::before {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--ink-3);
-  content: "FIGURE 0 · THE ORRERY";
-  font-size: 0.5625rem;
-  letter-spacing: 0.14em;
-  opacity: 0.7;
-}
-
-/*
- * The narrow layout has no margin to put any of this in.
- *
- * Below 1000px the reading column runs the full width and the scene sits
- * directly behind it, so a body's name is drawn on top of the prose wherever
- * the body happens to be. Worse, each name carries a 44px tap target, which
- * left invisible circles floating over the copy that navigated away when
- * tapped. The scene keeps its bodies and becomes atmosphere; navigation is the
- * document, which is all there.
- */
-@media (width < 1000px) {
-  [data-view="orrery"] .orrery-targets,
-  [data-view="orrery"] .orrery-moons,
-  [data-view="orrery"] .orrery-caption {
-    display: none;
-  }
-}
-
-/* Nothing to caption when the scene is not on screen. */
-[data-view="document"] .orrery-caption {
-  display: none;
-}
-
-/* The caption's narrow-layout counterpart, set in the document rather than
-   over it. Exactly one of the two is ever on screen. */
-.orrery-caption-inline {
-  display: none;
-}
-
-@media (width < 1000px) {
-  [data-view="orrery"] .orrery-caption-inline {
-    display: block;
-    max-width: 62ch;
-    margin-top: clamp(28px, 6vw, 44px);
-    color: var(--ink-3);
-    font-family: var(--font-figure);
-    font-size: 0.625rem;
-    line-height: 1.7;
-    letter-spacing: 0.04em;
-    text-wrap: pretty;
-  }
-}
-
-/* --------------------------------------------------------------------------
-   Reading documents — case studies and the résumé
-
-   A centred column on a glass panel, over a single still frame of the orrery
-   parked on the body the page is about.
-
-   The old design system forbade enclosing anything in a box. That rule is
-   deliberately broken here and nowhere else: text set directly on a starfield
-   is not readable at fifteen paragraphs, and a panel is the honest way to say
-   "this is a document resting on the scene" rather than floating in it.
-   -------------------------------------------------------------------------- */
 
 :root {
   --glass: rgb(251 250 247 / 0.86);
@@ -716,89 +419,97 @@
   }
 }
 
-/* --------------------------------------------------------------------------
-   Header
 
-   In orrery mode the header stops being a sticky, backdrop-filtered bar.
-   backdrop-filter sampling a live WebGL canvas forces a compositor readback on
-   every frame, which is enough to halve the frame rate on mobile Safari.
-   -------------------------------------------------------------------------- */
-
-[data-view="orrery"] .site-header-wrap {
-  position: fixed;
-  right: 0;
-  left: 0;
-  backdrop-filter: none;
-  background: linear-gradient(
-    to bottom,
-    var(--stock) 0%,
-    color-mix(in srgb, var(--stock) 88%, transparent) 68%,
-    transparent 100%
-  );
+/* One reading column: no alternating sides, viewport-height rows, or scrims. */
+[data-view="orrery"] body:has(.orrery-stage) .cosmic-accent { display: none; }
+[data-view="orrery"] body:has(.orrery-stage) .page-shell { position: relative; z-index: 2; }
+[data-view="orrery"] body:has(.orrery-stage) .titleblock { padding-top: 32px; }
+[data-view="orrery"] body:has(.orrery-stage) .titleblock-grid { display: block; }
+[data-view="orrery"] body:has(.orrery-stage) .titleblock-aside { margin-top: 28px; }
+[data-view="orrery"] body:has(.orrery-stage) .titleblock-title { max-width: 20ch; font-size: clamp(2.5rem, 4vw, 3.75rem); }
+[data-view="orrery"] body:has(.orrery-stage) .doc-section { display: block; }
+[data-view="orrery"] body:has(.orrery-stage) .doc-rail { position: static; display: flex; margin-bottom: 18px; }
+[data-view="orrery"] body:has(.orrery-stage) .doc-rail-label { margin-top: 0; }
+[data-view="orrery"] body:has(.orrery-stage) .entry,
+[data-view="orrery"] body:has(.orrery-stage) .cap-row,
+[data-view="orrery"] body:has(.orrery-stage) .seam,
+[data-view="orrery"] body:has(.orrery-stage) .reflist-row,
+[data-view="orrery"] body:has(.orrery-stage) .background-grid { grid-template-columns: minmax(0, 1fr); }
+[data-view="orrery"] body:has(.orrery-stage) .cap-tech { grid-column: auto; }
+[data-view="orrery"] body:has(.orrery-stage) .work-grid { display: block; }
+[data-view="orrery"] body:has(.orrery-stage) .contents { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+[data-view="orrery"] body:has(.orrery-stage) .contents-row { padding: 14px 8px; }
+[data-view="orrery"] body:has(.orrery-stage) .close-field { position: relative; z-index: 3; }
+[data-view="orrery"] body:has(.orrery-stage) .work-details .work-figure { display: block; }
+.orrery-caption-inline { display: none; }
+.orrery-moons { display: none; }
+.orrery-stage[data-focusing="true"] .orrery-target:not([data-focused="true"]) .orrery-target__label { opacity: 0; }
+.orrery-target__label {
+  padding: 7px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--stock);
+  opacity: 1;
+  max-width: 22ch;
 }
-
-/* --------------------------------------------------------------------------
-   The view toggle
-   -------------------------------------------------------------------------- */
-
+.orrery-target__name { font-size: 0.9375rem; line-height: 1.4; text-shadow: none; }
+.orrery-target__detail { font-family: var(--font-body); font-size: 0.8125rem; text-transform: none; letter-spacing: 0; text-shadow: none; }
+.orrery-target__detail { display: none; }
+.orrery-target:hover .orrery-target__detail,
+.orrery-target:focus-visible .orrery-target__detail,
+.orrery-target[data-focused="true"] .orrery-target__detail,
+.orrery-target[data-orrery-target="star"] .orrery-target__detail { display: block; }
+.orrery-target:focus-visible .orrery-target__label { outline: 2px solid var(--accent, var(--ink)); outline-offset: 2px; }
+@media (width >= 1100px) {
+  [data-view="orrery"] body:has(.orrery-stage) .orrery-stage {
+    position: fixed;
+    z-index: 1;
+    top: 96px;
+    right: 24px;
+    bottom: 24px;
+    width: calc(43vw - 24px);
+    height: auto;
+    margin: 0;
+  }
+  [data-view="orrery"] body:has(.orrery-stage) .page-shell {
+    width: calc(57vw - 72px);
+    max-width: 780px;
+    margin-left: 36px;
+    margin-right: 0;
+  }
+  [data-view="orrery"] body:has(.orrery-stage) .close-field {
+    width: calc(57vw - 24px);
+    padding-inline: 36px;
+  }
+  [data-view="orrery"] body:has(.orrery-stage) .close-inner { width: 100%; }
+  [data-view="orrery"] body:has(.orrery-stage) .site-footer { width: calc(57vw - 72px); margin-left: 36px; margin-right: 0; }
+  [data-view="orrery"] body:has(.orrery-stage) .site-footer > * { width: 100%; }
+}
 .mode-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.3rem 0.55rem;
-  border: 1px solid var(--rule);
-  background: none;
-  color: var(--ink-2);
-  cursor: pointer;
-  font: inherit;
-  font-family: var(--font-figure);
-  font-size: 0.625rem;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  transition: color 200ms var(--lift), border-color 200ms var(--lift);
-}
-
-.mode-toggle:hover {
-  border-color: var(--rule-strong);
+  justify-content: center;
+  gap: 7px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 9px 12px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 10px;
+  background: var(--stock-2);
   color: var(--ink);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  line-height: 1.3;
+  transition: background-color 180ms ease;
 }
-
-.mode-toggle__track {
-  display: inline-flex;
-  align-items: center;
-}
-
-.mode-toggle__icon {
-  display: none;
-}
-
+.mode-toggle:hover { background: var(--stock-3); }
+.mode-toggle__track { display: flex; align-items: center; }
+.mode-toggle__icon { display: none; }
 .mode-toggle[data-view="document"] .mode-toggle__icon--orrery,
-.mode-toggle[data-view="orrery"] .mode-toggle__icon--document {
-  display: block;
-}
-
-/* No orrery to switch to: a control that cannot work should not be offered. */
-[data-orrery="unavailable"] .mode-toggle {
-  display: none;
-}
-
-@media (max-width: 860px) {
-  .mode-toggle__label {
-    display: none;
-  }
-}
-
-/* --------------------------------------------------------------------------
-   Reduced motion
-
-   The orrery is not withdrawn here. Reduced motion means no motion, not no
-   graphics — the renderer draws a single static frame instead of running a
-   loop, so the scene is still present and still readable.
-   -------------------------------------------------------------------------- */
-
+.mode-toggle[data-view="orrery"] body:has(.orrery-stage) .mode-toggle__icon--document { display: block; }
+[data-orrery="unavailable"] .mode-toggle { display: none; }
+@media (width < 390px) { .mode-toggle__label { display: none; } }
 @media (prefers-reduced-motion: reduce) {
-  .orrery-target__ring,
-  .orrery-target__label {
-    transition: none;
-  }
+  .orrery-target__ring, .orrery-target__label { transition: none; }
 }

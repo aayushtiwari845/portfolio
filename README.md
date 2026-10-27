@@ -2,7 +2,7 @@
 
 A production-oriented portfolio for [Aayush Tiwari](https://aayushktiwari.tech), a software and AI engineer working across backend systems, real-time data infrastructure, ML platforms, and applied AI. He is currently pursuing a B.Tech in Artificial Intelligence & Data Science at K.J. Somaiya School of Engineering, with an expected completion date of July 2027.
 
-The site is set as an engineering design document: a title block, a numbered outline that doubles as the navigation, and sections that argue — including a `Non-goals` section that states what the work does not claim. That form was chosen because it is the artifact this audience already trusts to judge engineering thinking. It is built as a static-first Next.js application and does not require a CMS, database, API server, or runtime environment variables.
+The site opens as a readable document on every phone and desktop visit. A separate, explicitly selected Orrery view maps the experience and projects onto an interactive orbital scene. Both views share the same content, clear navigation, and evidence boundaries. It is a static-first Next.js application with no CMS, database, API server, or runtime environment variables.
 
 The durable visual decisions live in [`DESIGN.md`](DESIGN.md); the product truth the design serves lives in [`PRODUCT.md`](PRODUCT.md).
 
@@ -10,8 +10,8 @@ The durable visual decisions live in [`DESIGN.md`](DESIGN.md); the product truth
 
 - Next.js App Router, React, and strict TypeScript
 - Tailwind CSS v4 with a custom design-token layer
-- Archivo (variable, with the `wdth` axis used as a working design axis) and Martian Mono, self-hosted through `next/font`
-- Native CSS motion and hand-authored SVG figures
+- Space Grotesk, Inter Tight, and JetBrains Mono, self-hosted through `next/font`
+- Native CSS motion, a lightweight orbital sculpture, hand-authored SVG figures, and an optional WebGL Orrery
 - Radix primitives and `cmdk` for accessible interactive controls
 - Vitest and Testing Library for focused automated coverage
 - ESLint flat config and GitHub Actions for delivery checks
@@ -100,10 +100,10 @@ Keep these evidence boundaries intact when editing public copy or structured dat
 ## Performance and progressive enhancement
 
 - Core content is server-rendered and remains readable before client enhancement runs.
-- The first screen is type and tabular metadata only: there is no decorative hero graphic to download or lay out.
-- Reduced-motion and touch states remove continuous or pointer-dependent visual work.
-- Every figure is a hand-authored SVG that depicts a real pipeline, avoiding stock imagery and large texture downloads. Nothing decorative ships.
-- Static project graphics and CSS-native motion avoid shipping a general-purpose animation runtime.
+- The first screen pairs readable introductory content with a small CSS orbital illustration; it downloads no textures or graphics runtime.
+- Reduced motion removes continuous motion. Both orbital views have pause controls, and offscreen or hidden visuals stop animating.
+- Project figures remain hand-authored SVGs showing real pipelines. The optional WebGL scene loads only after the reader selects Orrery; it never promotes a visitor automatically.
+- CSS-native motion and the small custom renderer avoid a general-purpose animation runtime. The scene occupies a separate panel, so it cannot overlap reading content.
 
 The title block, the numbered outline, the calls to action, and the current professional context remain complete when JavaScript does not run. Entrance motion only engages after the client confirms `IntersectionObserver`, no reduced-motion preference, and no save-data hint; content is visible by default in every other case.
 

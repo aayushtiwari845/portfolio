@@ -7,14 +7,16 @@ import { CompanyMark } from "@/components/ui/company-mark";
 import { CopyEmail } from "@/components/ui/copy-email";
 import { ExternalLink } from "@/components/ui/external-link";
 import { ProjectVisual } from "@/components/work/project-visual";
+import { CosmicAccent } from "@/components/visuals/cosmic-accent";
+import { ORRERY_CAPTION } from "@/data/orrery";
 import {
   CLOSING_WAYPOINT,
   ESTABLISHING_WAYPOINT,
   sideForWaypoint,
   waypointForTarget,
 } from "@/lib/orrery/scene";
-import { ORRERY_CAPTION } from "@/data/orrery";
 import {
+  homepageContent,
   homepageProjectEvidence,
   homepageProjectSlugs,
   portfolio,
@@ -36,29 +38,7 @@ const homepageProjects = homepageProjectSlugs.map(getHomepageProject);
 const featuredProjects = homepageProjects.slice(0, 3);
 const referencedProjects = homepageProjects.slice(3);
 
-const capabilityDomains = [
-  {
-    key: "systems",
-    title: "Systems",
-    description:
-      "Typed APIs, authentication, failure handling, and operational workflows with explicit boundaries.",
-    technologies: ["FastAPI", "Spring Boot", "Node.js", "PostgreSQL", "Redis"],
-  },
-  {
-    key: "data",
-    title: "Data",
-    description:
-      "Batch and streaming pipelines designed around workload, lineage, replay, and measurable behavior.",
-    technologies: ["Kafka", "Spark", "PySpark", "Pandas", "Warehousing"],
-  },
-  {
-    key: "intelligence",
-    title: "Intelligence",
-    description:
-      "ML and LLM workflows evaluated against baselines before they are trusted inside a product.",
-    technologies: ["PyTorch", "TensorFlow", "MLflow", "Spark MLlib", "LLM systems"],
-  },
-] as const;
+const capabilityDomains = homepageContent.capabilities.domains;
 
 const domainNames = {
   systems: "Systems",
@@ -136,51 +116,44 @@ export function TitleBlock() {
         </p>
 
         <div className="titleblock-grid">
-          <Reveal>
+          <Reveal className="titleblock-intro">
+            <p className="titleblock-name">{identity.displayName}</p>
             <h1 className="titleblock-title" id="doc-title">{identity.headline}</h1>
             <p className="titleblock-abstract">{identity.introduction}</p>
+            <p className="titleblock-status">{identity.availability}</p>
             <div className="titleblock-actions">
-              <Link className="link" href="#work">Read the selected work</Link>
-              <Link className="secondary-cta" href="/resume">Résumé</Link>
+              <Link className="link" href="#work">Explore my work</Link>
+              <Link className="secondary-cta" href="/resume">Read my résumé</Link>
             </div>
           </Reveal>
 
-          <Reveal delay={0.06}>
+          <div className="titleblock-aside">
+            <CosmicAccent />
+            <Reveal delay={0.06}>
             <dl className="titleblock-meta">
-              <div className="meta-row meta-row--status">
-                <dt>Status</dt>
-                <dd>{identity.availability}</dd>
+              <div className="meta-row">
+                <dt>Based in</dt>
+                <dd>{identity.location}</dd>
               </div>
               <div className="meta-row">
-                <dt>Author</dt>
-                <dd>{identity.fullName}</dd>
-              </div>
-              <div className="meta-row">
-                <dt>Discipline</dt>
-                <dd>{identity.descriptor}</dd>
-              </div>
-              <div className="meta-row">
-                <dt>Location</dt>
-                <dd>{identity.location} <span className="figure-value">· {identity.timezone}</span></dd>
-              </div>
-              <div className="meta-row">
-                <dt>Education</dt>
-                <dd>
-                  {education.degree} in {education.field}, {education.institution}
-                  <br />
-                  <span className="figure-value">{education.period} · CGPA {education.cgpa}</span>
-                </dd>
-              </div>
-              <div className="meta-row">
-                <dt>Most recent</dt>
+                <dt>Recently</dt>
                 <dd>
                   {current.role}, {current.company}
                   <br />
                   <span className="figure-value">{current.period}</span>
                 </dd>
               </div>
+              <div className="meta-row">
+                <dt>Education</dt>
+                <dd>
+                  {education.degree} in {education.field}
+                  <br />
+                  <span className="figure-value">{education.period} · CGPA {education.cgpa}</span>
+                </dd>
+              </div>
             </dl>
-          </Reveal>
+            </Reveal>
+          </div>
         </div>
 
         <Reveal delay={0.1}>
@@ -195,16 +168,10 @@ export function TitleBlock() {
           </nav>
         </Reveal>
 
-        {/*
-          The scene's caption, for the narrow layout only.
-
-          Every figure on this site states what it measures and what it does
-          not, and the orrery is a figure. On a wide viewport the stage carries
-          its own caption in the margin beside the scene. There is no margin on
-          a phone, so it is set here instead of floated over the prose. CSS
-          shows exactly one of the two.
-        */}
-        <p className="orrery-caption-inline">{ORRERY_CAPTION}</p>
+        <details className="orrery-guide">
+          <summary>How to read the orrery</summary>
+          <p>{ORRERY_CAPTION}</p>
+        </details>
     </section>
   );
 }
@@ -213,11 +180,11 @@ export function ExperienceSection() {
   return (
     <DocSection
       id="experience"
-      lede="Three roles across production software, backend product systems, and analytical infrastructure. Scope notes state what each engagement did and did not cover."
+      lede={homepageContent.experience.introduction}
       number="1"
       rail="Experience"
       side="left"
-      title="Built inside real operating constraints."
+      title={homepageContent.experience.title}
     >
       <div className="doc-block">
         {portfolio.experiences.map((experience, index) => (
@@ -239,14 +206,17 @@ export function ExperienceSection() {
             </div>
             <div>
               <p className="entry-summary">{experience.summary}</p>
-              <ol className="entry-points">
-                {experience.highlights.slice(0, index === 0 ? 3 : 2).map((highlight) => (
-                  <li key={highlight}>{highlight}</li>
-                ))}
-              </ol>
-              <ul className="entry-stack">
-                {experience.stack.map((technology) => <li key={technology}>{technology}</li>)}
-              </ul>
+              <details className="entry-details">
+                <summary>{homepageContent.experience.detailsLabel}<span className="sr-only"> at {experience.company}</span></summary>
+                <ul className="entry-points">
+                  {experience.highlights.map((highlight) => (
+                    <li key={highlight}>{highlight}</li>
+                  ))}
+                </ul>
+                <ul aria-label={`${experience.company} technologies`} className="entry-stack">
+                  {experience.stack.map((technology) => <li key={technology}>{technology}</li>)}
+                </ul>
+              </details>
               {experience.note ? <p className="note">{experience.note}</p> : null}
             </div>
           </Reveal>
@@ -260,11 +230,11 @@ export function WorkSection() {
   return (
     <DocSection
       id="work"
-      lede="Each system is written up as its own document: the brief, the architecture, the decisions with their costs, what was measured, and where the result stops being true."
+      lede={homepageContent.work.introduction}
       number="2"
       rail="Selected work"
       side="right"
-      title="Systems with the evidence left in."
+      title={homepageContent.work.title}
     >
       <div className="doc-block">
         {featuredProjects.map((project, index) => {
@@ -297,18 +267,8 @@ export function WorkSection() {
                   <span>{collaborative ? "Collaborative project" : project.domain}</span>
                 </div>
 
-                <div className={`work-grid${index % 2 === 1 ? " work-grid--flip" : ""}`}>
-                  <figure className="figure work-figure">
-                    <div className="figure-frame">
-                      <ProjectVisual kind={project.visualKind} />
-                    </div>
-                    <figcaption className="figure-caption">
-                      <b>Figure {reference}</b>
-                      {project.figureCaption}
-                    </figcaption>
-                  </figure>
-
-                  <div>
+                <div className="work-grid work-grid--readable">
+                  <div className="work-overview">
                     <h3 className="work-title">
                       <Link href={`/projects/${project.slug}`}>{project.title}</Link>
                     </h3>
@@ -320,24 +280,7 @@ export function WorkSection() {
                       <p className="work-finding-text">{evidence.statement}</p>
                     </div>
 
-                    {alternative ? (
-                      <dl className="alternative">
-                        <div className="alternative-row">
-                          <dt>Alternative considered</dt>
-                          <dd>{alternative.title}</dd>
-                        </div>
-                        <div className="alternative-row">
-                          <dt>Chosen</dt>
-                          <dd>{alternative.choice}</dd>
-                        </div>
-                        <div className="alternative-row alternative-row--cost">
-                          <dt>Cost</dt>
-                          <dd>{alternative.cost}</dd>
-                        </div>
-                      </dl>
-                    ) : null}
-
-                    <ul className="work-stack">
+                    <ul aria-label={`${project.title} technologies`} className="work-stack">
                       {project.stack.slice(0, 5).map((technology) => (
                         <li key={technology}>{technology}</li>
                       ))}
@@ -350,6 +293,37 @@ export function WorkSection() {
                         <ExternalLink href={project.demoUrl}>Live demo</ExternalLink>
                       ) : null}
                     </div>
+
+                    <details className="work-details">
+                      <summary>{homepageContent.work.detailsLabel}<span className="sr-only"> for {project.title}</span></summary>
+                      <div className="work-details-body">
+                        <figure className="figure work-figure">
+                          <div className="figure-frame">
+                            <ProjectVisual kind={project.visualKind} />
+                          </div>
+                          <figcaption className="figure-caption">
+                            <b>Figure {reference}</b>
+                            {project.figureCaption}
+                          </figcaption>
+                        </figure>
+                        {alternative ? (
+                          <dl className="alternative">
+                            <div className="alternative-row">
+                              <dt>Decision</dt>
+                              <dd>{alternative.title}</dd>
+                            </div>
+                            <div className="alternative-row">
+                              <dt>Approach</dt>
+                              <dd>{alternative.choice}</dd>
+                            </div>
+                            <div className="alternative-row alternative-row--cost">
+                              <dt>Trade-off</dt>
+                              <dd>{alternative.cost}</dd>
+                            </div>
+                          </dl>
+                        ) : null}
+                      </div>
+                    </details>
                   </div>
                 </div>
               </article>
@@ -359,7 +333,7 @@ export function WorkSection() {
       </div>
 
       <div className="doc-block">
-        <p className="technical-label">Also documented</p>
+        <p className="technical-label">{homepageContent.work.moreLabel}</p>
         <div className="reflist">
           {referencedProjects.map((project, index) => (
             <Reveal
@@ -374,7 +348,10 @@ export function WorkSection() {
                 <h3 className="reflist-title">
                   <Link href={`/projects/${project.slug}`}>{project.title}</Link>
                 </h3>
-                <p className="reflist-desc">{project.summary}</p>
+                <div className="reflist-desc">
+                  <p>{project.summary}</p>
+                  <p className="reflist-boundary">{homepageProjectEvidence[project.slug].statement}</p>
+                </div>
                 <div className="reflist-links">
                   <Link href={`/projects/${project.slug}`}>Case study</Link>
                   <ExternalLink href={project.repository}>Source</ExternalLink>
@@ -395,12 +372,12 @@ export function CapabilitiesSection() {
   return (
     <DocSection
       id="capabilities"
-      lede="I work across the seams: APIs expose workflows, data preserves evidence, and models are tested against explicit baselines before anything depends on them."
+      lede={homepageContent.capabilities.introduction}
       number="3"
       rail="Capabilities"
       side="left"
       waypoint={CLOSING_WAYPOINT}
-      title="Systems, data, and models with stated boundaries."
+      title={homepageContent.capabilities.title}
     >
       <div className="doc-block cap-table">
         {capabilityDomains.map((domain, index) => (
@@ -414,8 +391,8 @@ export function CapabilitiesSection() {
         ))}
       </div>
 
-      <div className="doc-block">
-        <p className="technical-label">Where the domains meet</p>
+      <details className="doc-block cap-details">
+        <summary>{homepageContent.capabilities.detailsLabel}</summary>
         <div className="seam-list">
           {portfolio.capabilities.relationships.map((relationship) => (
             <Reveal
@@ -434,7 +411,7 @@ export function CapabilitiesSection() {
             </Reveal>
           ))}
         </div>
-      </div>
+      </details>
     </DocSection>
   );
 }
@@ -449,16 +426,12 @@ export function BackgroundSection() {
       rail="Background"
       side="right"
       waypoint={CLOSING_WAYPOINT}
-      title="The model is only one part of the system."
+      title={homepageContent.background.title}
     >
       <div className="doc-block">
         <Reveal className="prose">
           <p>{portfolio.about}</p>
-          <p>
-            My work spans backend services, data infrastructure, and applied AI. Not as isolated
-            demos, but as systems that can be tested, reviewed, and understood by someone who
-            did not build them.
-          </p>
+          <p>{homepageContent.background.approach}</p>
         </Reveal>
 
         <Reveal className="doc-block" delay={0.05}>

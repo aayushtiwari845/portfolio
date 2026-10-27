@@ -1,16 +1,13 @@
 "use client";
 
 import { FileText, Orbit } from "lucide-react";
-import { useLayoutEffect, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
 
 import {
   applyView,
   DEFAULT_VIEW,
   getDocumentView,
-  getStoredView,
-  isView,
   VIEW_CHANGE_EVENT,
-  VIEW_STORAGE_KEY,
   type View,
 } from "./mode";
 
@@ -20,20 +17,9 @@ interface ModeToggleProps {
 
 function subscribeToView(onStoreChange: () => void) {
   const handleViewChange = () => onStoreChange();
-  const handleStorage = (event: StorageEvent) => {
-    if (event.key !== VIEW_STORAGE_KEY) return;
-    applyView(isView(event.newValue) ? event.newValue : DEFAULT_VIEW, {
-      broadcast: false,
-      persist: false,
-    });
-    onStoreChange();
-  };
-
   window.addEventListener(VIEW_CHANGE_EVENT, handleViewChange);
-  window.addEventListener("storage", handleStorage);
   return () => {
     window.removeEventListener(VIEW_CHANGE_EVENT, handleViewChange);
-    window.removeEventListener("storage", handleStorage);
   };
 }
 
@@ -47,12 +33,6 @@ function subscribeToView(onStoreChange: () => void) {
 export function ModeToggle({ className = "" }: ModeToggleProps) {
   const view = useSyncExternalStore(subscribeToView, getDocumentView, () => DEFAULT_VIEW);
 
-  useLayoutEffect(() => {
-    // React Strict Mode restores the server's <html> attributes on its
-    // development remount, which would drop a promotion that already happened.
-    applyView(getStoredView() ?? getDocumentView(), { broadcast: true, persist: false });
-  }, []);
-
   const nextView: View = view === "orrery" ? "document" : "orrery";
   const label = nextView === "document"
     ? "Read as a document"
@@ -61,6 +41,7 @@ export function ModeToggle({ className = "" }: ModeToggleProps) {
   return (
     <button
       aria-label={label}
+      aria-pressed={view === "orrery"}
       className={["mode-toggle", className].filter(Boolean).join(" ")}
       data-view={view}
       onClick={() => {

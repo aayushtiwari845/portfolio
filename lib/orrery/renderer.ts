@@ -82,7 +82,7 @@ export interface MountOptions {
   getPose?(): CameraPose | null;
   /**
    * Which side the scene should sit on: -1 puts it to the right of a reading
-   * column on the left, +1 the other way. Eased rather than cut, so the system
+   * column on the left, +1 the other way, and 0 keeps a dedicated pane centred. Eased rather than cut, so the system
    * glides across the viewport as the reader moves between stops.
    */
   getLensSide(): number;
@@ -114,6 +114,10 @@ export interface OrreryHandle {
   destroy(): void;
   /** Force a repaint when something outside the loop changed. */
   invalidate(): void;
+  /** Suspend GPU work when the reader switches back to the document. */
+  setActive(active: boolean): void;
+  /** Honor a motion preference change without recreating the context. */
+  setReducedMotion(reduced: boolean): void;
 }
 
 export function mount(canvas: HTMLCanvasElement, options: MountOptions): OrreryHandle | null {
@@ -132,6 +136,9 @@ export function mount(canvas: HTMLCanvasElement, options: MountOptions): OrreryH
   let lastFocusSlug: string | null = null;
   let lensShift = -1;
   let lastFrameAt = 0;
+  let active = true;
+  let inViewport = true;
+  let reducedMotion = options.reducedMotion;
 
   function createResources() {
     if (!gl || disposed) return;
@@ -156,7 +163,7 @@ export function mount(canvas: HTMLCanvasElement, options: MountOptions): OrreryH
     if (fixed) return fixed;
 
     const pose = poseAlongPath(scene.waypoints, options.getProgress());
-    if (options.reducedMotion) return pose;
+    if (reducedMotion) return pose;
 
     // A slow drift so the system reads as alive while the tour is not moving.
     const angle = elapsed * IDLE_SPIN;
@@ -189,20 +196,25 @@ export function mount(canvas: HTMLCanvasElement, options: MountOptions): OrreryH
     if (!gl || disposed || passes.length === 0) return;
 
     if (startedAt === 0) startedAt = now;
-    const elapsed = (now - startedAt) / 1000;
-    const ignition = options.reducedMotion
+    const elapsed = reducedMotion ? 0 : (now - startedAt) / 1000;
+    const ignition = reducedMotion
       ? 1
       : Math.min(1, (now - startedAt) / IGNITION_MS);
 
     const pose = currentPose(elapsed);
     const view = viewMatrix(pose);
-    const projection = perspective(FIELD_OF_VIEW, width / height, NEAR, FAR).slice();
+    const aspect = width / height;
+    // Preserve horizontal framing in the narrow desktop illustration pane.
+    const fieldOfView = aspect < 1
+      ? 2 * Math.atan(Math.tan(FIELD_OF_VIEW / 2) / aspect)
+      : FIELD_OF_VIEW;
+    const projection = perspective(fieldOfView, aspect, NEAR, FAR).slice();
 
     // Element (0, 2). A negative value moves the scene to the right, clear of
     // a reading column on the left; positive moves it the other way. On a
     // narrow screen the column is full width, so the scene stays centred.
-    if (width >= WIDE_VIEWPORT) {
-      const target = options.getLensSide() >= 0 ? 1 : -1;
+    if (width >= WIDE_VIEWPORT && options.getLensSide() !== 0) {
+      const target = options.getLensSide() > 0 ? 1 : -1;
       // Eased on elapsed time, so the glide is the same speed at any refresh
       // rate and never snaps when the reader crosses between stops.
       const dt = lastFrameAt === 0 ? 0 : Math.min(0.1, (now - lastFrameAt) / 1000);
@@ -359,9 +371,10 @@ export function mount(canvas: HTMLCanvasElement, options: MountOptions): OrreryH
   }
 
   function start() {
-    if (disposed || frameId !== 0) return;
+    if (disposed || frameId !== 0 || !active || !inViewport
+      || document.visibilityState === "hidden") return;
 
-    if (options.reducedMotion) {
+    if (reducedMotion) {
       // A single frame. No loop, nothing moves, everything stays legible.
       frameId = window.requestAnimationFrame((now) => {
         frameId = 0;
@@ -418,6 +431,7 @@ export function mount(canvas: HTMLCanvasElement, options: MountOptions): OrreryH
     canvas.removeEventListener("webglcontextrestored", handleContextRestored);
     document.removeEventListener("visibilitychange", handleVisibility);
     observer?.disconnect();
+    intersectionObserver?.disconnect();
   }
 
   canvas.addEventListener("webglcontextlost", handleContextLost);
@@ -427,9 +441,18 @@ export function mount(canvas: HTMLCanvasElement, options: MountOptions): OrreryH
   const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(() => {
     measure();
     // A static frame has no loop to pick the new size up, so redraw it.
-    if (options.reducedMotion) start();
+    if (reducedMotion) start();
   });
   observer?.observe(canvas);
+
+  const intersectionObserver = typeof IntersectionObserver === "undefined"
+    ? null
+    : new IntersectionObserver(([entry]) => {
+      inViewport = entry.isIntersecting;
+      if (inViewport) start();
+      else stop();
+    });
+  intersectionObserver?.observe(canvas);
 
   try {
     createResources();
@@ -448,7 +471,24 @@ export function mount(canvas: HTMLCanvasElement, options: MountOptions): OrreryH
   return {
     invalidate() {
       measure();
-      if (options.reducedMotion) start();
+      if (reducedMotion) start();
+    },
+
+    setActive(nextActive) {
+      active = nextActive;
+      if (active) {
+        measure();
+        start();
+      } else {
+        stop();
+      }
+    },
+
+    setReducedMotion(reduced) {
+      if (reducedMotion === reduced) return;
+      reducedMotion = reduced;
+      stop();
+      start();
     },
 
     destroy() {
