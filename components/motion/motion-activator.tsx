@@ -1,24 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-
 import { readMotionEnvironment } from "@/lib/motion";
 
 const motionTargetSelector = "[data-reveal], [data-motion-visual]";
+const REVEAL_AHEAD = 80;
 
-function isInitiallyVisible(element: Element) {
-  const bounds = element.getBoundingClientRect();
-  const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-
-  return bounds.bottom > 0 && bounds.top < viewportHeight * 0.92;
-}
-
-/**
- * A single progressive-enhancement controller for entrance and diagram motion.
- *
- * Server-rendered targets remain visible until this component confirms that
- * motion is safe. Consumers opt in with `data-reveal` or `data-motion-visual`.
- */
+/** Progressive motion: one-shot reveals use cached positions, never scroll-time layout reads. */
 export function MotionActivator() {
   useEffect(() => {
     const root = document.documentElement;
@@ -26,150 +14,195 @@ export function MotionActivator() {
     const targets = new Set<HTMLElement>();
     const intersectingTargets = new WeakSet<HTMLElement>();
     const revealedTargets = new WeakSet<HTMLElement>();
-
-    let eligible = false;
+    let pending: { target: HTMLElement; top: number }[] = [];
+    let cursor = 0;
+    let frame = 0;
+    let needsMeasurement = false;
+    let disposed = false;
+    let eligible = environment.canAnimate();
     let intersectionObserver: IntersectionObserver | null = null;
 
     const updateTarget = (target: HTMLElement) => {
-      const isIntersecting = intersectingTargets.has(target);
       const isVisual = target.hasAttribute("data-motion-visual");
-      const isReveal = target.hasAttribute("data-reveal");
-
-      if (isReveal && (!eligible || isIntersecting)) {
-        revealedTargets.add(target);
-      }
-
       if (isVisual) {
-        target.dataset.motionState = eligible
-          && document.visibilityState === "visible"
-          && isIntersecting
-          ? "active"
-          : "idle";
-        return;
-      }
-
-      if (isReveal) {
-        target.dataset.motionState = revealedTargets.has(target) ? "visible" : "pending";
+        const next = eligible && document.visibilityState === "visible"
+          && intersectingTargets.has(target) ? "active" : "idle";
+        if (target.dataset.motionState !== next) target.dataset.motionState = next;
+      } else if (target.hasAttribute("data-reveal")) {
+        const next = revealedTargets.has(target) ? "visible" : "pending";
+        if (target.dataset.motionState !== next) target.dataset.motionState = next;
       }
     };
 
-    const registerTarget = (target: HTMLElement) => {
-      if (targets.has(target)) return;
-
-      targets.add(target);
-      if (target.dataset.motionState === "visible") revealedTargets.add(target);
-      if (isInitiallyVisible(target)) intersectingTargets.add(target);
-      updateTarget(target);
-      intersectionObserver?.observe(target);
-    };
-
-    const registerTree = (node: ParentNode) => {
-      if (node instanceof HTMLElement && node.matches(motionTargetSelector)) {
-        registerTarget(node);
-      }
-      node.querySelectorAll<HTMLElement>(motionTargetSelector).forEach(registerTarget);
-    };
-
-    /**
-     * An in-page anchor can move the viewport past an element without it ever
-     * intersecting, and IntersectionObserver reports no entry for a target
-     * that crossed no threshold. Sweep anything now above the viewport so a
-     * jump to a later section can never leave earlier content invisible.
-     */
-    const revealPassedTargets = () => {
-      if (!eligible) return;
-
-      targets.forEach((target) => {
-        if (
-          revealedTargets.has(target)
-          || !target.hasAttribute("data-reveal")
-          || target.hasAttribute("data-motion-visual")
-          || target.getBoundingClientRect().bottom > 0
-        ) {
-          return;
-        }
-
+    const reveal = (target: HTMLElement, immediate = false) => {
+      if (!target.hasAttribute("data-reveal")) return;
+      if (immediate) target.dataset.motionImmediate = "true";
+      if (!revealedTargets.has(target)) {
         revealedTargets.add(target);
         updateTarget(target);
-        intersectionObserver?.unobserve(target);
-      });
+        if (!target.hasAttribute("data-motion-visual")) intersectionObserver?.unobserve(target);
+      }
     };
 
-    let sweepFrame = 0;
-    const scheduleSweep = () => {
-      if (sweepFrame) return;
-      sweepFrame = window.requestAnimationFrame(() => {
-        sweepFrame = 0;
-        revealPassedTargets();
+    const revealFromCache = () => {
+      if (!eligible) return;
+      const line = window.scrollY + window.innerHeight + REVEAL_AHEAD;
+      while (cursor < pending.length && pending[cursor].top <= line) {
+        const target = pending[cursor++].target;
+        if (target.isConnected) reveal(target);
+      }
+    };
+
+    const measureTargets = () => {
+      // Collect all reads before changing any animation states. Closed details
+      // have no box and are revealed explicitly when the reader opens them.
+      const scrollY = window.scrollY;
+      pending = [...targets].flatMap((target) => {
+        if (!target.hasAttribute("data-reveal") || revealedTargets.has(target)) return [];
+        const box = target.getBoundingClientRect();
+        return box.height > 0 ? [{ target, top: box.top + scrollY }] : [];
+      }).sort((a, b) => a.top - b.top);
+      cursor = 0;
+      revealFromCache();
+    };
+
+    const schedule = (measure = false) => {
+      if (disposed || !eligible) return;
+      needsMeasurement ||= measure;
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        if (disposed) return;
+        if (needsMeasurement) {
+          needsMeasurement = false;
+          measureTargets();
+        } else revealFromCache();
       });
+    };
+    const scheduleMeasurement = () => schedule(true);
+    const scheduleReveal = () => schedule();
+
+    const registerTree = (node: ParentNode) => {
+      const candidates = node instanceof HTMLElement && node.matches(motionTargetSelector)
+        ? [node, ...node.querySelectorAll<HTMLElement>(motionTargetSelector)]
+        : [...node.querySelectorAll<HTMLElement>(motionTargetSelector)];
+      let changed = false;
+      candidates.forEach((target) => {
+        if (targets.has(target)) return;
+        changed = true;
+        targets.add(target);
+        if (!eligible || target.dataset.motionState === "visible") revealedTargets.add(target);
+        updateTarget(target);
+        if (target.hasAttribute("data-motion-visual") || !revealedTargets.has(target)) {
+          intersectionObserver?.observe(target);
+        }
+      });
+      return changed;
+    };
+
+    const revealAncestors = (node: HTMLElement) => {
+      let current: HTMLElement | null = node;
+      while (current) {
+        if (current.hasAttribute("data-reveal")) reveal(current, true);
+        current = current.parentElement;
+      }
+    };
+
+    const handleFocus = (event: FocusEvent) => {
+      if (event.target instanceof HTMLElement) revealAncestors(event.target);
+    };
+    const handleDetails = (event: Event) => {
+      if (!(event.target instanceof HTMLDetailsElement) || !event.target.open) return;
+      revealAncestors(event.target);
+      event.target.querySelectorAll<HTMLElement>("[data-reveal]").forEach((target) => reveal(target, true));
+      scheduleMeasurement();
+    };
+    const handleAnchor = (event: MouseEvent) => {
+      const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href]") : null;
+      if (!link || !link.hash || link.origin !== window.location.origin
+        || link.pathname !== window.location.pathname) return;
+      try {
+        const destination = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+        if (destination) revealAncestors(destination);
+      } catch { /* An invalid fragment still follows normal browser behavior. */ }
+      scheduleMeasurement();
     };
 
     const updateEligibility = () => {
       eligible = environment.canAnimate();
       root.dataset.motion = eligible ? "on" : "off";
-
+      if (!eligible) targets.forEach((target) => reveal(target, true));
       targets.forEach(updateTarget);
+      scheduleMeasurement();
     };
 
     if ("IntersectionObserver" in window) {
       intersectionObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           const target = entry.target as HTMLElement;
-
-          if (entry.isIntersecting) intersectingTargets.add(target);
-          else intersectingTargets.delete(target);
-
+          if (!targets.has(target)) return;
+          if (entry.isIntersecting) {
+            intersectingTargets.add(target);
+            reveal(target);
+          } else intersectingTargets.delete(target);
           updateTarget(target);
-
-          if (
-            entry.isIntersecting
-            && target.hasAttribute("data-reveal")
-            && !target.hasAttribute("data-motion-visual")
-          ) {
-            intersectionObserver?.unobserve(target);
-          }
         });
-      }, {
-        rootMargin: "80px 0px -8% 0px",
-        threshold: 0.12,
-      });
+      }, { rootMargin: "80px 0px 80px 0px", threshold: 0 });
     }
 
-    eligible = environment.canAnimate();
-    if (eligible) root.dataset.motion = "on";
     registerTree(document);
+    measureTargets();
     root.dataset.motion = eligible ? "on" : "off";
 
     const handleVisibilityChange = () => {
       targets.forEach((target) => {
         if (target.hasAttribute("data-motion-visual")) updateTarget(target);
       });
+      if (document.visibilityState === "visible") scheduleMeasurement();
     };
-
-    const mutationObserver = typeof MutationObserver === "undefined"
-      ? null
-      : new MutationObserver((records) => {
-          records.forEach((record) => {
-            record.addedNodes.forEach((node) => {
-              if (node instanceof HTMLElement) registerTree(node);
-            });
-          });
-        });
-
+    const mutationObserver = typeof MutationObserver === "undefined" ? null : new MutationObserver((records) => {
+      let changed = false;
+      records.forEach((record) => record.addedNodes.forEach((node) => {
+        if (node instanceof HTMLElement) changed = registerTree(node) || changed;
+      }));
+      targets.forEach((target) => {
+        if (!target.isConnected) {
+          targets.delete(target);
+          intersectionObserver?.unobserve(target);
+          changed = true;
+        }
+      });
+      if (changed) scheduleMeasurement();
+    });
     mutationObserver?.observe(document.body, { childList: true, subtree: true });
-    window.addEventListener("scroll", scheduleSweep, { passive: true });
-    window.addEventListener("hashchange", scheduleSweep);
+    const resizeObserver = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(scheduleMeasurement);
+    resizeObserver?.observe(document.body);
+    window.addEventListener("scroll", scheduleReveal, { passive: true });
+    window.addEventListener("resize", scheduleMeasurement);
+    window.addEventListener("hashchange", scheduleMeasurement);
+    document.addEventListener("focusin", handleFocus);
+    document.addEventListener("toggle", handleDetails, true);
+    document.addEventListener("click", handleAnchor);
     document.addEventListener("visibilitychange", handleVisibilityChange);
     const unsubscribe = environment.subscribe(updateEligibility);
+    void document.fonts?.ready.then(() => { if (!disposed) scheduleMeasurement(); });
 
     return () => {
-      window.cancelAnimationFrame(sweepFrame);
+      disposed = true;
+      window.cancelAnimationFrame(frame);
       intersectionObserver?.disconnect();
       mutationObserver?.disconnect();
-      window.removeEventListener("scroll", scheduleSweep);
-      window.removeEventListener("hashchange", scheduleSweep);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      resizeObserver?.disconnect();
       unsubscribe();
+      targets.clear();
+      pending = [];
+      window.removeEventListener("scroll", scheduleReveal);
+      window.removeEventListener("resize", scheduleMeasurement);
+      window.removeEventListener("hashchange", scheduleMeasurement);
+      document.removeEventListener("focusin", handleFocus);
+      document.removeEventListener("toggle", handleDetails, true);
+      document.removeEventListener("click", handleAnchor);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       delete root.dataset.motion;
     };
   }, []);

@@ -43,6 +43,11 @@
   will-change: auto;
 }
 
+/* Keyboard focus and an opened disclosure must never wait for an entrance. */
+[data-motion="on"] [data-reveal][data-motion-state="visible"][data-motion-immediate="true"] {
+  transition: none;
+}
+
 /* The rule above a section draws across before its content settles. */
 [data-motion="on"] .doc-section {
   background-image: linear-gradient(to right, var(--rule), var(--rule));

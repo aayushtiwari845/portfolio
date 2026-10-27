@@ -31,7 +31,7 @@ Orrery-specific layout rules require the homepage stage to exist. Navigating to 
 
 ## Motion and rendering
 
-Document's vector field is driven by scroll events, coalesced into one animation-frame update. Geometry changes between the introduction, experience, projects, capabilities, and background. There is no autonomous loop or decorative planet. Reduced motion, data saving, hidden tabs, and Orrery mode stop scroll updates; the document retains a static vector composition.
+Document uses six oversized static SVG motifs: prisms, circuits, layered planes, a helix, ribbons, and a fan. Each chapter selects a primary motif and one subdued companion. Only those two HTML wrappers are promoted for compositing. Native CSS scroll timelines animate their transforms in supporting browsers; a two-transform animation-frame fallback supports older browsers. SVG paths, gradients, and inherited progress variables never change during scrolling. Reduced motion, data saving, hidden tabs, and Orrery mode stop the motion; the document retains a static composition.
 
 The WebGL renderer loads only after the reader chooses Orrery. It pauses in Document mode, offscreen, and in hidden tabs. The scene has a separate Pause/Play motion control. Reduced motion renders static frames and removes transitions. Graphics failure returns the reader to Document.
 
@@ -52,3 +52,9 @@ Preserve the existing factual qualifications. The fraud pipeline is an academic 
 ## Document section rhythm
 
 The Document homepage follows one visual style: chapter numbers in the margin, soft rounded reading surfaces, and a single chapter gap (88px desktop, 56px phone). Heading-to-content spacing is 28px desktop and 24px phone; adjacent entries use 20px. Full-width section rules, animated rule backgrounds, and repeated entry/disclosure borders are removed in this view. Metadata, projects, experience, capabilities, and contact share the same surface language. These rules are scoped to the homepage Document and do not restyle Orrery or project/resume routes.
+
+## Scroll performance and content reveals
+
+Document blocks reveal once with a short opacity/10px translation transition. An 80px positive observer margin starts reveals before tall cards enter the screen. Initial content is visible immediately. Keyboard focus and opened disclosures reveal their content without waiting for a transition. Reduced motion, data saving, and JavaScript-disabled states keep content visible.
+
+Pending reveal positions are measured on layout changes and consumed from a sorted cache during scrolling. Scrolling does not call element bounding-box APIs. Artwork chapter changes are observed separately, and supporting browsers run the continuous background movement through native CSS scroll timelines rather than JavaScript style updates. Hidden artwork is neither animated nor promoted into persistent GPU layers.

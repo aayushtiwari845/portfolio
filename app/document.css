@@ -1,56 +1,51 @@
 /* Document: a continuous field journal, with one chapter rhythm and soft surfaces. */
 .document-backdrop {
-  --document-progress: 0;
-  --field-color: #65729e;
-  --field-color-secondary: #64998e;
+  --field-color: #6d7fa7;
   position: fixed;
   z-index: 0;
   inset: 76px 0 0;
   overflow: hidden;
   pointer-events: none;
-  opacity: 0.4;
   contain: strict;
-  mask-image: linear-gradient(to right, transparent 34%, #000 75%);
 }
-[data-theme="dark"] .document-backdrop {
-  --field-color: #8597d1;
-  --field-color-secondary: #6eacaa;
-  opacity: 0.3;
-}
+[data-theme="dark"] .document-backdrop { --field-color: #8b9ed3; }
 [data-view="orrery"] .document-backdrop { display: none; }
-.document-backdrop__drawing { width: 100%; height: 100%; }
-.document-backdrop__drawing > g {
-  transform-box: view-box;
-  transform-origin: 75% 50%;
-  transition: opacity 600ms ease;
-}
-.document-backdrop__prism {
-  transform: translate(calc(var(--document-progress) * 70px), calc(var(--document-progress) * -180px)) rotate(calc(var(--document-progress) * 32deg));
-  opacity: 1;
-}
-.document-backdrop__terrain {
-  transform: translate(0, calc(var(--document-progress) * -140px));
-  opacity: 0.28;
-}
-.document-backdrop__planes {
-  transform: translate(calc(var(--document-progress) * -80px), calc(var(--document-progress) * -120px)) rotate(calc(var(--document-progress) * -16deg));
+.document-backdrop__layer {
+  position: absolute;
+  left: 76%;
+  top: 48%;
+  width: clamp(760px, 90vw, 1320px);
+  aspect-ratio: 1;
+  color: var(--field-color);
+  transform: translate3d(-50%, -50%, 0);
   opacity: 0;
+  visibility: hidden;
+  contain: layout paint;
 }
-.document-backdrop__connections {
-  transform: translate(calc(var(--document-progress) * -60px), calc(var(--document-progress) * -100px));
-  opacity: 0;
+.document-backdrop__layer svg { display: block; width: 100%; height: 100%; }
+.document-backdrop__layer[data-role="active"] { opacity: 0.25; visibility: visible; }
+.document-backdrop__layer[data-role="ambient"] {
+  left: 10%;
+  top: 76%;
+  width: clamp(460px, 55vw, 820px);
+  opacity: 0.065;
+  visibility: visible;
 }
-.document-backdrop[data-scene="experience"] .document-backdrop__prism,
-.document-backdrop[data-scene="work"] .document-backdrop__prism,
-.document-backdrop[data-scene="capabilities"] .document-backdrop__prism,
-.document-backdrop[data-scene="background"] .document-backdrop__prism,
-.document-backdrop[data-scene="contact"] .document-backdrop__prism { opacity: 0.12; }
-.document-backdrop[data-scene="experience"] .document-backdrop__connections,
-.document-backdrop[data-scene="capabilities"] .document-backdrop__connections { opacity: 1; }
-.document-backdrop[data-scene="work"] .document-backdrop__planes,
-.document-backdrop[data-scene="background"] .document-backdrop__planes,
-.document-backdrop[data-scene="contact"] .document-backdrop__planes { opacity: 1; }
-
+[data-theme="dark"] .document-backdrop__layer[data-role="active"] { opacity: 0.22; }
+[data-theme="dark"] .document-backdrop__layer[data-role="ambient"] { opacity: 0.05; }
+.document-backdrop[data-animated="true"] .document-backdrop__layer:not([data-role="hidden"]) {
+  will-change: transform, opacity;
+}
+.document-backdrop[data-driver="css"] .document-backdrop__layer:not([data-role="hidden"]) {
+  animation: document-field-travel 1s linear both;
+  animation-timeline: scroll(root block);
+}
+@keyframes document-field-travel {
+  from { transform: translate3d(-50%, -50%, 0) rotate(0deg); }
+  to {
+    transform: translate3d(calc(-50% + var(--field-travel-x)), calc(-50% + var(--field-travel-y)), 0) rotate(var(--field-turn));
+  }
+}
 [data-view="document"] body:has(.document-backdrop) {
   --doc-panel: rgb(255 255 255 / 0.93);
   --doc-soft: #f0f1ed;
@@ -64,13 +59,19 @@
   position: relative;
   z-index: 1;
 }
-/* Reading content stays visible as soon as it enters the screen. */
+/* Each block settles in once; initial content and accessible fallbacks stay visible. */
 [data-view="document"] .home-document [data-reveal][data-motion-state] {
   opacity: 1;
   transform: none;
-  transition: none;
+  transition: opacity 380ms var(--lift), transform 380ms var(--lift);
+  transition-delay: 0ms;
   will-change: auto;
 }
+[data-view="document"][data-motion="on"] .home-document [data-reveal][data-motion-state="pending"] {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+}
+[data-view="document"] .home-document [data-reveal][data-motion-immediate="true"] { transition: none; }
 [data-view="document"] .home-document .titleblock { padding-top: 44px; }
 [data-view="document"] .home-document .titleblock-doctype { border: 0; padding: 0; }
 [data-view="document"] .home-document .titleblock-grid {
@@ -233,8 +234,11 @@
   [data-view="document"] .home-document .doc-rail { padding-top: 0; }
 }
 @media (width < 760px) {
-  .document-backdrop { inset-block-start: 72px; opacity: 0.25; mask-image: linear-gradient(to right, transparent 30%, #000); }
-  .document-backdrop__drawing { width: 180%; max-width: none; transform: translateX(-33%); }
+  .document-backdrop { inset-block-start: 72px; }
+  .document-backdrop__layer { left: 94%; width: 840px; }
+  .document-backdrop__layer[data-role="active"] { opacity: 0.17; }
+  .document-backdrop__layer[data-role="ambient"] { left: -26%; width: 540px; opacity: 0.045; }
+
   [data-view="document"] body:has(.document-backdrop) { --chapter-gap: 56px; }
   [data-view="document"] .home-document .titleblock { padding-top: 28px; }
   [data-view="document"] .home-document .titleblock-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; padding-top: 32px; }
@@ -256,10 +260,11 @@
   [data-view="document"] body:has(.document-backdrop) .close-inner { padding: 28px 22px; grid-template-columns: minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .document-backdrop__drawing > g { transition: none; }
+  .document-backdrop__layer { animation: none !important; will-change: auto; }
 }
 @media print {
   .document-backdrop { display: none; }
+  [data-view="document"] .home-document [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
   [data-view="document"] .home-document .entry,
   [data-view="document"] .home-document .work-entry { break-inside: avoid; background: none; box-shadow: none; }
 }

@@ -36,3 +36,9 @@ Completed verification: 209 tests across 15 suites; TypeScript and ESLint passed
 The initial planet treatment did not match the intended Document background. It has been removed, including its component and animation styles. Document now uses an SVG field of wireframe volumes, layered planes, and connecting paths behind the entire page. Its composition and position change as the reader scrolls between chapters. Reduced motion and data saving retain a static field.
 
 The section-spacing problem came from compounded section padding, content margins, and entry padding, plus both border-based and animated background rules. The refined Document uses one chapter gap, 20px between entries, and one heading-to-content gap. Chapter numbers provide orientation, and consistent rounded surfaces group the reading content. Repeated horizontal section and entry dividers are removed. This refinement is scoped to Document.
+
+## Scroll performance and reveal refinement
+
+The vector background has been enlarged and expanded to six motifs. Static SVGs now move inside two composited HTML layers, with native CSS scroll timelines and a two-transform fallback. Repeated SVG progress/style updates and the viewport mask are removed. The reveal controller uses cached positions and early observation so content can appear while scrolling without the previous blank-card problem.
+
+The final code passed 216 tests, build/type/lint checks, 86 responsive states, and five focused browser checks. Controlled profiling reduced paint work by 56% on desktop and 47% on a 4x CPU-throttled mobile viewport. See `SCROLL-PERFORMANCE.md` for the method, full results, and limits.

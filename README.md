@@ -100,12 +100,12 @@ Keep these evidence boundaries intact when editing public copy or structured dat
 ## Performance and progressive enhancement
 
 - Core content is server-rendered and remains readable before client enhancement runs.
-- Document uses vector planes and connection paths behind the page; their composition follows scrolling without textures or a graphics runtime.
+- Document uses six larger vector motifs behind the page. Two composited HTML layers follow native CSS scroll timelines, with a small fallback for older browsers; no textures or graphics runtime are needed.
 - Reduced motion leaves the vector background static. Document has no autonomous animation loop; Orrery retains its pause control, and hidden visuals stop rendering.
 - Project figures remain hand-authored SVGs showing real pipelines. The optional WebGL scene loads only after the reader selects Orrery; it never promotes a visitor automatically.
 - CSS-native motion and the small custom renderer avoid a general-purpose animation runtime. The scene occupies a separate panel, so it cannot overlap reading content.
 
-The title block, the numbered outline, the calls to action, and the current professional context remain complete when JavaScript does not run. Entrance motion only engages after the client confirms `IntersectionObserver`, no reduced-motion preference, and no save-data hint; content is visible by default in every other case.
+The title block, outline, calls to action, and current professional context remain complete without JavaScript. Once-only content reveals use early intersection detection and cached positions, avoiding layout reads while scrolling. Focus, disclosures, reduced motion, and data saving keep the relevant content immediately readable.
 
 ## Accessibility
 
